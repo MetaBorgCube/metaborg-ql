@@ -1,0 +1,16 @@
+module QL.main
+
+imports QL-Builders QL-Refactorings QL-Colorer QL-Completions QL-Folding QL-Outliner QL-References QL-Syntax
+
+language General properties
+                  
+  name          : QL
+  id            : org.spoofax.lang.lwc.ql
+  extends       : Root
+                  
+  description   : "Spoofax/IMP-generated editor for the QL language"
+  url           : http://strategoxt.org
+                  
+  extensions    : ql
+  table         : include/QL.tbl
+  start symbols : Start

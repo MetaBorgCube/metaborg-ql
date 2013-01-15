@@ -3,6 +3,7 @@
 ## Project structure
 
 Two folders, two projects:
+
 1. **org.spoofax.lang.lwc.ql** contains language QL, the primary language of the challenge. Used for specification of questionnaires. 
 2. **org.spoofax.lang.lwc.qls** contains language QLS used for specification of styling for questionnaires described in QL.
 
