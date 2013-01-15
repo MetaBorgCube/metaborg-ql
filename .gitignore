@@ -1,2 +1,5 @@
 *.class
 ql-java.jar
+qls-java.jar
+QLS.generated.pp
+QL.generated.pp

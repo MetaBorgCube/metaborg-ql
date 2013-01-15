@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?eclipse version="3.0"?>
+
+<plugin>
+       <extension point="org.eclipse.imp.runtime.languageDescription">
+          <language extensions="qls" description="QLS" language="QLS" derivedFrom="DynamicRoot" validator="org.spoofax.lang.lwc.qls.QLSValidator" validatorClass="org.spoofax.lang.lwc.qls.QLSValidator"></language>
+       </extension>
+       <extension id="org.spoofax.lang.lwc.qls.parser" name="QLS Parser" point="org.eclipse.imp.runtime.parser">
+          <parser class="org.spoofax.lang.lwc.qls.QLSParseController" language="QLS">
+          </parser>
+       </extension>    
+    </plugin>

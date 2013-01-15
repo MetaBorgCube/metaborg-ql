@@ -1,0 +1,16 @@
+module QLS.main
+
+imports QLS-Builders QLS-Refactorings QLS-Colorer QLS-Completions QLS-Folding QLS-Outliner QLS-References QLS-Syntax
+
+language General properties
+                  
+  name          : QLS
+  id            : org.spoofax.lang.lwc.qls
+  extends       : Root
+                  
+  description   : "Spoofax/IMP-generated editor for the QLS language"
+  url           : http://strategoxt.org
+                  
+  extensions    : qls
+  table         : include/QLS.tbl
+  start symbols : Start
