@@ -5,7 +5,9 @@
 form bla {
 	foo : "Is this foo?" boolean
 	bar : "Bar?" integer
-	if(bar){
-		shutup : "Silence the noise?!" boolean 
+	check : "Check!" money(foo - bar)
+	if(bar / foo){
+		shutup : "Silence the noise?!" boolean
+		shutup : "Silence the noise?!" decimal(shutup - bar)  
 	}
 }
