@@ -15,7 +15,8 @@ imports
   check
   generate
   refactor
-
+	types
+	
 rules // Analysis
   
 	// Analyzes the current program, returning a tuple with the analyzed AST, errors, warnings, notes and

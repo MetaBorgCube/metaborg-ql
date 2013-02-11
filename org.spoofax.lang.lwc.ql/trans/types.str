@@ -1,0 +1,76 @@
+module types
+
+imports
+	
+	include/QL
+	nbl-library.generated
+	index-library.generated
+	analysis-library.generated
+	
+rules
+	
+	type-of = bottomup(is-string <+ type)
+	
+	// default for leaves
+	
+	has-type = ?x ; type ; ?t ; where (<debug(!"has type: ")> (x, t))
+	has-no-type = ![<id>]; debug(!"has no type: "); fail
+	
+	type: Ref(q) 									-> <index-type-of> q
+	type: Not(BoolTy()) 					-> BoolTy()
+	type: And(BoolTy(), BoolTy()) -> BoolTy()
+	type: Or(BoolTy(), BoolTy()) 	-> BoolTy()
+	
+	type: Lt(t1, t2) 		-> BoolTy() where <coerce-dual; is-comparable> (t1, t2) 
+	type: Leq(t1, t2)		-> BoolTy() where <coerce-dual; is-comparable> (t1, t2)
+	type: Gt(t1, t2) 		-> BoolTy() where <coerce-dual; is-comparable> (t1, t2)
+	type: Geq(t1, t2) 	-> BoolTy() where <coerce-dual; is-comparable> (t1, t2)
+	
+	type: Eq(t1, t2) 		-> BoolTy() where <coerce-dual> (t1, t2)
+	
+	type: Plus(t1, t2)			-> <coerce-dual; is-addable> (t1, t2)
+	type: Minus(t1, t2)			-> <coerce-dual; is-addable> (t1, t2)
+	
+	type: Mul(t1, t2) 			-> <coerce-dual; is-number> (t1, t2)
+	type: Mul(t, MoneyTy())	-> MoneyTy() where <coerce> (t, FloatTy())
+	type: Mul(MoneyTy(), t)	-> MoneyTy() where <coerce> (t, FloatTy())
+	
+	type: Div(t1, t2)					-> FloatTy() where <coerce-dual; is-addable> (t1, t2)
+	type: Div(MoneyTy(), t2)	-> MoneyTy() where <coerce> (t2, FloatTy())
+	
+	coerce-dual = coerce <+ <coerce> (<Snd>, <Fst>)
+	
+	coerce: (t, t) 								-> t
+	coerce: (IntTy(), FloatTy())	-> FloatTy()
+	coerce: (_, StringTy())				-> StringTy()
+	
+	is-comparable = is-addable + DateTy()
+	is-addable		= is-number + MoneyTy()
+	is-number			= IntTy() + FloatTy()
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+rules
+	
+	index-type-of = index-lookup; index-uri; nbl-get-type
