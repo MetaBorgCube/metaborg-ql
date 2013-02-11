@@ -4,7 +4,7 @@
         
         <!-- Key input modules -->
         <property name="sdfmodule" value="QL"/>
-        <property name="metasdfmodule" value="Stratego-QL"/>
+        <property name="metasdfmodule" value="Stratego-QL-WebDSL"/>
         <property name="esvmodule" value="QL"/>
         <property name="strmodule" value="ql"/>
     
@@ -18,7 +18,7 @@
         <property name="dist" location="bin/dist"/>
         
         <!-- Imports -->
-        <property name="build.sdf.imports" value=""/>
+        <property name="build.sdf.imports" value="-Idef &quot;${basedir}/lib/webdsl/WebDslMix.def&quot;"/>
         <property name="build.stratego.args" value="
                         --library
                         -I &quot;${trans}&quot;

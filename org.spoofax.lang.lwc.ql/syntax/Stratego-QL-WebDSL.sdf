@@ -1,0 +1,10 @@
+module Stratego-QL-WebDSL
+
+imports
+	StrategoMix[StrategoHost]
+	WebDslMix[ Term[[StrategoHost]] ]
+	QlMix[ Term[[StrategoHost]] ]
+
+hiddens
+	context-free start-symbols Module[[StrategoHost]] 
+
