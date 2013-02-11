@@ -1,0 +1,33 @@
+templates // top-level
+
+	QNaire.QNaire = <
+		<QNEntry*; separator="\n\n">
+	>
+	
+templates // questions
+
+	QNEntry.QDec = <
+		<ID> : <Label> <Type>
+	>
+	
+	Label.Label = <<STRING>>
+	
+	// TODO add question DEF & Question REF
+
+templates // groups
+
+	QNEntry.Form = <
+		form <ID> {
+			<QNEntry*; separator="\n\n">
+		}
+	>
+
+templates // types and type-expressions
+
+	Type.Ty = <boolean>
+	Type.Ty = <string>
+	Type.Ty = <integer>
+	Type.Ty = <date>
+	Type.Ty = <money>
+	
+	Type.TyExpr = <;<Ty>>

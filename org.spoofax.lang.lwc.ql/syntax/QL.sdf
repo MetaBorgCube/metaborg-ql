@@ -1,13 +1,15 @@
 module QL
 
-imports Common
+imports
+	Common
+	QLgenerated
 
 exports
 
   context-free start-symbols
   
-    Start
+    QNaire
 
   context-free syntax
   
-    -> Start {"Dummy"}
+    %% -> Start {"Dummy"}

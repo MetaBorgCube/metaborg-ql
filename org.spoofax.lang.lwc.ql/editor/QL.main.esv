@@ -13,4 +13,4 @@ language General properties
                   
   extensions    : ql
   table         : include/QL.tbl
-  start symbols : Start
+  start symbols : QNaire
