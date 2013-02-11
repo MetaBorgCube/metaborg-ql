@@ -1,21 +1,37 @@
 specification
 
 strategies
-  prettyprint-QNaire =
-    ?QNaire(a)
+  prettyprint-Form =
+    ?Form(a, b)
     ; ![ H(
            [SOpt(HS(), "0")]
-         , [<pp-V-list(prettyprint-QNEntry|"1")> a]
+         , [ S("form ")
+           , <pp-one-Z(prettyprint-ID)> a
+           , S(" {")
+           ]
+         )
+       , <pp-indent(|"2")> [<pp-V-list(prettyprint-Group|"1")> b]
+       , H(
+           [SOpt(HS(), "0")]
+         , [S("}")]
          )
        ]
 
   prettyprint-example =
-    prettyprint-QNaire
+    prettyprint-Form
 
 
 strategies
-  prettyprint-QNEntry =
-    ?QDec(a, b, c)
+  prettyprint-Group =
+    ?a
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [<pp-one-Z(prettyprint-Question)> a]
+         )
+       ]
+
+  prettyprint-Question =
+    ?Question(a, b, c)
     ; ![ H(
            [SOpt(HS(), "0")]
          , [ <pp-one-Z(prettyprint-ID)> a
@@ -23,6 +39,19 @@ strategies
            , <pp-one-Z(prettyprint-Label)> b
            , S(" ")
            , <pp-one-Z(prettyprint-Type)> c
+           ]
+         )
+       ]
+
+  prettyprint-Question =
+    ?Computed(a, b, c)
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [ <pp-one-Z(prettyprint-ID)> a
+           , S(" : ")
+           , <pp-one-Z(prettyprint-Label)> b
+           , S(" ")
+           , <pp-one-Z(prettyprint-TyExpr)> c
            ]
          )
        ]
@@ -36,23 +65,26 @@ strategies
        ]
 
   prettyprint-example =
-    prettyprint-QNEntry
+    prettyprint-Group
+
+  prettyprint-example =
+    prettyprint-Question
 
   prettyprint-example =
     prettyprint-Label
 
 
 strategies
-  prettyprint-QNEntry =
-    ?Form(a, b)
+  prettyprint-Group =
+    ?Conditional(a, b)
     ; ![ H(
            [SOpt(HS(), "0")]
-         , [ S("form ")
-           , <pp-one-Z(prettyprint-ID)> a
-           , S(" {")
+         , [ S("if (")
+           , <pp-one-Z(prettyprint-Expr)> a
+           , S(") {")
            ]
          )
-       , <pp-indent(|"2")> [<pp-V-list(prettyprint-QNEntry|"1")> b]
+       , <pp-indent(|"2")> [<pp-V-list(prettyprint-Group|"1")> b]
        , H(
            [SOpt(HS(), "0")]
          , [S("}")]
@@ -60,12 +92,12 @@ strategies
        ]
 
   prettyprint-example =
-    prettyprint-QNEntry
+    prettyprint-Group
 
 
 strategies
   prettyprint-Type =
-    ?Ty()
+    ?BoolTy()
     ; ![ H(
            [SOpt(HS(), "0")]
          , [S("boolean")]
@@ -73,7 +105,7 @@ strategies
        ]
 
   prettyprint-Type =
-    ?Ty()
+    ?StringTy()
     ; ![ H(
            [SOpt(HS(), "0")]
          , [S("string")]
@@ -81,7 +113,7 @@ strategies
        ]
 
   prettyprint-Type =
-    ?Ty()
+    ?IntTy()
     ; ![ H(
            [SOpt(HS(), "0")]
          , [S("integer")]
@@ -89,7 +121,7 @@ strategies
        ]
 
   prettyprint-Type =
-    ?Ty()
+    ?DateTy()
     ; ![ H(
            [SOpt(HS(), "0")]
          , [S("date")]
@@ -97,22 +129,36 @@ strategies
        ]
 
   prettyprint-Type =
-    ?Ty()
+    ?MoneyTy()
     ; ![ H(
            [SOpt(HS(), "0")]
          , [S("money")]
          )
        ]
 
-  prettyprint-Type =
-    ?TyExpr(a)
+  prettyprint-example =
+    prettyprint-Type
+
+
+strategies
+  prettyprint-Expr =
+    ?Bar()
     ; ![ H(
            [SOpt(HS(), "0")]
-         , [ S(";")
-           , <pp-one-Z(prettyprint-Ty)> a
-           ]
+         , [S("bar")]
+         )
+       ]
+
+  prettyprint-TyExpr =
+    ?Foo()
+    ; ![ H(
+           [SOpt(HS(), "0")]
+         , [S("foo")]
          )
        ]
 
   prettyprint-example =
-    prettyprint-Type
+    prettyprint-Expr
+
+  prettyprint-example =
+    prettyprint-TyExpr

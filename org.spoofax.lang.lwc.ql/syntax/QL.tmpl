@@ -1,33 +1,41 @@
 templates // top-level
 
-	QNaire.QNaire = <
-		<QNEntry*; separator="\n\n">
+	Form.Form = <
+		form <ID> {
+			<Group*; separator="\n\n">
+		}
 	>
 	
 templates // questions
+	
+	Group = <<Question>>
 
-	QNEntry.QDec = <
+	Question.Question = <
 		<ID> : <Label> <Type>
+	>
+	
+	Question.Computed = <
+		<ID> : <Label> <TyExpr>
 	>
 	
 	Label.Label = <<STRING>>
 	
-	// TODO add question DEF & Question REF
+templates // conditional
 
-templates // groups
-
-	QNEntry.Form = <
-		form <ID> {
-			<QNEntry*; separator="\n\n">
+	Group.Conditional = <
+		if (<Expr>) {
+			<Group*; separator="\n\n">
 		}
 	>
-
-templates // types and type-expressions
-
-	Type.Ty = <boolean>
-	Type.Ty = <string>
-	Type.Ty = <integer>
-	Type.Ty = <date>
-	Type.Ty = <money>
 	
-	Type.TyExpr = <;<Ty>>
+templates // types
+
+	Type.BoolTy = <boolean>
+	Type.StringTy = <string>
+	Type.IntTy = <integer>
+	Type.DateTy = <date>
+	Type.MoneyTy = <money>
+
+templates // expressions
+	Expr.Bar = <bar>
+	TyExpr.Foo = <foo>

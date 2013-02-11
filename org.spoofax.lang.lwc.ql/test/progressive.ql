@@ -2,12 +2,10 @@
 * Example QL questionnaire. Syntactically correct, semantically incorrect.
 */  
 
-form BlaBla {
-	question1: "Bla bla bla?" boolean
-	question1: "Bla bla bla?" boolean
+form bla {
+	foo : "Is this foo?" boolean
+	bar : "Bar?" integer
+	if(bar){
+		shutup : "Silence the noise?!" boolean 
+	}
 }
-
-question1: "Bla bla bla?" boolean
-question2: "Bla bla bla?" boolean
-
-question1: "Bla bla bla?" money
