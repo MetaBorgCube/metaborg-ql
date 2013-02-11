@@ -1,10 +1,22 @@
 module names
 
-imports
+imports include/QL
 	
-	include/QL
-	
-namespaces
-	
+namespaces Frm Quest
+
 rules
+
+	Form(n,_):
+		defines Frm n
+		scopes Quest
+	
+	Question(q, _, ty):
+		defines Quest q of type ty
+
+	Computed(q, _, expr):
+		defines Quest q of type red-ty
+		where expr has type red-ty
+	
+	Ref(q):
+		refers to Quest q
 
