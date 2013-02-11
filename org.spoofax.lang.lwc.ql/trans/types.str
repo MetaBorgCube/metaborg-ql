@@ -9,7 +9,13 @@ imports
 	
 rules
 	
-	type-of = bottomup(is-string <+ type)
+	our-type-of(s) = index-uri; nbl-get-type <+ bottomup( is-string <+ type <+ type-error; s <+ id)
+	
+	our-type-of = our-type-of(id)
+	
+	collect-type-errors = where(c := <new-iset>); store-type-errors(|c); <iset-elements> c
+	
+	store-type-errors(|coll) = our-type-of(\error -> <iset-add(|error)> coll where debug\)
 	
 	// default for leaves
 	
@@ -21,56 +27,38 @@ rules
 	type: And(BoolTy(), BoolTy()) -> BoolTy()
 	type: Or(BoolTy(), BoolTy()) 	-> BoolTy()
 	
-	type: Lt(t1, t2) 		-> BoolTy() where <coerce-dual; is-comparable> (t1, t2) 
-	type: Leq(t1, t2)		-> BoolTy() where <coerce-dual; is-comparable> (t1, t2)
-	type: Gt(t1, t2) 		-> BoolTy() where <coerce-dual; is-comparable> (t1, t2)
-	type: Geq(t1, t2) 	-> BoolTy() where <coerce-dual; is-comparable> (t1, t2)
+	type-error: Minus(t1, t2) -> (<id>, $[Type error: ])
 	
-	type: Eq(t1, t2) 		-> BoolTy() where <coerce-dual> (t1, t2)
+	type: Lt(t1, t2) 		-> BoolTy() where <lub(coerce); is-comparable> (t1, t2) 
+	type: Leq(t1, t2)		-> BoolTy() where <lub(coerce); is-comparable> (t1, t2)
+	type: Gt(t1, t2) 		-> BoolTy() where <lub(coerce); is-comparable> (t1, t2)
+	type: Geq(t1, t2) 	-> BoolTy() where <lub(coerce); is-comparable> (t1, t2)
 	
-	type: Plus(t1, t2)			-> <coerce-dual; is-addable> (t1, t2)
-	type: Minus(t1, t2)			-> <coerce-dual; is-addable> (t1, t2)
+	type: Eq(t1, t2) 		-> BoolTy() where <lub(coerce)> (t1, t2)
 	
-	type: Mul(t1, t2) 			-> <coerce-dual; is-number> (t1, t2)
+	type: Plus(t1, t2)			-> <lub(coerce); is-addable> (t1, t2)
+	type: Minus(t1, t2)			-> <lub(coerce); is-addable> (t1, t2)
+	
+	type: Mul(t1, t2) 			-> <lub(coerce); is-numeric> (t1, t2)
 	type: Mul(t, MoneyTy())	-> MoneyTy() where <coerce> (t, FloatTy())
 	type: Mul(MoneyTy(), t)	-> MoneyTy() where <coerce> (t, FloatTy())
 	
-	type: Div(t1, t2)					-> FloatTy() where <coerce-dual; is-addable> (t1, t2)
+	type: Div(t1, t2)					-> FloatTy() where <lub(coerce); is-addable> (t1, t2)
 	type: Div(MoneyTy(), t2)	-> MoneyTy() where <coerce> (t2, FloatTy())
 	
-	coerce-dual = coerce <+ <coerce> (<Snd>, <Fst>)
+	lub = lub(coerce)
+	
+	lub(s) = s <+ <s> (<Snd>, <Fst>)
 	
 	coerce: (t, t) 								-> t
 	coerce: (IntTy(), FloatTy())	-> FloatTy()
 	coerce: (_, StringTy())				-> StringTy()
 	
+	is-numeric		= IntTy() + FloatTy()
+	is-addable		= is-numeric + MoneyTy()
 	is-comparable = is-addable + DateTy()
-	is-addable		= is-number + MoneyTy()
-	is-number			= IntTy() + FloatTy()
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		
 rules
 	
 	index-type-of = index-lookup; index-uri; nbl-get-type
+	

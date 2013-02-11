@@ -27,7 +27,7 @@ rules // Analysis
       ast'                    := <id> ast; // Optional AST desugaring
       (ast'', filesToAnalyze) := <analyze-top(|<language>)> (ast', path, project-path);
       index-transaction(
-	      errors                := <collect-all(constraint-error, conc)> ast'';
+	      errors                := <collect-type-errors> ast'';
 	      warnings              := <collect-all(constraint-warning, conc)> ast'';
 	      notes                 := <collect-all(constraint-note, conc)> ast''
       );
@@ -79,7 +79,8 @@ rules // Editor services
   editor-hover:
     (target, position, ast, path, project-path) -> $[[uriString]]
     where
-      uriString := <index-uri-to-string> <index-uri> <index-find-key> target
+    	uriString := <our-type-of; fail> target
+      //uriString := <index-uri-to-string> <index-uri> <index-find-key> target
 
   // Completes an identifier when the user presses control-space
   // (the completion identifier in the AST provides additional context information)
