@@ -1,0 +1,85 @@
+application QLExample
+
+  imports elib/lib
+  imports templates
+
+  entity Form {
+    hasSoldHouse :: Bool
+    hasBoughtHouse :: Bool
+    hasMaintLoan :: Bool
+    
+    sellingPrice :: Int
+    privateDebt :: Int
+    valueResidue :: Int := sellingPrice - privateDebt
+  }
+
+  var globalForm := Form {}
+
+  define page root() {
+    title{"Spoofax Forms"}
+    mainResponsiveStyle {
+    	navbarResponsive {
+
+    	}
+    	
+    	gridContainer {
+    		gridRow{
+          gridSpan(12) { 
+            showForm(globalForm)
+          }
+        }
+      }
+	    footer{
+	      gridContainer{     
+	        gridRow{ 
+	          gridSpan(12){
+	            "Spoofax Forms"
+	          }
+	        }
+	      }
+	    }
+    }
+  }
+  
+  define showForm(form : Form) {
+    horizontalForm {
+      controlGroup("Did you sell a house in 2010?") { input(form.hasSoldHouse) [onclick := check_cond1()] }
+      controlGroup("Did you buy a house in 2010?") { input(form.hasBoughtHouse) }
+      controlGroup("Did you enter a loan for maintainance/construction?") { input(form.hasMaintLoan) }
+      
+      placeholder cond1 showForm_cond1(form)
+      
+      formActions {
+        submitlink submit() [class="btn btn-primary"] { "Submit" } " "
+      }
+    }
+    
+    action submit() {
+      form.save();
+    }
+    
+    action check_cond1() {
+      replace(cond1, showForm_cond1(form)); 
+    }
+  }
+  
+  define ajax showForm_cond1(form : Form) {
+    if(form.hasSoldHouse) {
+      // TODO: These values are not saved on submit.
+      controlGroup("Price the house as sold for:") { input(form.sellingPrice) [onkeydown := check_valueResidue()] }
+      controlGroup("Private debt for the sold house:") { input(form.privateDebt) [onkeydown := check_valueResidue()] }
+      
+      placeholder valueResidue showForm_valueResidue(form)
+    } else {
+      
+    }
+    
+    action check_valueResidue() {
+      replace(valueResidue, showForm_valueResidue(form)); 
+    }
+  }
+  
+  define ajax showForm_valueResidue(form : Form) {
+    // TODO: This value is never updated.
+  	controlGroup("Value residue:") { output(form.sellingPrice - form.privateDebt) }
+  }
