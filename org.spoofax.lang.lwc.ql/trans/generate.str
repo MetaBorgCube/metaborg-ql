@@ -26,7 +26,7 @@ rules // Incremental code generation of project using compilation library.
 rules
 	compile = fail
 
-	example: |[ form $fid { question* } ]|	-> |[ entity $fid:Form {} ]|
+	example: |[ form $fid { question* } ]|	-> |[ entity $fid:Form {} ]| 
 	example: |[ qid : label t ]| 					-> <id>
 	example: |[ qid : text texpr ]| 			-> <id>
 	example: |[ if ( cond ) { q* } ]|			-> <id>

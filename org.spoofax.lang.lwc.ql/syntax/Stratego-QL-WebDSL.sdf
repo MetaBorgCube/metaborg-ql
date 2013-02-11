@@ -7,3 +7,9 @@ imports
 
 hiddens
 	context-free start-symbols Module[[StrategoHost]] 
+
+exports
+	variables
+	
+		IdVar -> ID			{prefer}
+

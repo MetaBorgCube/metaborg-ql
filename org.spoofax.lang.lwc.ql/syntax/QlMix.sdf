@@ -21,5 +21,3 @@ exports
 		("type"|"t") [0-9]*											-> Type		{prefer}
 		("texpr"|"texp"|"te") [0-9]*						-> TyExpr	{prefer}
 		[fgq] "id" [0-9]*												-> ID     {prefer}
-
-		IdVar																		-> ID			{prefer}
