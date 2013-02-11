@@ -34,7 +34,7 @@ templates // types
 	Type.StringTy = <string>
 	Type.IntTy = <integer>
 	Type.DateTy = <date>
-	Type.Float = <decimal>
+	Type.FloatTy = <decimal>
 	Type.MoneyTy = <money>
 	TyExpr.TExpr = <<Type> ( <Expr> )>
 
@@ -46,7 +46,7 @@ templates // expressions
 	
 	Expr.Not	= <!<Expr>>
 	Expr.And	= <<Expr> && <Expr>> {left}
-	Expr.And	= <<Expr> || <Expr>> {left}
+	Expr.Or	= <<Expr> || <Expr>> {left}
 	
   Expr.Lt		= [[Expr] < [Expr]]  {non-assoc}
   Expr.Leq	= [[Expr] <= [Expr]] {non-assoc}
