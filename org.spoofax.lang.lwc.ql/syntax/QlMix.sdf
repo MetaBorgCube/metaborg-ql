@@ -7,33 +7,19 @@ exports
 
 
 	context-free syntax
-		"|[" Form  "]|" -> E {cons("ToMetaExpr")}
-		"|[" Group "]|" -> E {cons("ToMetaExpr")}
+		"|[" Form   "]|" -> E {cons("ToMetaExpr")}
+		"|[" Group  "]|" -> E {cons("ToMetaExpr")}
+		"|[" TyExpr "]|" -> E {cons("ToMetaExpr")}
+		"|[" Expr   "]|" -> E {cons("ToMetaExpr")}
 
 	variables
 
-		"form" [0-9]*				-> Form   		{prefer}
-		"group" [0-9]* "*"	-> Group* 		{prefer}
-		"group" [0-9]*			-> Group			{prefer}
-		"q" [0-9]*					-> Question		{prefer}
-		"q" [0-9]* "*"			-> Question*	{prefer}
-		"exp" [0-9]*				-> Expr				{prefer}
-		"texp" [0-9]*				-> TyExpr			{prefer}
-		
-%%	 lexical syntax
-%% 
-%%		 [0-9]*							 -> MetaVarSuffix
-%%		 "_" [A-Za-z0-9\_\-]+ -> MetaVarSuffix
-%% 
-%%	 lexical syntax
-%% 
-%%		 [\$][A-Za-z0-9]* -> IdVar
-%%		 [\$][A-Za-z0-9]* -> Id[[StrategoHost]]
-%% 
-%%	 lexical restrictions
-%% 
-%%		 IdVar -/- [A-Za-z0-9]
-%% 
-%%	 variables
-%% 
-%%		 IdVar -> Id {prefer}
+		("group"|"question"|"g"|"q") [0-9]* "*"	-> Group* {prefer}
+		("group"|"question"|"g"|"q") [0-9]*			-> Group	{prefer}
+		("cond"|"expr"|"exp"|"c") [0-9]*				-> Expr		{prefer}
+		("label"|"text"|"l"|"t") [0-9]*					-> Label	{prefer}
+		("type"|"t") [0-9]*											-> Type		{prefer}
+		("texpr"|"texp"|"te") [0-9]*						-> TyExpr	{prefer}
+		[fgq] "id" [0-9]*												-> ID     {prefer}
+
+		IdVar																		-> ID			{prefer}

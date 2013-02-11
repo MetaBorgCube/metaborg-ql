@@ -1,27 +1,34 @@
 module generate
 
 imports
-  libstratego-lib
-  libstratego-gpp
-  libstratego-aterm
-  include/QL
-  lib/editor-common.generated
-  lib/compilation-library.generated
+	libstratego-lib
+	libstratego-gpp
+	libstratego-aterm
+	lib/editor-common.generated
+	lib/compilation-library.generated
 
+	include/QL
+	lib/webdsl/WebDSL
+	
 rules // Incremental code generation of project using compilation library.
-      
-  index-compile-ast(|file, subfile):
-    ast -> None()
-    with
-      java := <compile> ast;
-      full-path := <dirname> file;
-      filename := <guarantee-extension(|"java")> <base-filename> file;
-      writePath := $[[full-path]/];
-      writeFile :=  $[[writePath][filename]];
-      try(<mkdir> writePath);
-      <fclose> <fputs> (java, <fopen> (writeFile, "w"))
+			
+	index-compile-ast(|file, subfile):
+		ast -> None()
+		with
+			java := <compile> ast;
+			full-path := <dirname> file;
+			filename := <guarantee-extension(|"java")> <base-filename> file;
+			writePath := $[[full-path]/];
+			writeFile :=	$[[writePath][filename]];
+			try(<mkdir> writePath);
+			<fclose> <fputs> (java, <fopen> (writeFile, "w"))
 
 rules
 	compile = fail
 
-
+	example: |[ form $fid { question* } ]|	-> |[ entity $fid:Form {} ]|
+	example: |[ qid : label t ]| 					-> <id>
+	example: |[ qid : text texpr ]| 			-> <id>
+	example: |[ if ( cond ) { q* } ]|			-> <id>
+	example: |[ type ( exp ) ]| 					-> <id>
+	example: |[ exp1 + exp2 ]|	 					-> <id>
