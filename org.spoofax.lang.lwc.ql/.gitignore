@@ -20,3 +20,5 @@ syntax/QL*.generated.esv
 utils
 lib/*.generated.str
 lib-refactoring/*.generated.str
+/include
+/lib-refactoring
