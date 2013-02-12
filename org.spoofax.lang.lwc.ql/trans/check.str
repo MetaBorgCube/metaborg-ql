@@ -11,74 +11,88 @@ imports
 
 	types
 	
-rules // Other
+rules // generic
 	
 	constraint-warning = fail
 	
 	constraint-note = fail
 	
+rules // expressions
+	
 	constraint-error =
 		?Not(e); 
-		<type-error(eq|"Expression")> (e, BoolTy())
+		<type-error(eq)> (e, BoolTy())
 	
 	constraint-error =
 		( ?And(e1, e2) + ?Or(e1, e2) );
-		<filter(type-error(eq|"Expression"))> [(e1, BoolTy()), (e2, BoolTy())]
+		<filter(type-error(eq))> [(e1, BoolTy()), (e2, BoolTy())]
 	
 	constraint-error =
 		(?Lt(e1, e2) + ?Leq(e1, e2) + ?Gt(e1, e2) +?Geq(e1, e2));
-		<filter(type-error(is-comparable|"Expression", "cannot be compared"))> [e1, e2];
+		<filter(type-error(is-comparable|"compared"))> [e1, e2];
 		if ?[] then 
-			<type-error(lub|"Expression")> (e2, <type-of> e1)
+			<type-error(lub)> (e2, <type-of> e1)
 		end
 	
 	constraint-error =
 		?Eq(e1, e2);
-		<type-error(lub|"Expression")> (e2, <type-of> e1)
+		<type-error(lub)> (e2, <type-of> e1)
 		
 	constraint-error =
 		(?Plus(e1, e2) + ?Minus(e1, e2));
-		<filter(type-error(is-addable|"Expression", "cannot be added or subtracted"))> [e1, e2];
+		<filter(type-error(is-addable|"added or subtracted"))> [e1, e2];
 		if ?[] then 
-			<type-error(lub|"Expression")> (e2, <type-of> e1)
+			<type-error(lub)> (e2, <type-of> e1)
 		end
 		
 	constraint-error =
 		?Mul(e1, e2);
 		if <type-of> e1 => MoneyTy() then
-			<type-error(lub|"Expression")> (e2, FloatTy())
+			<type-error(lub)> (e2, FloatTy())
 		else if <type-of> e2 => MoneyTy() then
-			<type-error(lub|"Expression")> (e1, FloatTy())
+			<type-error(lub)> (e1, FloatTy())
 		else
-			<filter(type-error(is-numeric|"Expression", "cannot be multiplied"))> [e1, e2];
+			<filter(type-error(is-numeric|"multiplied"))> [e1, e2];
 			if ?[] then
-				<type-error(lub|"Expression")> (e2, <type-of> e1)
+				<type-error(lub)> (e2, <type-of> e1)
 			end
 		end end
 
 	constraint-error =
 		?Div(e1, e2);
 		if <type-of> e1 => MoneyTy() then
-			<type-error(lub|"Expression")> (e2, FloatTy())
+			<type-error(lub)> (e2, FloatTy())
 		else
-			<filter(type-error(is-numeric|"Expression", "cannot be divided"))> [e1, e2];
+			<filter(type-error(is-numeric|"divided"))> [e1, e2];
 			if ?[] then
-				<type-error(lub|"Expression")> (e2, <type-of> e1)
+				<type-error(lub)> (e2, <type-of> e1)
 			end
 		end
 
-// ---------------------------------------------------------------------------------- //
-	type-error(s|kind): 
-		(e, expected) -> (e, $[[kind] is of type [type1] which does not comply to [type2].])
+rules // questions and groups
+	
+	constraint-error =
+		?TExpr(t, e);
+		<type-error(lub)> (e, t)
+	
+	constraint-error =
+		?Conditional(e, _);
+		<type-error(eq)> (e, BoolTy())
+
+rules // helpers
+	
+	type-error(s): 
+		(e, expected) -> (e, $[Expression is of type [type1] which does not comply to [type2].])
 		where 
 			<type-of> e => actual; 
 			<not(s)> (actual, expected);
 			<pp-ql-string> actual => type1;
 			<pp-ql-string> expected => type2
 			
-	type-error(s|kind, quality): 
-		e -> (e, $[[kind] is of type [type] which [quality].])
+	type-error(s|quality): 
+		e -> (e, $[Expression is of type [type] which cannot be [quality].])
 		where 
 			<type-of> e => actual; 
 			<not(s)> actual;
 			<pp-ql-string> actual => type
+			
