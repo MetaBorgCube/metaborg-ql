@@ -92,7 +92,16 @@ rules // Editor services
         (<index-lookup-all(|name)> item <+ ![]) => proposals
       );
       proposals' := <map(index-uri; index-uri-name)> proposals
-
+      
+rules // Compilation
+	
+  compile-to-webdsl:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+    	filename := <guarantee-extension(|"app")> path;
+    	webdsl   := <compile> selected;
+    	result   := <pp-webdsl-string> webdsl
+    
 rules // Debugging
   
   // Prints the abstract syntax ATerm of a selection.

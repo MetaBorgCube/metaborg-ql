@@ -2,10 +2,12 @@ module WebDSL
 
 signature
   constructors
-                                         : Combinator * SimpleSelector * Option(SelectorAttribute) -> Combinator_SimpleSelector_OptSelectorAttribute0
+    None                                 : OptPrefetchOwnerCast0
                                          : BracketCharacter -> BracketLiteral_BracketCharacter0
                                          : BracketLiteral -> BracketLiteral_BracketCharacter0
                                          : List(Statement) -> Statements
+                                         : Module -> Unit
+                                         : Application -> Unit
     ModuleDefs                           : ModuleName * List(Definition) * List(Section) -> Module
     Module                               : ModuleName * List(Section) -> Module
     Note                                 : List(Word) -> Description
@@ -21,6 +23,50 @@ signature
                                          : SimpleSort -> Sort
     Qualified                            : QId * Id -> QId
                                          : Id -> QId
+    Not                                  : PrefetchCond -> PrefetchCond
+    Or                                   : PrefetchCond * PrefetchCond -> PrefetchCond
+    And                                  : PrefetchCond * PrefetchCond -> PrefetchCond
+    SmallerThanOrEqual                   : PrefetchCondVal * PrefetchCondVal -> PrefetchCond
+    SmallerThan                          : PrefetchCondVal * PrefetchCondVal -> PrefetchCond
+    LargerThanOrEqual                    : PrefetchCondVal * PrefetchCondVal -> PrefetchCond
+    LargerThan                           : PrefetchCondVal * PrefetchCondVal -> PrefetchCond
+    NotEq                                : PrefetchCondVal * PrefetchCondVal -> PrefetchCond
+    Eq                                   : PrefetchCondVal * PrefetchCondVal -> PrefetchCond
+                                         : PrefetchCondVal -> PrefetchCond
+    Sub                                  : PrefetchCondVal * PrefetchCondVal -> PrefetchCondVal
+    Add                                  : PrefetchCondVal * PrefetchCondVal -> PrefetchCondVal
+    Mod                                  : PrefetchCondVal * PrefetchCondVal -> PrefetchCondVal
+    Div                                  : PrefetchCondVal * PrefetchCondVal -> PrefetchCondVal
+    Mul                                  : PrefetchCondVal * PrefetchCondVal -> PrefetchCondVal
+    RelativeFieldAccess                  : SimpleSort * Id -> PrefetchCondVal
+    RelativeFieldAccess                  : NoneCons * Id -> PrefetchCondVal
+    Var                                  : Id -> PrefetchCondVal
+                                         : ConstValue -> PrefetchCondVal
+    Null                                 : PrefetchCondVal
+    False                                : PrefetchCondVal
+    True                                 : PrefetchCondVal
+                                         : PrefetchCond -> PrefetchCondOrTrue
+    None                                 : NoneCons
+    Hint                                 : PrefetchWhereMod
+    PrefetchWhere                        : List(PrefetchWhereMod) * PrefetchCondOrTrue -> PrefetchWhere
+    None                                 : PrefetchWhere
+    PrefetchCondition                    : PrefetchCondOrTrue -> PrefetchCondition
+    None                                 : PrefetchCondition
+    PrefetchTemplateArgs                 : List(TemplateArgOrThis) -> PrefetchTemplateArgs
+    None                                 : PrefetchTemplateArgs
+    PrefetchThis                         : PrefetchThis
+    Cast                                 : PrefetchThis * Sort -> SortOrThis
+                                         : PrefetchThis -> SortOrThis
+                                         : Sort -> SortOrThis
+    TemplateArgOrThis                    : Id * List(SortOrThis) -> TemplateArgOrThis
+    FetchEarly                           : PrefetchNodeMod
+    NoEmptyBatch                         : PrefetchNodeMod
+    Var                                  : Id -> PrefetchForVar
+    PrefetchNode                         : OptPrefetchOwnerCast0 * Id * List(PrefetchNodeMod) * PrefetchTemplateArgs * PrefetchCondition * PrefetchWhere * PrefetchChildrenOpt -> PrefetchNode
+                                         : PrefetchChildren -> PrefetchChildrenOpt
+    None                                 : PrefetchChildrenOpt
+    PrefetchChildren                     : List(PrefetchNode) -> PrefetchChildren
+    PrefetchFor                          : PrefetchForVar * PrefetchTemplateArgs * PrefetchWhere * PrefetchChildren -> PrefetchFor
                                          : TimeInterval -> RecommendKeyValue
                                          : Int -> RecommendKeyValue
                                          : Id -> RecommendKeyValue
@@ -37,24 +83,30 @@ signature
     RecommendConfig                      : Id * List(RecommendArgument) -> RecommendConfig
                                          : String -> RecommendKey
                                          : String -> ENTITY
+                                         : String -> SearchFieldId
                                          : MaxResults -> SuggestionPart
                                          : NamespaceConstraint -> SuggestionPart
     SuggestTerm                          : FieldsConstraint * Exp -> SuggestionPart
     Similarity                           : Exp -> SuggestionPart
+    SearchFieldPlain                     : SearchFieldId * PlainField -> PlainField
+    SearchFieldPlain                     : SearchFieldId -> PlainField
+                                         : PlainField -> SearchField
+    SearchFieldExp                       : Exp -> SearchField
     SpellCheck                           : SuggestType
     AutoComplete                         : SuggestType
-                                         : String -> FIELD
-    SearchFieldRef                       : Exp -> FIELD
+    AllFacetResults                      : SearchField * Exp -> RetrievalExp
+    Suggest                              : ENTITY * SuggestType * List(SuggestionPart) -> RetrievalExp
     SearchTimeString                     : Exp -> RetrievalExp
     SearchResultsSize                    : Exp -> RetrievalExp
-    AllFacetResults                      : FIELD * Exp -> RetrievalExp
-    FacetResults                         : FIELD * Exp -> RetrievalExp
+    FacetResults                         : SearchField * Exp -> RetrievalExp
     SearchResults                        : Exp -> RetrievalExp
-    Highlight                            : Exp * Exp * FIELD -> RetrievalExp
-    HighlightTags                        : Exp * Exp * FIELD * Exp * Exp -> RetrievalExp
+    Highlight                            : Highlight * Exp * Exp * SearchField -> RetrievalExp
+    HighlightTags                        : Highlight * Exp * Exp * SearchField * Exp * Exp -> RetrievalExp
+    HTMLHighlight                        : Highlight
+    NormalHighlight                      : Highlight
     Descending                           : Direction
     Ascending                            : Direction
-    SortDef                              : FIELD * Option(Direction) -> SortExp
+    SortDef                              : SearchField * Option(Direction) -> SortExp
                                          : Exp -> QueryTerm
     MustNot                              : BoolOp
     Must                                 : BoolOp
@@ -62,18 +114,21 @@ signature
     ExcludingClose                       : RangeClose
     IncludingOpen                        : RangeOpen
     ExcludingOpen                        : RangeOpen
-    Range                                : RangeOpen * Option(Exp) * Option(Exp) * RangeClose -> Range
+    WildCard                             : ExpOrWildCard
+                                         : Exp -> ExpOrWildCard
+    Range                                : RangeOpen * ExpOrWildCard * ExpOrWildCard * RangeClose -> Range
     Slop                                 : Exp -> Slop
     RangeDef                             : Option(BoolOp) * Range -> QueryExp
     TermDef                              : Option(BoolOp) * QueryTerm * Option(Slop) -> QueryExp
-    GroupDef                             : Option(BoolOp) * List(QueryExp) -> QueryExp
+    GroupDef                             : Option(BoolOp) * List(QueryExp) * Option(Slop) -> QueryExp
     Query                                : Option(FieldsConstraint) * QueryConstraint -> MatchGroup
     Clause                               : Option(BoolOp) * List(MatchGroup) -> MatchGroup
     QueryConstraint                      : List(QueryExp) -> QueryConstraint
-    FieldsConstraint                     : List(FIELD) -> FieldsConstraint
-    FieldFilterConstraint                : FIELD * Exp -> FilterConstraint
-    RangeFacetDef                        : FIELD * List(Range) -> FacetExp
-    DiscreteFacetDef                     : FIELD * Exp -> FacetExp
+    QuerySearchField                     : SearchField * Option(Boost) -> QuerySearchField
+    FieldsConstraint                     : List(QuerySearchField) -> FieldsConstraint
+    FieldFilterConstraint                : SearchField * Exp -> FilterConstraint
+    RangeFacetDef                        : SearchField * List(Range) -> FacetExp
+    DiscreteFacetDef                     : SearchField * Exp -> FacetExp
     DefaultOr                            : SearchAttribute
     DefaultAnd                           : SearchAttribute
     Lucene                               : SearchAttribute
@@ -97,6 +152,8 @@ signature
     SearcherRefMod                       : Exp * List(SearcherPart) -> SearcherDef
     SearcherInit                         : ENTITY * List(SearcherPart) -> SearcherDef
                                          : Id -> KW
+    Boost                                : Float -> Boost
+                                         : Boost -> MappingPart
     EmbeddedDepth                        : Int -> MappingPart
     SearchMappingAnno                    : List(SearchMappingAnnoKW) -> MappingPart
     TargetEntity                         : Id -> MappingPart
@@ -119,13 +176,12 @@ signature
                                          : Id -> TOKENFILTERNAME
                                          : Id -> TOKENIZERNAME
                                          : Id -> CHARFILTERNAME
-    Argument                             : Id * String -> Argument
     TokenFilterNoArgs                    : TOKENFILTERNAME -> TokenFilter
-    TokenFilter                          : TOKENFILTERNAME * List(Argument) -> TokenFilter
+    TokenFilter                          : TOKENFILTERNAME * ListStarOfArgument0 -> TokenFilter
     TokenizerNoArgs                      : TOKENIZERNAME -> Tokenizer
-    Tokenizer                            : TOKENIZERNAME * List(Argument) -> Tokenizer
+    Tokenizer                            : TOKENIZERNAME * ListStarOfArgument0 -> Tokenizer
     CharFilterNoArgs                     : CHARFILTERNAME -> CharFilter
-    CharFilter                           : CHARFILTERNAME * List(Argument) -> CharFilter
+    CharFilter                           : CHARFILTERNAME * ListStarOfArgument0 -> CharFilter
     FullTextAnalyzerBodyDef              : List(CharFilter) * Tokenizer * List(TokenFilter) -> FullTextAnalyzerBodyDef
     DualFullTextAnalyzerBodyDef          : INDEXORQUERY * FullTextAnalyzerBodyDef * INDEXORQUERY * FullTextAnalyzerBodyDef -> FullTextAnalyzerBody
                                          : FullTextAnalyzerBodyDef -> FullTextAnalyzerBody
@@ -172,99 +228,10 @@ signature
     None                                 : NativeClassAlias
     NativeClassAlias                     : Id -> NativeClassAlias
     NativeClass                          : QId * NativeClassAlias * NativeClassSuper * List(NativeClassElement) -> NativeClassDeclaration
-    NativeFunction                       : Id * List(FormalArg) * Sort -> NativeFunctionDeclaration
-    FlagUnixLines                        : PatternFlag
-    FlagUnicodeCase                      : PatternFlag
-    FlagMultiline                        : PatternFlag
-    FlagLiteral                          : PatternFlag
-    FlagDotAll                           : PatternFlag
-    FlagComments                         : PatternFlag
-    FlagCaseInsensitive                  : PatternFlag
-    FlagCanonEq                          : PatternFlag
-    ProcPlus                             : ProcessExp * ProcessExp -> ProcessExp
-    ProcAnd                              : ProcessExp * ProcessExp -> ProcessExp
-    ProcXor                              : ProcessExp * ProcessExp -> ProcessExp
-    ProcIf                               : Exp * ProcessExp * ProcessExp -> ProcessExp
-    ProcIfNoElse                         : Exp * ProcessExp -> ProcessExp
-    ProcRepeatUntil                      : ProcessExp * CallProcessExp -> ProcessExp
-    ProcWhile                            : Exp * ProcessExp -> ProcessExp
-    ProcSeq                              : ProcessExp * ProcessExp -> ProcessExp
-                                         : CallProcessExp -> ProcessExp
-    ProcCall                             : Id * Exp -> CallProcessExp
-    ProcedureProcessed                   : Block -> ProcedureElement
-    ProcedureProcess                     : ProcessExp -> ProcedureElement
-    ProcedureView                        : List(TemplateElement) -> ProcedureElement
-    ProcedureDisabled                    : Block -> ProcedureElement
-    ProcedureEnabled                     : Block -> ProcedureElement
-    ProcedureDone                        : Block -> ProcedureElement
-    ProcedureDo                          : Block -> ProcedureElement
-    ProcedureWhen                        : Exp -> ProcedureElement
-    ProcedureWho                         : Exp -> ProcedureElement
-    AutoProcedure                        : Id * FormalArg * List(ProcedureElement) -> Procedure
-    Procedure                            : Id * FormalArg * List(ProcedureElement) -> Procedure
     DeriveBodyElement                    : Id * List(TemplateElement) -> DeriveBodyElement
     DeriveBody                           : List(DeriveBodyElement) -> DeriveBody
     DeriveMode                           : Id * Id -> DeriveProperty
     DeriveDefault                        : Id -> DeriveProperty
-                                         : List(LayoutExpression) -> LayoutExpressions
-    LayoutExpression                     : MatchDefinition -> LayoutExpression
-    LayoutExpression                     : Id -> LayoutExpression
-    NamedLayoutExpression                : Id * LayoutExpressions -> LayoutExpression
-    LayoutStatement                      : LayoutExpression -> LayoutStatement
-    FloatStatement                       : List(MatchDefinition) -> LayoutStatement
-                                         : StyleDefinition -> LayoutDefinition
-    LayoutDefinition                     : MatchDefinition * List(LayoutStatement) -> LayoutDefinition
-    LayoutDefinition                     : Id * MatchDefinition * List(LayoutStatement) -> LayoutDefinition
-    Hash                                 : Hex -> Hash
-    Uri                                  : String -> Uri
-    StyleSort                            : Id -> StyleSort
-    StyleSort                            : Id * Unit -> StyleSort
-    StyleValueExtension                  : ValueName -> StyleValueExtension
-    StyleValue                           : String -> StyleValue
-    StyleValue                           : Value -> StyleValue
-    StyleValue                           : Hash -> StyleValue
-    StyleValue                           : Uri -> StyleValue
-    StyleValue                           : StyleSort * List(StyleValueExtension) -> StyleValue
-    StyleValue                           : StNumber -> StyleValue
-    StyleValue                           : StNumber * Unit -> StyleValue
-    StyleDiv                             : StyleExpression * StyleExpression -> StyleExpression
-    StyleMul                             : StyleExpression * StyleExpression -> StyleExpression
-    StyleSub                             : StyleExpression * StyleExpression -> StyleExpression
-    StyleAdd                             : StyleExpression * StyleExpression -> StyleExpression
-    StyleValueExpression                 : Selector * StyleProperty -> StyleExpression
-                                         : StyleValue -> StyleExpression
-    StyleVar                             : Id -> StyleExpression
-    StylePropertyValue                   : MatchDefinition * StyleProperty -> StyleExpression
-    StyleProperty                        : ValueName -> StyleProperty
-    StyleDeclaration                     : StyleProperty * StyleExpression -> StyleStatement
-    StyleVarDeclInit                     : Id * StyleSort * StyleExpression -> StyleVarDecl
-    StyleVarDecl                         : Id * StyleSort -> StyleVarDecl
-                                         : List(FormalArg) -> MatchDefinitionArgs
-    MatchDefinition                      : MatchIdent * MatchDefinitionArgs -> MatchDefinition
-    DescendantCombinator                 : Combinator
-    ChildCombinator                      : Combinator
-    SelectorAttribute                    : ValueName -> SelectorAttribute
-    UniversalSimpleSelector              : SimpleSelector
-    SimpleSelector                       : MatchDefinition -> SimpleSelector
-    ClassSimpleSelector                  : Identifier -> SimpleSelector
-    ElemClassAttrSelector                : Id * Identifier * List(SelectorAttribute) -> SimpleSelector
-    ElemSimpleAttrSelector               : Id * List(SelectorAttribute) -> SimpleSelector
-    ElemSimpleSelector                   : Id -> SimpleSelector
-    IdSimpleSelector                     : Identifier -> SimpleSelector
-    SimpleSelector                       : Id * MatchDefinition -> SimpleSelector
-    Selector                             : SimpleSelector * List(Combinator_SimpleSelector_OptSelectorAttribute0) -> Selector
-                                         : StyleVarDecl -> StyleDefinition
-    StyleDefinition                      : Selector * List(StyleStatement) -> StyleDefinition
-                                         : String -> StNumber
-                                         : String -> MatchIdent
-                                         : Module -> Unit
-                                         : Application -> Unit
-                                         : String -> Unit
-                                         : String -> Hex
-                                         : String -> Value
-                                         : String -> ValueName
-                                         : String -> Identifier
-    EnumValue                            : Id * String -> EnumValue
     RegexId                              : RegexID -> RegexId
                                          : String -> RegexID
                                          : String -> ControlValue
@@ -404,8 +371,6 @@ signature
                                          : AccessControlRule -> AccessControlDefinition
     AccessControlPrincipal               : Id * List(Id) -> AccessControlDefinition
     Section                              : SectionName * List(Definition) -> Section
-    LayoutSection                        : List(LayoutDefinition) -> Section
-    StyleSection                         : Id * List(StyleDefinition) -> Section
     ACPolicy                             : PolicyExp -> Section
     AccessControlDefinition              : Option(Id) * List(AccessControlDefinition) -> Section
                                          : String -> WildCardArg
@@ -414,41 +379,14 @@ signature
                                          : SearchNamespaceAnno -> Annotation
                                          : SearchableAnno -> Annotation
     SearchableAnnoBoost                  : SearchableAnno * Float -> Annotation
-    ValidationAnnoValid                  : Annotation
-    ValidationAnnoAssertFalse            : Annotation
-    ValidationAnnoAssertTrue             : Annotation
-    ValidationAnnoNotNull                : Annotation
-    ValidationAnnoMaxSize                : Int -> Annotation
-    ValidationAnnoMinSize                : Int -> Annotation
-    ValidationAnnoSize                   : Int * Int -> Annotation
-    ValidationAnnoFuture                 : Annotation
-    ValidationAnnoPast                   : Annotation
-    ValidationAnnoDigits                 : Int * Int -> Annotation
-    ValidationAnnoMaxRange               : Int -> Annotation
-    ValidationAnnoMinRange               : Int -> Annotation
-    ValidationAnnoRange                  : Int * Int -> Annotation
-    ValidationAnnoMin                    : Int -> Annotation
-    ValidationAnnoMax                    : Int -> Annotation
-    ValidationAnnoPatternWithFlags       : String * List(PatternFlag) -> Annotation
-    ValidationAnnoPattern                : String -> Annotation
-    ValidationAnnoEAN                    : Annotation
-    ValidationAnnoCreditCardNumber       : Annotation
-    ValidationAnnoEmail                  : Annotation
-    ValidationAnnoNotEmpty               : Annotation
-    ValidationAnnoMaxLength              : Int -> Annotation
-    ValidationAnnoMinLength              : Int -> Annotation
-    ValidationAnnoLength                 : Int * Int -> Annotation
     NamedValidateAnno                    : Id * Exp * Exp -> Annotation
     ValidateAnno                         : Exp * Exp -> Annotation
     ValidateDeleteAnno                   : Exp * Exp -> Annotation
     ValidateUpdateAnno                   : Exp * Exp -> Annotation
     ValidateCreateAnno                   : Exp * Exp -> Annotation
-    IdEmptyErrorAnno                     : String -> Annotation
-    IdErrorAnno                          : String -> Annotation
     CollationAnno                        : Id -> Annotation
     IndexAnno                            : Int -> Annotation
     IndexAnno                            : Annotation
-    FormatAnno                           : String -> Annotation
     LengthAnno                           : Int -> Annotation
     DefaultAnno                          : Exp -> Annotation
     AllowedAnno                          : Exp -> Annotation
@@ -460,6 +398,7 @@ signature
     IncompleteInverseAnno                : Id -> Annotation
     InverseAnno                          : Id * Id -> Annotation
     SimpleAnno                           : Id -> Annotation
+    AnyProp                              : PropKind
     Comp                                 : PropKind
     Ref                                  : PropKind
     Simple                               : PropKind
@@ -467,8 +406,10 @@ signature
     DerivedProperty                      : Id * PropKind * Sort * List(Annotation) * Exp -> Property
     PropertyNoAnno                       : Id * PropKind * Sort -> Property
     Property                             : Id * PropKind * Sort * List(Annotation) -> Property
-                                         : VarDeclStat -> GlobalsDef
-                                         : VarDecl -> GlobalsDef
+                                         : GlobalVarDecl -> GlobalsDef
+    GlobalVarDeclInitInferred            : Id * Exp -> GlobalVarDecl
+    GlobalVarDeclInit                    : Id * Sort * Exp -> GlobalVarDecl
+    GlobalVarDecl                        : Id * Sort -> GlobalVarDecl
                                          : SearchMappingEmbedded -> EntityBodyDeclaration
     PredicateInEntity                    : Id * List(FormalArg) * Exp -> EntityBodyDeclaration
                                          : ValidateEntity -> EntityBodyDeclaration
@@ -511,7 +452,7 @@ signature
     TemplateCallPropertyIgnoreValidation : PropertyAssignment
     TemplateCallPropertySecure           : PropertyAssignment
     TemplateCallPropertyAjax             : PropertyAssignment
-    PropertyAssignment                   : Id * PropertyValue -> PropertyAssignment
+    PropertyAssignment                   : ExtendedId * PropertyValue -> PropertyAssignment
     PropertySubmit                       : SubmitProp * ActionCallOrInline -> PropertyAssignment
     InlineAction                         : Block -> InlineAction
     ActionCall                           : Id * List(Exp) -> ActionCall
@@ -546,6 +487,8 @@ signature
     ElseIfTempl                          : Exp * List(TemplateElement) -> ElseIfTempl
     None                                 : ForSeparator
     ForSeparator                         : List(TemplateElement) -> ForSeparator
+    None                                 : OptFilter
+                                         : Filter -> OptFilter
     LimitNoLimit                         : Exp -> Limit
     LimitNoOffset                        : Exp -> Limit
     Limit                                : Exp * Exp -> Limit
@@ -559,6 +502,10 @@ signature
     FilterNoLimit                        : Exp * OrderExp -> Filter
     FilterNoWhereNoLimit                 : OrderExp -> Filter
     FilterNoOrderByNoLimit               : Exp -> Filter
+    VarDeclInitInferred                  : Id * Exp -> VarDecl
+    VarDeclInit                          : Id * Sort * Exp -> VarDecl
+    VarDecl                              : Id * Sort -> VarDecl
+                                         : PrefetchFor -> TemplateElement
                                          : DispatchNavigateButton -> TemplateElement
                                          : DispatchNavigate -> TemplateElement
     Dispatch                             : List(DispatchEntry) * DispatchEntryDefault -> TemplateElement
@@ -567,10 +514,6 @@ signature
     Derive                               : Id * Exp * List(DeriveProperty) * DeriveBody -> TemplateElement
     Derive                               : Id * Exp -> TemplateElement
     Derive                               : Id * Exp * List(DeriveProperty) -> TemplateElement
-    PagedForNoFilter                     : Id * Sort * Exp * Exp * List(TemplateElement) -> TemplateElement
-    PagedFor                             : Id * Sort * Exp * Filter * Exp * List(TemplateElement) -> TemplateElement
-    PagedForAllNoFilter                  : Id * Sort * Exp * List(TemplateElement) -> TemplateElement
-    PagedForAll                          : Id * Sort * Filter * Exp * List(TemplateElement) -> TemplateElement
     JSElement                            : List(Attribute) * List(JSPart) -> TemplateElement
     XMLElement                           : QualName * List(Attribute) * List(TemplateElement) * QualName -> TemplateElement
     XMLEmptyElement                      : QualName * List(Attribute) -> TemplateElement
@@ -606,11 +549,9 @@ signature
     SelectFromListNoElems                : Exp * Exp * List(PropertyAssignment) -> TemplateElement
     SelectFromListNoPropsNoElems         : Exp * Exp -> TemplateElement
     ForCount                             : Id * Exp * Exp * List(TemplateElement) * ForSeparator -> TemplateElement
-    ForAllNoFilter                       : Id * Sort * List(TemplateElement) * ForSeparator -> TemplateElement
-    ForAll                               : Id * Sort * Filter * List(TemplateElement) * ForSeparator -> TemplateElement
-    ForNoFilter                          : Id * Sort * Exp * List(TemplateElement) * ForSeparator -> TemplateElement
-    For                                  : Id * Sort * Exp * Filter * List(TemplateElement) * ForSeparator -> TemplateElement
-    Text                                 : String -> TemplateElement
+    ForAll                               : Id * Sort * OptFilter * List(TemplateElement) * ForSeparator -> TemplateElement
+    ForInferred                          : Id * Exp * OptFilter * List(TemplateElement) * ForSeparator -> TemplateElement
+    For                                  : Id * Sort * Exp * OptFilter * List(TemplateElement) * ForSeparator -> TemplateElement
                                          : TemplateCall -> TemplateElement
                                          : TemplateDefinition -> TemplateElement
     LocalScopeTemplate                   : VarDecl -> TemplateElement
@@ -644,7 +585,6 @@ signature
     LocalRedefine                        : List(Modifier) * Id * List(FormalArg) * Id * OptLocalRedefineArgs -> TemplateDefinition
     Define                               : List(Modifier) * Id * List(FormalArg) * TemplateArgs * List(TemplateElement) -> TemplateDefinition
                                          : NativeClassDeclaration -> Definition
-                                         : NativeFunctionDeclaration -> Definition
                                          : Action -> Definition
     Imports                              : ModuleName -> Definition
                                          : Description -> Definition
@@ -652,20 +592,18 @@ signature
                                          : RecommendConfig -> Definition
                                          : SearchMapping -> Definition
                                          : FullTextAnalyzer -> Definition
+    DeriveWebServices                    : Id * Id -> Definition
     ServiceFunction                      : Id * List(FormalArg) * Block -> Definition
     InvokeEvery                          : Exp * TimeInterval -> Definition
     Test                                 : Id * Block -> Definition
     TypeDef                              : Id * List(TypeProperty) -> Definition
-                                         : Procedure -> Definition
-    ExtendProcedure                      : Id * FormalArg * List(ProcedureElement) -> Definition
     DeriveCrud                           : Id -> Definition
-    ThemeDefinition                      : Modifier * Id * ListStarOfStyleDeclaration0 -> Definition
-    Enum                                 : Id * List(EnumValue) -> Definition
+    Enum                                 : Id * ListStarOfEnumValue0 -> Definition
     Predicate                            : Id * List(FormalArg) * Exp -> Definition
     AccessControlPrincipal               : Id * List(Id) -> Definition
                                          : InitAction -> Definition
                                          : GlobalsDef -> Definition
-    RequestScope                         : VarDecl -> Definition
+    RequestScope                         : GlobalVarDecl -> Definition
     ExtendSessionEntity                  : Id * List(EntityBodyDeclaration) -> Definition
     ExtendEntity                         : Id * List(EntityBodyDeclaration) -> Definition
                                          : Entity -> Definition
@@ -687,13 +625,11 @@ signature
     ObjectPropertyAssignment             : Id * Exp -> ObjectPropertyAssignment
     ObjectCreation                       : Sort * List(ObjectPropertyAssignment) -> ObjectCreation
     ObjectCreation                       : Sort * List(ObjectPropertyAssignment) -> ObjectCreation
-    String                               : String -> ConstValue
     Float                                : Float -> ConstValue
     Long                                 : Long -> ConstValue
     Int                                  : Int -> ConstValue
                                          : HqlExp -> Exp
                                          : RetrievalExp -> Exp
-    Suggest                              : ENTITY * SuggestType * List(SuggestionPart) -> Exp
                                          : SearcherDef -> Exp
     Call                                 : RegexExp * Id * List(Exp) -> Exp
     EventCall                            : Id * List(EventArg) -> Exp
@@ -743,12 +679,10 @@ signature
     IfExp                                : Exp * Exp * Exp -> Exp
     CaseDefault                          : Block -> Case
     CaseAlt                              : ConstValue * Block -> Case
-    VarDeclInitInferred                  : Id * Exp -> VarDecl
-    VarDeclInit                          : Id * Sort * Exp -> VarDecl
-    VarDecl                              : Id * Sort -> VarDecl
     VarDeclInitInferred                  : Id * Exp -> VarDeclStat
     VarDeclInit                          : Id * Sort * Exp -> VarDeclStat
     VarDecl                              : Id * Sort -> VarDeclStat
+                                         : PrefetchFor -> Statement
     TryStatement                         : Block * List(Catch) -> Statement
     ThrowStatement                       : List(Exp) -> Statement
     NamedValidateStatement               : Id * Exp * Exp -> Statement
@@ -757,10 +691,9 @@ signature
     HqlStatement                         : DeleteStatement_HQL -> Statement
     WhileStmt                            : Exp * Block -> Statement
     ForCountStmt                         : Id * Exp * Exp * Block -> Statement
-    ForAllStmtNoFilter                   : Id * Sort * Block -> Statement
-    ForAllStmt                           : Id * Sort * Filter * Block -> Statement
-    ForStmtNoFilter                      : Id * Sort * Exp * Block -> Statement
-    ForStmt                              : Id * Sort * Exp * Filter * Block -> Statement
+    ForAllStmt                           : Id * Sort * OptFilter * Block -> Statement
+    ForStmtInferred                      : Id * Exp * OptFilter * Block -> Statement
+    ForStmt                              : Id * Sort * Exp * OptFilter * Block -> Statement
     Case                                 : Exp * List(Case) -> Statement
     IfNoElse                             : Exp * Block -> Statement
     If                                   : Exp * Block * Block -> Statement
@@ -777,7 +710,7 @@ signature
     StaticEntityFunction                 : Id * List(FormalArg) * ReturnType * Block -> StaticEntityFunction
     Path                                 : List(Identifier_HQL) -> Path_HQL
                                          : NumInt_HQL -> Constant_HQL
-    String                               : QuotedString_HQL -> Constant_HQL
+    HqlString                            : QuotedString_HQL -> Constant_HQL
     Null                                 : Constant_HQL
     Empty                                : Constant_HQL
     False                                : Constant_HQL
@@ -878,12 +811,12 @@ signature
                                          : String -> IdParameter_HQL
                                          : String -> Identifier_HQL
                                          : String -> Word
-                                         : String -> String
                                          : String -> Float
                                          : String -> Long
                                          : String -> Int
                                          : String -> SectionName
                                          : String -> ModuleName
+                                         : String -> ExtendedId
                                          : String -> Id
     QualifiedElementsCall                : Id -> TemplateCallId
                                          : String -> TemplateCallId

@@ -10,6 +10,13 @@ imports
 	include/QL
 	lib/webdsl/WebDSL
 	
+signature
+
+	constructors
+		
+		String : STRING -> String
+		Text   : STRING -> Text
+	
 rules // Incremental code generation of project using compilation library.
 			
 	index-compile-ast(|file, subfile):
@@ -24,11 +31,98 @@ rules // Incremental code generation of project using compilation library.
 			<fclose> <fputs> (java, <fopen> (writeFile, "w"))
 
 rules
-	compile = fail
 
 	example: |[ form $fid { question* } ]|	-> |[ entity $fid:Form {} ]| 
-	example: |[ qid : label t ]| 					-> <id>
-	example: |[ qid : text texpr ]| 			-> <id>
-	example: |[ if ( cond ) { q* } ]|			-> <id>
-	example: |[ type ( exp ) ]| 					-> <id>
-	example: |[ exp1 + exp2 ]|	 					-> <id>
+	example: |[ qid : label t ]|						-> <id>
+	example: |[ qid : text texpr ]|					-> <id>
+	example: |[ if ( cond ) { q* } ]|				-> <id>
+	example: |[ type ( exp ) ]|							-> <id>
+	example: |[ exp1 + exp2 ]|							-> <id>
+
+rules // QL to WebDSL compilation
+	
+  compile: |[ form $fid { question* } ]| -> 
+	  |[ 
+	  	module form 
+	  	
+	  	var globalForm := Form {} 
+	  	
+	  	ent 
+	  	tdef 
+	  ]|
+	  where
+	  	ent  := <compile-entity>
+	  where
+	  	tdef := <compile-template>
+  
+  compile-entity: |[ form $fid { q* } ]| -> |[ entity Form { ebd* } ]|
+  	where
+	  	ebd* := <collect-all(compile-entity-part)> q*
+  compile-entity-part: |[ qid : label t ]| -> |[ x :: srt ]|
+    where
+  	  x   := qid;
+  	  srt := <compile-type> t
+  compile-entity-part: |[ qid : label t ( exp ) ]| -> |[ x :: srt  ]|
+    where
+  	  x   := qid;
+  	  srt := <compile-type> t
+  	  //e   := <compile-exp> exp
+  
+  compile-template: |[ form $fid { q* } ]| -> 
+	  tdef |[
+	    define showForm(form : Form) {
+	    	horizontalForm("Form name") {
+	  		  elem*
+	  		  
+			    formActions {
+			      submitlink submit() [class="btn btn-primary"] { "Submit" } " "
+			    }
+			  }
+			  
+			  action submit() {
+			    form.save();
+			  }
+	  	}
+	  ]|
+    where
+    	elem* := <map(compile-template-part)> q*
+  
+  compile-template-part: |[ qid : label t ]| -> elem |[ controlGroup(e) { input(form.x) } ]|
+  	where
+  		x := qid;
+  		e := <compile-exp> label
+  compile-template-part: |[ qid : label texpr ]| -> elem |[ controlGroup(e) { output(form.x) } ]|
+  	where
+  		x := qid;
+  		e := <compile-exp> label
+  compile-template-part: |[ if ( cond ) { q* } ]| -> elem |[ if (true) { elem* } ]|
+  	where
+  		//e := <compile-exp> cond;
+  		elem* := <map(compile-template-part)> q*
+  
+  compile-type: ql |[ boolean ]| -> webdsl |[ Bool   ]|
+  compile-type: ql |[ string  ]| -> webdsl |[ String ]|
+  compile-type: ql |[ int     ]| -> webdsl |[ Int    ]|
+  compile-type: ql |[ date    ]| -> webdsl |[ Date   ]|
+  compile-type: ql |[ decimal ]| -> webdsl |[ Float  ]|
+  compile-type: ql |[ money   ]| -> webdsl |[ Float  ]|
+  
+  compile-exp: Label(s) -> String(s)
+  compile-exp: Ref(qid) -> |[ qid ]|
+  compile-exp: |[     qid      ]| -> |[  form.x  ]| where   x := qid
+  compile-exp: |[     !exp     ]| -> |[    !e    ]| where   e := <compile-exp> exp
+  compile-exp: |[ exp1 && exp2 ]| -> |[ e1 && e2 ]| where  e1 := <compile-exp> exp1; e2 := <compile-exp> exp2
+  compile-exp: |[ exp1 || exp2 ]| -> |[ e1 || e2 ]| where  e1 := <compile-exp> exp1; e2 := <compile-exp> exp2
+  compile-exp: |[ exp1 <  exp2 ]| -> |[ e1 <  e2 ]| where  e1 := <compile-exp> exp1; e2 := <compile-exp> exp2
+  compile-exp: |[ exp1 <= exp2 ]| -> |[ e1 <= e2 ]| where  e1 := <compile-exp> exp1; e2 := <compile-exp> exp2
+  compile-exp: |[ exp1 >  exp2 ]| -> |[ e1 >  e2 ]| where  e1 := <compile-exp> exp1; e2 := <compile-exp> exp2
+  compile-exp: |[ exp1 >= exp2 ]| -> |[ e1 >= e2 ]| where  e1 := <compile-exp> exp1; e2 := <compile-exp> exp2
+  compile-exp: |[ exp1 == exp2 ]| -> |[ e1 == e2 ]| where  e1 := <compile-exp> exp1; e2 := <compile-exp> exp2
+  compile-exp: |[ exp1 +  exp2 ]| -> |[ e1 +  e2 ]| where  e1 := <compile-exp> exp1; e2 := <compile-exp> exp2
+  compile-exp: |[ exp1 -  exp2 ]| -> |[ e1 -  e2 ]| where  e1 := <compile-exp> exp1; e2 := <compile-exp> exp2
+  compile-exp: |[ exp1 *  exp2 ]| -> |[ e1 *  e2 ]| where  e1 := <compile-exp> exp1; e2 := <compile-exp> exp2
+  compile-exp: |[ exp1 /  exp2 ]| -> |[ e1 /  e2 ]| where  e1 := <compile-exp> exp1; e2 := <compile-exp> exp2
+  	
+  pp-webdsl-string =
+    ast2abox(|[<import-term(lib/webdsl/WebDSL-pretty.pp.af)>]);
+    box2text-string(|120)

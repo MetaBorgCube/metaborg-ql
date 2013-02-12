@@ -7,10 +7,14 @@ exports
 
 
 	context-free syntax
-		"|[" Form   "]|" -> E {cons("ToMetaExpr")}
-		"|[" Group  "]|" -> E {cons("ToMetaExpr")}
-		"|[" TyExpr "]|" -> E {cons("ToMetaExpr")}
-		"|[" Expr   "]|" -> E {cons("ToMetaExpr")}
+		"ql" "|[" Form   "]|" -> E {cons("ToMetaExpr")}
+		     "|[" Form   "]|" -> E {cons("ToMetaExpr")}
+		"ql" "|[" Group  "]|" -> E {cons("ToMetaExpr")}
+		     "|[" Group  "]|" -> E {cons("ToMetaExpr")}
+		"ql" "|[" TyExpr "]|" -> E {cons("ToMetaExpr")}
+		     "|[" TyExpr "]|" -> E {cons("ToMetaExpr")}
+		"ql" "|[" Expr   "]|" -> E {cons("ToMetaExpr")}
+		     "|[" Expr   "]|" -> E {cons("ToMetaExpr")}
 
 	variables
 
