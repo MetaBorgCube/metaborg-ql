@@ -11,5 +11,5 @@ form Box1HouseOwning {
 		privateDebt: "Private debts for the sold house:" money
 		valueResidue: "Value residue:" money(sellingPrice - privateDebt)
 	}
-	foo: "WTF?" boolean
+	hasSoldHouse: "Did ya sell a house?" boolean
 }
