@@ -23,10 +23,9 @@ rules
 	type-of: Plus(e1, e2)		-> <lub(coerce); is-addable> (<type-of> e1, <type-of> e2)
 	type-of: Minus(e1, e2)	-> <lub(coerce); is-addable> (<type-of> e1, <type-of> e2)
 	type-of: Mul(e1, e2) 		-> <lub(coerce); is-numeric> (<type-of> e1, <type-of> e2)
-	
-	type-of: Mul(e1, e2) 		-> MoneyTy() where  <type-of> e1 => MoneyTy(); <coerce> (<type-of> e2, FloatTy())
-	type-of: Mul(e1, e2) 		-> MoneyTy() where  <type-of> e2 => MoneyTy(); <coerce> (<type-of> e1, FloatTy())
-	type-of: Div(e1, e2)		-> FloatTy() where <lub(coerce); is-addable> (<type-of> e1, <type-of> e2)
+	type-of: Div(e1, e2)		-> <lub(coerce); is-addable> (<type-of> e1, <type-of> e2)
+	type-of: Mul(e1, e2) 		-> MoneyTy() where <type-of> e1 => MoneyTy(); <coerce> (<type-of> e2, FloatTy())
+	type-of: Mul(e1, e2) 		-> MoneyTy() where <type-of> e2 => MoneyTy(); <coerce> (<type-of> e1, FloatTy())
 	type-of: Div(e1, e2)		-> MoneyTy() where <type-of> e1 => MoneyTy(); <coerce> (<type-of> e2, FloatTy())
 	
 	lub = lub(coerce)

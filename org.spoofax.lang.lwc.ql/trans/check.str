@@ -9,11 +9,76 @@ imports
 	lib/analysis-library-internal.generated
 	lib/nbl-library.generated
 
+	types
+	
 rules // Other
 	
 	constraint-warning = fail
 	
 	constraint-note = fail
 	
-	constraint-error = fail
+	constraint-error =
+		?Not(e); 
+		<type-error(eq|"Expression")> (e, BoolTy())
+	
+	constraint-error =
+		( ?And(e1, e2) + ?Or(e1, e2) );
+		<filter(type-error(eq|"Expression"))> [(e1, BoolTy()), (e2, BoolTy())]
+	
+	constraint-error =
+		(?Lt(e1, e2) + ?Leq(e1, e2) + ?Gt(e1, e2) +?Geq(e1, e2));
+		<filter(type-error(is-comparable|"Expression", "cannot be compared"))> [e1, e2];
+		if ?[] then 
+			<type-error(lub|"Expression")> (e2, <type-of> e1)
+		end
+	
+	constraint-error =
+		?Eq(e1, e2);
+		<type-error(lub|"Expression")> (e2, <type-of> e1)
 		
+	constraint-error =
+		(?Plus(e1, e2) + ?Minus(e1, e2));
+		<filter(type-error(is-addable|"Expression", "cannot be added or subtracted"))> [e1, e2];
+		if ?[] then 
+			<type-error(lub|"Expression")> (e2, <type-of> e1)
+		end
+		
+	constraint-error =
+		?Mul(e1, e2);
+		if <type-of> e1 => MoneyTy() then
+			<type-error(lub|"Expression")> (e2, FloatTy())
+		else if <type-of> e2 => MoneyTy() then
+			<type-error(lub|"Expression")> (e1, FloatTy())
+		else
+			<filter(type-error(is-numeric|"Expression", "cannot be multiplied"))> [e1, e2];
+			if ?[] then
+				<type-error(lub|"Expression")> (e2, <type-of> e1)
+			end
+		end end
+
+	constraint-error =
+		?Div(e1, e2);
+		if <type-of> e1 => MoneyTy() then
+			<type-error(lub|"Expression")> (e2, FloatTy())
+		else
+			<filter(type-error(is-numeric|"Expression", "cannot be divided"))> [e1, e2];
+			if ?[] then
+				<type-error(lub|"Expression")> (e2, <type-of> e1)
+			end
+		end
+
+// ---------------------------------------------------------------------------------- //
+	type-error(s|kind): 
+		(e, expected) -> (e, $[[kind] is of type [type1] which does not comply to [type2].])
+		where 
+			<type-of> e => actual; 
+			<not(s)> (actual, expected);
+			<pp-ql-string> actual => type1;
+			<pp-ql-string> expected => type2
+			
+	type-error(s|kind, quality): 
+		e -> (e, $[[kind] is of type [type] which [quality].])
+		where 
+			<type-of> e => actual; 
+			<not(s)> actual;
+			<pp-ql-string> actual => type
