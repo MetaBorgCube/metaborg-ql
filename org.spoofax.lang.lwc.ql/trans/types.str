@@ -9,42 +9,24 @@ imports
 	
 rules
 	
-	our-type-of(s) = index-uri; nbl-get-type <+ bottomup( is-string <+ type <+ type-error; s <+ id)
+	type-of: Ref(q) 				-> <index-lookup; index-uri; nbl-get-type> q
+	type-of: Not(e) 				-> BoolTy() where <type-of> e => BoolTy()
+	type-of: And(e1, e2)		-> BoolTy() where <type-of> e1 => BoolTy(); <type-of> e2 => BoolTy()
+	type-of: Or(e1, e2) 		-> BoolTy() where <type-of> e1 => BoolTy(); <type-of> e2 => BoolTy()
 	
-	our-type-of = our-type-of(id)
+	type-of: Lt(e1, e2) 		-> BoolTy() where <lub(coerce); is-comparable> (<type-of> e1, <type-of> e2) 
+	type-of: Leq(e1, e2)		-> BoolTy() where <lub(coerce); is-comparable> (<type-of> e1, <type-of> e2)
+	type-of: Gt(e1, e2) 		-> BoolTy() where <lub(coerce); is-comparable> (<type-of> e1, <type-of> e2)
+	type-of: Geq(e1, e2)		-> BoolTy() where <lub(coerce); is-comparable> (<type-of> e1, <type-of> e2)
 	
-	collect-type-errors = where(c := <new-iset>); store-type-errors(|c); <iset-elements> c
-	
-	store-type-errors(|coll) = our-type-of(\error -> <iset-add(|error)> coll where debug\)
-	
-	// default for leaves
-	
-	has-type = ?x ; type ; ?t ; where (<debug(!"has type: ")> (x, t))
-	has-no-type = ![<id>]; debug(!"has no type: "); fail
-	
-	type: Ref(q) 									-> <index-type-of> q
-	type: Not(BoolTy()) 					-> BoolTy()
-	type: And(BoolTy(), BoolTy()) -> BoolTy()
-	type: Or(BoolTy(), BoolTy()) 	-> BoolTy()
-	
-	type-error: Minus(t1, t2) -> (<id>, $[Type error: ])
-	
-	type: Lt(t1, t2) 		-> BoolTy() where <lub(coerce); is-comparable> (t1, t2) 
-	type: Leq(t1, t2)		-> BoolTy() where <lub(coerce); is-comparable> (t1, t2)
-	type: Gt(t1, t2) 		-> BoolTy() where <lub(coerce); is-comparable> (t1, t2)
-	type: Geq(t1, t2) 	-> BoolTy() where <lub(coerce); is-comparable> (t1, t2)
-	
-	type: Eq(t1, t2) 		-> BoolTy() where <lub(coerce)> (t1, t2)
-	
-	type: Plus(t1, t2)			-> <lub(coerce); is-addable> (t1, t2)
-	type: Minus(t1, t2)			-> <lub(coerce); is-addable> (t1, t2)
-	
-	type: Mul(t1, t2) 			-> <lub(coerce); is-numeric> (t1, t2)
-	type: Mul(t, MoneyTy())	-> MoneyTy() where <coerce> (t, FloatTy())
-	type: Mul(MoneyTy(), t)	-> MoneyTy() where <coerce> (t, FloatTy())
-	
-	type: Div(t1, t2)					-> FloatTy() where <lub(coerce); is-addable> (t1, t2)
-	type: Div(MoneyTy(), t2)	-> MoneyTy() where <coerce> (t2, FloatTy())
+	type-of: Eq(e1, e2) 		-> BoolTy() where <lub(coerce)> (<type-of> e1, <type-of> e2)
+	type-of: Plus(e1, e2)		-> <lub(coerce); is-addable> (<type-of> e1, <type-of> e2)
+	type-of: Minus(e1, e2)	-> <lub(coerce); is-addable> (<type-of> e1, <type-of> e2)
+	type-of: Mul(e1, e2) 		-> <lub(coerce); is-numeric> (<type-of> e1, <type-of> e2)
+	type-of: Div(e1, e2)		-> <lub(coerce); is-addable> (<type-of> e1, <type-of> e2)
+	type-of: Mul(e1, e2) 		-> MoneyTy() where <type-of> e1 => MoneyTy(); <coerce> (<type-of> e2, FloatTy())
+	type-of: Mul(e1, e2) 		-> MoneyTy() where <type-of> e2 => MoneyTy(); <coerce> (<type-of> e1, FloatTy())
+	type-of: Div(e1, e2)		-> MoneyTy() where <type-of> e1 => MoneyTy(); <coerce> (<type-of> e2, FloatTy())
 	
 	lub = lub(coerce)
 	
@@ -57,8 +39,3 @@ rules
 	is-numeric		= IntTy() + FloatTy()
 	is-addable		= is-numeric + MoneyTy()
 	is-comparable = is-addable + DateTy()
-		
-rules
-	
-	index-type-of = index-lookup; index-uri; nbl-get-type
-	

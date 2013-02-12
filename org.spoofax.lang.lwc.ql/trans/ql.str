@@ -27,7 +27,7 @@ rules // Analysis
       ast'                    := <id> ast; // Optional AST desugaring
       (ast'', filesToAnalyze) := <analyze-top(|<language>)> (ast', path, project-path);
       index-transaction(
-	      errors                := <collect-type-errors> ast'';
+	      errors                := <collect-all(constraint-error, conc)> ast'';
 	      warnings              := <collect-all(constraint-warning, conc)> ast'';
 	      notes                 := <collect-all(constraint-note, conc)> ast''
       );
@@ -77,11 +77,8 @@ rules // Editor services
   // Returns "hover help" information for a particular node in the editor.
   // For references, this rule is invoked using the resolved term.
   editor-hover:
-    (target, position, ast, path, project-path) -> $[[uriString]]
-    where
-    	uriString := <our-type-of; fail> target
-      //uriString := <index-uri-to-string> <index-uri> <index-find-key> target
-
+    (target, position, ast, path, project-path) -> <type-of; pp-ql-string> target
+    
   // Completes an identifier when the user presses control-space
   // (the completion identifier in the AST provides additional context information)
   editor-complete:
