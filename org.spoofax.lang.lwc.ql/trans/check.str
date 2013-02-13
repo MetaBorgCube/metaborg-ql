@@ -75,12 +75,19 @@ rules // questions and groups
 	constraint-error: |[ type (exp) ]| 					 -> <type-error(lub)> (exp, type)
 	constraint-error: |[ if (c) { question* } ]| -> <type-error(eq)> (c, BoolTy())
 
-	constraint-error =
+	constraint-warning =
 		(?|[ qid : label type ]| + ?|[ qid : label texpr ]|);
 		<get-labels> qid; 
 		not(?[_]);
 		!(label, $[Question has different labels.]) 
 	
+	constraint-error =
+		(?|[ qid : label type ]| + ?|[ qid : label texpr ]|);
+		<get-dependent-questions> qid;
+		get-all-dependent-questions;
+		fetch(?qid);
+		!(qid, $[Question has cyclic dependency on its own.])
+		
 rules // helpers
 	
 	type-error(s): 

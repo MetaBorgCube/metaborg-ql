@@ -34,19 +34,38 @@ rules
 	
 	get-labels = 
 		index-lookup-all;
-		mapconcat(index-get-data-all(|Label()));
-		make-set
+		map(index-get-data-all(|Label()));
+		unions
 	
 	get-conditions =
-		index-get-data-all(|Dependencies()); 
-		unions
+		debug(!"conditions for :");
+		index-lookup-all;
+		map(index-get-data-all(|Dependencies())); 
+		unions;
+		debug(!"conditions are :")
 	
 	get-dependent-questions = 
 		get-conditions;
-		collect-all(?Ref(_), union)
+		collect-all(?Ref(<id>), union)
 		
+	get-all-dependent-questions = 
+		(is-list <+ MkSingleton);
+		transitive-closure(get-dependent-questions)
+
 rules
 	
+	transitive-closure(s) = transitive-closure(s|[])
+	
+	transitive-closure(s|accu): []		-> accu
+	transitive-closure(s|accu): [h|t]	-> result
+		where
+			if <elem> (h, accu) then
+				result := <transitive-closure(s|accu)> t
+			else
+				result := <conc; transitive-closure(s|[h|accu])> (<s> h, t)
+			end
+			
+			
 	index-add-all = index-add-all(|<index-get-current-file>)
 	
 	 

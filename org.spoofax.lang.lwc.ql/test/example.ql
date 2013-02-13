@@ -11,5 +11,10 @@ form Box1HouseOwning {
 		privateDebt: "Private debts for the sold house:" money
 		valueResidue: "Value residue:" money(sellingPrice - privateDebt)
 	}
-	hasSoldHouse: "Did ya sell a house?" boolean
+	if(sellingPrice > privateDebt) {
+		foo: "WTF?" boolean
+	}
+	if(foo) {		
+		hasSoldHouse: "Did you sell a house in 2010?" boolean
+	}
 }
