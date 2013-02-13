@@ -10,6 +10,7 @@ imports
 	lib/nbl-library.generated
 
 	types
+	dependencies
 	
 rules // generic
 	
@@ -20,33 +21,33 @@ rules // generic
 rules // expressions
 	
 	constraint-error =
-		?Not(e); 
+		?|[ !e ]|; 
 		<type-error(eq)> (e, BoolTy())
 	
 	constraint-error =
-		( ?And(e1, e2) + ?Or(e1, e2) );
+		( ?|[ e1 && e2 ]| + ?|[ e1 || e2 ]| );
 		<filter(type-error(eq))> [(e1, BoolTy()), (e2, BoolTy())]
 	
 	constraint-error =
-		(?Lt(e1, e2) + ?Leq(e1, e2) + ?Gt(e1, e2) +?Geq(e1, e2));
+		(?|[ e1 < e2 ]| + ?|[ e1 <= e2 ]| + ?|[ e1 > e2 ]| + ?|[ e1 >= e2 ]|);
 		<filter(type-error(is-comparable|"compared"))> [e1, e2];
 		if ?[] then 
 			<type-error(lub)> (e2, <type-of> e1)
 		end
 	
 	constraint-error =
-		?Eq(e1, e2);
+		?|[ e1 == e2 ]|;
 		<type-error(lub)> (e2, <type-of> e1)
 		
 	constraint-error =
-		(?Plus(e1, e2) + ?Minus(e1, e2));
+		(?|[ e1 + e2 ]| + ?|[ e1 - e2 ]|);
 		<filter(type-error(is-addable|"added or subtracted"))> [e1, e2];
 		if ?[] then 
 			<type-error(lub)> (e2, <type-of> e1)
 		end
 		
 	constraint-error =
-		?Mul(e1, e2);
+		?|[ e1 * e2 ]|;
 		if <type-of> e1 => MoneyTy() then
 			<type-error(lub)> (e2, FloatTy())
 		else if <type-of> e2 => MoneyTy() then
@@ -59,7 +60,7 @@ rules // expressions
 		end end
 
 	constraint-error =
-		?Div(e1, e2);
+		?|[ e1 / e2 ]|;
 		if <type-of> e1 => MoneyTy() then
 			<type-error(lub)> (e2, FloatTy())
 		else
@@ -71,14 +72,22 @@ rules // expressions
 
 rules // questions and groups
 	
-	constraint-error =
-		?TExpr(t, e);
-		<type-error(lub)> (e, t)
+	constraint-error: |[ type (exp) ]| 					 -> <type-error(lub)> (exp, type)
+	constraint-error: |[ if (c) { question* } ]| -> <type-error(eq)> (c, BoolTy())
+
+	constraint-warning =
+		(?|[ qid : label type ]| + ?|[ qid : label texpr ]|);
+		<get-labels> qid; 
+		not(?[_]);
+		!(label, $[Question has different labels.]) 
 	
 	constraint-error =
-		?Conditional(e, _);
-		<type-error(eq)> (e, BoolTy())
-
+		(?|[ qid : label type ]| + ?|[ qid : label texpr ]|);
+		<get-dependent-questions> qid;
+		get-all-dependent-questions;
+		fetch(?qid);
+		!(qid, $[Question has cyclic dependency on its own.])
+		
 rules // helpers
 	
 	type-error(s): 

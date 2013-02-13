@@ -11,10 +11,10 @@ rules
 		scopes Quest
 	
 	Question(q, _, ty):
-		defines Quest q of type ty in subsequent scope
+		defines non-unique Quest q of type ty 
 
 	Computed(q, _, TExpr(ty, _)):
-		defines Quest q of type ty in subsequent scope
+		defines non-unique Quest q of type ty
 	
 	Ref(q):
 		refers to Quest q
