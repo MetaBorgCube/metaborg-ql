@@ -33,13 +33,13 @@ rules
 rules
 	
 	get-labels = 
-		index-lookup-all;
-		map(index-get-data-all(|Label()));
-		unions
+		index-lookup;
+		index-get-data-all(|Label());
+		make-set
 	
 	get-conditions =
-		index-lookup-all;
-		map(index-get-data-all(|Dependencies())); 
+		index-lookup;
+		index-get-data-all(|Dependencies());
 		unions
 		
 	get-dependent-questions = 
