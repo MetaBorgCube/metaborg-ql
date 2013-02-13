@@ -54,6 +54,7 @@ rules
 	get-defined-types = 
 		index-lookup;
 		index-get-data-all(|Type());
+		// TODO why is this needed? TExpr should never be stored as the type
 		map(try(?TExpr(<id>, _)));
 		make-set
 
