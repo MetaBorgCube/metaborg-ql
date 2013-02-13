@@ -112,7 +112,7 @@ rules // QL types to WebDSL types
   
 rules // QL expressions to WebDSL expressions
   
-  compile-exp: Label(s) -> String(s)
+  compile-exp: Label(s) -> String(<try(un-double-quote)> s)
   compile-exp: Ref(qid) -> |[ form.x ]| where x := qid
   
   compile-exp: |[     !exp     ]| -> |[    !e    ]| where   e := <compile-exp> exp

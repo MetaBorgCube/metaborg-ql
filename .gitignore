@@ -11,3 +11,4 @@ QLExample/WebContent
 *.aterm
 .dependencies.webdsl
 org.spoofax.lang.lwc.ql/.servletapp
+org.spoofax.lang.lwc.ql/test/*.app
