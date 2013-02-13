@@ -86,8 +86,14 @@ rules // questions and groups
 		<get-dependent-questions> qid;
 		get-all-dependent-questions;
 		fetch(?qid);
-		!(qid, $[Question has cyclic dependency on its own.])
-		
+		!(qid, $[Question has cyclic dependency on itself.])
+	
+	constraint-error =
+		(?|[ qid : label type ]| + ?|[ qid : label texpr ]|);
+		<get-defined-types> qid;
+		not(?[_]);
+		!(<!type <+ !texpr>, $[Question has incompatible types across multiple definitions])
+	
 rules // helpers
 	
 	type-error(s): 

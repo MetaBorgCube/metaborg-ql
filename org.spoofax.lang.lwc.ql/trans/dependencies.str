@@ -4,6 +4,7 @@ imports
 	index-library.generated
 	analysis-library.generated
 	include/QL
+	names
 	
 signature constructors
 	
@@ -49,7 +50,14 @@ rules
 	get-all-dependent-questions = 
 		(is-list <+ MkSingleton);
 		transitive-closure(get-dependent-questions)
+	
+	get-defined-types = 
+		index-lookup;
+		index-get-data-all(|Type());
+		map(try(?TExpr(<id>, _)));
+		make-set
 
+	
 rules
 	
 	transitive-closure(s) = transitive-closure(s|[])
