@@ -8,3 +8,6 @@ QLExample/.servletapp
 QLExample/.webdsl-fragment-cache
 QLExample/.webdsl-parsecache
 QLExample/WebContent
+*.aterm
+.dependencies.webdsl
+org.spoofax.lang.lwc.ql/.servletapp

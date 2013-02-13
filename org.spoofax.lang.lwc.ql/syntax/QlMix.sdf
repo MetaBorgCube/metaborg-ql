@@ -13,6 +13,8 @@ exports
 		     "|[" Group  "]|" -> E {cons("ToMetaExpr")}
 		"ql" "|[" TyExpr "]|" -> E {cons("ToMetaExpr")}
 		     "|[" TyExpr "]|" -> E {cons("ToMetaExpr")}
+		"ql" "|[" Type   "]|" -> E {cons("ToMetaExpr")}
+		     "|[" Type   "]|" -> E {cons("ToMetaExpr")}
 		"ql" "|[" Expr   "]|" -> E {cons("ToMetaExpr")}
 		     "|[" Expr   "]|" -> E {cons("ToMetaExpr")}
 
