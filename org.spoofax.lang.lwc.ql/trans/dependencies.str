@@ -1,0 +1,76 @@
+module dependencies
+
+imports
+	index-library.generated
+	analysis-library.generated
+	include/QL
+	names
+	
+signature constructors
+	
+	Dependencies: DefDataKind
+	Label				: DefDataKind
+	
+rules
+	
+	analyze-dependencies: 
+		|[ form fid { question* } ]|-> <mapconcat(analyze-dependencies(|[]); index-add-all)> question*
+		
+	analyze-dependencies(|deps): 
+		|[ qid : label type ]|			->  [ DefData(uri, Dependencies(), deps)
+																		, DefData(uri, Label(), label)
+													 					]
+		where uri := <index-uri> qid
+	
+	analyze-dependencies(|deps): 
+		|[ qid : label texpr ]|			->  [ DefData(uri, Dependencies(), deps)
+																		, DefData(uri, Label(), label)
+													 					]
+		where uri := <index-uri> qid
+	
+	analyze-dependencies(|deps):
+		|[ if (c) { question* } ]|	-> <mapconcat(analyze-dependencies(|[c|deps]))> question*
+		
+rules
+	
+	get-labels = 
+		index-lookup;
+		index-get-data-all(|Label());
+		make-set
+	
+	get-conditions =
+		index-lookup;
+		index-get-data-all(|Dependencies());
+		unions
+		
+	get-dependent-questions = 
+		get-conditions;
+		collect-all(?Ref(<id>), union)
+		
+	get-all-dependent-questions = 
+		(is-list <+ MkSingleton);
+		transitive-closure(get-dependent-questions)
+	
+	get-defined-types = 
+		index-lookup;
+		index-get-data-all(|Type());
+		make-set
+
+	
+rules
+	
+	transitive-closure(s) = transitive-closure(s|[])
+	
+	transitive-closure(s|accu): []		-> accu
+	transitive-closure(s|accu): [h|t]	-> result
+		where
+			if <elem> (h, accu) then
+				result := <transitive-closure(s|accu)> t
+			else
+				result := <conc; transitive-closure(s|[h|accu])> (<s> h, t)
+			end
+			
+			
+	index-add-all = index-add-all(|<index-get-current-file>)
+	
+	 
