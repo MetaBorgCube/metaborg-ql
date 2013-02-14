@@ -12,12 +12,12 @@ imports
   lib/compilation-library.generated
   lib/nbl-library.generated
   names
-  names-qls
   check
   generate
   refactor
 	types
 	dependencies
+  qls/names-qls
 	
 rules // Analysis
   
