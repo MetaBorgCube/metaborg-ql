@@ -37,9 +37,10 @@ rules // QL to WebDSL compilation
 	  |[ 
 	  	module form 
 	  	
+	  	ent 
+	  	
 	  	var globalForm := Form {} 
 	  	
-	  	ent 
 	  	tdef 
 	  ]|
 	  where
@@ -65,7 +66,7 @@ rules // QL questions to WebDSL template
   compile-template: 
   	|[ form fid { q* } ]| -> 
 	  tdef |[
-	    define showForm(form : Form) {
+	    template showForm(form : Form) {
 	    	horizontalForm("Form name") {
 	  		  elem*
 	  		  
