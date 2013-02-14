@@ -1,0 +1,51 @@
+module desugar
+
+imports
+	index-library.generated
+	analysis-library.generated
+	include/QL
+	names
+	
+rules
+
+	desugar-all = downup(try(split-group), try(merge-conditions))
+	
+	split-group: 
+		|[ if (c) { q1 q2 q* } ]| -> <map(\ q -> |[ if (c) { q }]| \)> [q1, q2, q*]
+		
+	merge-conditions:
+		|[ if (c1) { if (c2) { q* } } ]| -> |[ if (c1 && c2) { q* }]|
+		
+	merge-conditions:
+		|[ q ]| -> |[ if (true) { q } |]
+		
+rules
+	
+	// TODO: remove parentheses
+	
+	desugar: |[ exp1  <= exp2  ]| -> |[ (exp1 <  exp2) || (exp1 == exp2) ]|
+	desugar: |[ exp1  >  exp2  ]| -> |[ exp2 <  exp1 ]|
+	desugar: |[ exp1  >= exp2  ]| -> |[ exp2 <= exp1 ]|
+	desugar: |[ exp   == exp   ]| -> |[ true ]|
+	
+	desugar: |[ true  && exp   ]| -> |[ exp   ]|
+	desugar: |[ false && exp   ]| -> |[ false ]|
+	desugar: |[ exp   && true  ]| -> |[ exp   ]|
+	desugar: |[ exp   && false ]| -> |[ false ]|
+	desugar: |[ true  || exp   ]| -> |[ true  ]|
+	desugar: |[ false || exp   ]| -> |[ exp   ]|
+	desugar: |[ exp   || true  ]| -> |[ true  ]|
+	desugar: |[ exp   || false ]| -> |[ exp   ]|
+
+	desugar: |[ !true           ]| -> |[ false ]|
+	desugar: |[ !false          ]| -> |[ true  ]|
+	desugar: |[ !!exp           ]| -> |[ exp   ]|
+	desugar: |[ !(exp1 <  exp2) ]| -> |[ exp1  >= exp2  ]|
+	desugar: |[ !(exp1 && exp2) ]| -> |[ (!exp1) || !exp2 ]|
+	desugar: |[ !(exp1 || exp2) ]| -> |[ (!exp1) && !exp2 ]|
+	
+	desugar: |[ (exp1 && exp2) || exp3 ]| -> |[ (exp1 || exp3) && (exp2 || exp3) ]|
+	desugar: |[ exp1 || (exp2 && exp3) ]| -> |[ (exp1 || exp2) && (exp1 || exp3) ]|
+	desugar: |[ exp1 || (exp2 || exp3) ]| -> |[  exp1 || exp2  || exp3 ]|
+	desugar: |[ exp1 && (exp2 && exp3) ]| -> |[  exp1 && exp2  && exp3 ]|
+	

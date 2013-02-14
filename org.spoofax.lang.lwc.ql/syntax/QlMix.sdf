@@ -18,6 +18,9 @@ exports
 		"ql" "|[" Expr   "]|" -> E {cons("ToMetaExpr")}
 		     "|[" Expr   "]|" -> E {cons("ToMetaExpr")}
 
+		"true" 	-> Expr {"True"}
+		"false" -> Expr {"False"}
+		
 	variables
 
 		("group"|"question"|"g"|"q") [0-9]* "*"	-> Group* {prefer}

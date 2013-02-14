@@ -14,23 +14,25 @@ signature constructors
 rules
 	
 	analyze-dependencies: 
-		|[ form fid { question* } ]|-> <mapconcat(analyze-dependencies(|[]); index-add-all)> question*
+		|[ form fid { question* } ]|-> <mapconcat(analyze-dependencies; index-add-all)> question*
 		
-	analyze-dependencies(|deps): 
-		|[ qid : label type ]|			->  [ DefData(uri, Dependencies(), deps)
+	analyze-dependencies: 
+		|[ qid : label type ]|			->  [ DefData(uri, Dependencies(), [])
 																		, DefData(uri, Label(), label)
 													 					]
 		where uri := <index-uri> qid
 	
-	analyze-dependencies(|deps): 
-		|[ qid : label texpr ]|			->  [ DefData(uri, Dependencies(), deps)
+	analyze-dependencies: 
+		|[ qid : label texpr ]|			->  [ DefData(uri, Dependencies(), <collect-questions> texpr)
 																		, DefData(uri, Label(), label)
 													 					]
 		where uri := <index-uri> qid
 	
-	analyze-dependencies(|deps):
-		|[ if (c) { question* } ]|	-> <mapconcat(analyze-dependencies(|[c|deps]))> question*
+	analyze-dependencies:
+		|[ if (c) { question } ]|	-> <analyze-dependencies> question
 		
+	collect-questions = collect-all(?Ref(<id>), unions)
+	
 rules
 	
 	get-labels = 

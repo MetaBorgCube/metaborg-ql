@@ -21,52 +21,52 @@ rules // generic
 rules // expressions
 	
 	constraint-error =
-		?|[ !e ]|; 
-		<type-error(eq)> (e, BoolTy())
+		?|[ !exp ]|; 
+		<type-error(eq)> (exp, BoolTy())
 	
 	constraint-error =
-		( ?|[ e1 && e2 ]| + ?|[ e1 || e2 ]| );
-		<filter(type-error(eq))> [(e1, BoolTy()), (e2, BoolTy())]
+		( ?|[ exp1 && exp2 ]| + ?|[ exp1 || exp2 ]| );
+		<filter(type-error(eq))> [(exp1, BoolTy()), (exp2, BoolTy())]
 	
 	constraint-error =
-		(?|[ e1 < e2 ]| + ?|[ e1 <= e2 ]| + ?|[ e1 > e2 ]| + ?|[ e1 >= e2 ]|);
-		<filter(type-error(is-comparable|"compared"))> [e1, e2];
+		(?|[ exp1 < exp2 ]| + ?|[ exp1 <= exp2 ]| + ?|[ exp1 > exp2 ]| + ?|[ exp1 >= exp2 ]|);
+		<filter(type-error(is-comparable|"compared"))> [exp1, exp2];
 		if ?[] then 
-			<type-error(lub)> (e2, <type-of> e1)
+			<type-error(lub)> (exp2, <type-of> exp1)
 		end
 	
 	constraint-error =
-		?|[ e1 == e2 ]|;
-		<type-error(lub)> (e2, <type-of> e1)
+		?|[ exp1 == exp2 ]|;
+		<type-error(lub)> (exp2, <type-of> exp1)
 		
 	constraint-error =
-		(?|[ e1 + e2 ]| + ?|[ e1 - e2 ]|);
-		<filter(type-error(is-addable|"added or subtracted"))> [e1, e2];
+		(?|[ exp1 + exp2 ]| + ?|[ exp1 - exp2 ]|);
+		<filter(type-error(is-addable|"added or subtracted"))> [exp1, exp2];
 		if ?[] then 
-			<type-error(lub)> (e2, <type-of> e1)
+			<type-error(lub)> (exp2, <type-of> exp1)
 		end
 		
 	constraint-error =
-		?|[ e1 * e2 ]|;
-		if <type-of> e1 => MoneyTy() then
-			<type-error(lub)> (e2, FloatTy())
-		else if <type-of> e2 => MoneyTy() then
-			<type-error(lub)> (e1, FloatTy())
+		?|[ exp1 * exp2 ]|;
+		if <type-of> exp1 => MoneyTy() then
+			<type-error(lub)> (exp2, FloatTy())
+		else if <type-of> exp2 => MoneyTy() then
+			<type-error(lub)> (exp1, FloatTy())
 		else
-			<filter(type-error(is-numeric|"multiplied"))> [e1, e2];
+			<filter(type-error(is-numeric|"multiplied"))> [exp1, exp2];
 			if ?[] then
-				<type-error(lub)> (e2, <type-of> e1)
+				<type-error(lub)> (exp2, <type-of> exp1)
 			end
 		end end
 
 	constraint-error =
-		?|[ e1 / e2 ]|;
-		if <type-of> e1 => MoneyTy() then
-			<type-error(lub)> (e2, FloatTy())
+		?|[ exp1 / exp2 ]|;
+		if <type-of> exp1 => MoneyTy() then
+			<type-error(lub)> (exp2, FloatTy())
 		else
-			<filter(type-error(is-numeric|"divided"))> [e1, e2];
+			<filter(type-error(is-numeric|"divided"))> [exp1, exp2];
 			if ?[] then
-				<type-error(lub)> (e2, <type-of> e1)
+				<type-error(lub)> (exp2, <type-of> exp1)
 			end
 		end
 
@@ -97,12 +97,12 @@ rules // questions and groups
 rules // helpers
 	
 	type-error(s): 
-		(e, expected) -> (e, $[Expression is of type [type1] which does not comply to [type2].])
+		(e, expected) -> (e, $[Expression is of type [typexp1] which does not comply to [typexp2].])
 		where 
 			<type-of> e => actual; 
 			<not(s)> (actual, expected);
-			<pp-ql-string> actual => type1;
-			<pp-ql-string> expected => type2
+			<pp-ql-string> actual => typexp1;
+			<pp-ql-string> expected => typexp2
 			
 	type-error(s|quality): 
 		e -> (e, $[Expression is of type [type] which cannot be [quality].])
