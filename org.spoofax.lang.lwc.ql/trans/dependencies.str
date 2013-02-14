@@ -8,30 +8,32 @@ imports
 	
 signature constructors
 	
-	Dependencies: DefDataKind
 	Label				: DefDataKind
+	Condition		: DefDataKind
+	Dependencies: DefDataKind
 	
 rules
 	
 	analyze-dependencies: 
-		|[ form fid { question* } ]|-> <mapconcat(analyze-dependencies; index-add-all)> question*
-		
+		|[ form fid { question* } ]|-> <filter(analyze-dependencies)> question*
+			
 	analyze-dependencies: 
-		|[ qid : label type ]|			->  [ DefData(uri, Dependencies(), [])
-																		, DefData(uri, Label(), label)
-													 					]
-		where uri := <index-uri> qid
+		|[ if (c) { qid : label type } ]|	-> <index-add-all> [ ldata, cdata, qdata ]
+		where 
+			uri   := <index-uri> qid ;
+			ldata := DefData(uri, Label(), label) ;
+			cdata := DefData(uri, Condition(), c) ; 
+			qdata := DefData(uri, Dependencies(), <collect-questions> c) 
 	
 	analyze-dependencies: 
-		|[ qid : label texpr ]|			->  [ DefData(uri, Dependencies(), <collect-questions> texpr)
-																		, DefData(uri, Label(), label)
-													 					]
-		where uri := <index-uri> qid
-	
-	analyze-dependencies:
-		|[ if (c) { question } ]|	-> <analyze-dependencies> question
-		
-	collect-questions = collect-all(?Ref(<id>), unions)
+	|[ if (c) { qid : label texpr } ]|	-> <index-add-all> [ ldata, cdata, qdata ]
+		where 
+			uri   := <index-uri> qid ;
+			ldata := DefData(uri, Label(), label) ;
+			cdata := DefData(uri, Condition(), c) ; 
+			qdata := DefData(uri, Dependencies(), <collect-questions> (c, texpr)) 
+			
+	collect-questions = collect-all(?Ref(<id>), union)
 	
 rules
 	
@@ -40,24 +42,24 @@ rules
 		index-get-data-all(|Label());
 		make-set
 	
-	get-conditions =
+	get-conditions = 
 		index-lookup;
-		index-get-data-all(|Dependencies());
-		unions
-		
-	get-dependent-questions = 
-		get-conditions;
-		collect-all(?Ref(<id>), union)
-		
-	get-all-dependent-questions = 
-		(is-list <+ MkSingleton);
-		transitive-closure(get-dependent-questions)
-	
+		index-get-data-all(|Condition());
+		make-set
+			
 	get-defined-types = 
 		index-lookup;
 		index-get-data-all(|Type());
 		make-set
 
+	get-dependencies =
+		index-lookup;
+		index-get-data-all(|Dependencies());
+		unions
+		
+	get-all-dependencies = 
+		(is-list <+ MkSingleton);
+		transitive-closure(get-dependencies)
 	
 rules
 	

@@ -83,8 +83,8 @@ rules // questions and groups
 	
 	constraint-error =
 		(?|[ qid : label type ]| + ?|[ qid : label texpr ]|);
-		<get-dependent-questions> qid;
-		get-all-dependent-questions;
+		<get-dependencies> qid;
+		get-all-dependencies; 
 		fetch(?qid);
 		!(qid, $[Question has cyclic dependency on itself.])
 	

@@ -9,6 +9,8 @@ exports
 	context-free syntax
 		"ql" "|[" Form   "]|" -> E {cons("ToMetaExpr")}
 		     "|[" Form   "]|" -> E {cons("ToMetaExpr")}
+		"ql" "|[" Group* "]|" -> E {avoid, cons("ToMetaExpr")}
+		     "|[" Group* "]|" -> E {avoid, cons("ToMetaExpr")}
 		"ql" "|[" Group  "]|" -> E {cons("ToMetaExpr")}
 		     "|[" Group  "]|" -> E {cons("ToMetaExpr")}
 		"ql" "|[" TyExpr "]|" -> E {cons("ToMetaExpr")}
