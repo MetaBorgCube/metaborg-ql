@@ -18,13 +18,37 @@ templates // top-level
 		}
 	>
 
+  PagePart = <<Ref>>
+	PagePart = <<Section>>
+
+templates // section
+
+  Section.Section = <
+  	section <STRING> {
+  		<SectionPart*; separator="\n">
+  	}
+  >
+  
+  SectionPart = <<Ref>>
+  SectionPart = <<SubSection>>
+  
+templates // subsection
+
+  SubSection.SubSection = <
+  	subsection <STRING> {
+  		<SubSectionPart*; separator="\n">
+  	}
+  >
+  
+  SubSectionPart = <<Ref>>
+
+
 templates // questions
 	
 	Ref.SimpleRef = <<ID>>
 	
 	Ref.StyledRef = <<ID> <Styles>>
 
-  PagePart = <<Ref>>
 	
 templates // style definitions
 	
@@ -51,7 +75,7 @@ templates // types redefined
 templates // styling
 
   Styles.Styles = < { 
-  		<Style+; separator=" ">
+  		<Style*; separator=" ">
 		}
 	>
 	
@@ -70,21 +94,3 @@ templates // styling
   Widget.Text     = <text>
   Widget.Slider   = <slider>
   Widget.DatePicker = <datepicker>
-	
-templates // section
-
-  PagePart.Section = <
-  	section <STRING> {
-  		<SubPagePart*; separator="\n">
-  	}
-  >
-  
-  SubPagePart = <<Ref>>
-  
-  SubPagePart.SubSection = <
-  	subsection <STRING> {
-  		<SubSubPagePart*; separator="\n">
-  	}
-  >
-  
-  SubSubPagePart = <<Ref>>

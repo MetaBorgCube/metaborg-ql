@@ -9,7 +9,8 @@ imports
 	
 rules
 
-	qls-type-of: ref@Ref(q) -> <type-of> ref 
+	qls-type-of: SimpleRef(q) -> <type-of> q
+	qls-type-of: StyledRef(q, _) -> <type-of> q
 	
 	qls-type-of: CheckBox() -> [BoolTy()]
 	qls-type-of: Radio() -> [BoolTy()]

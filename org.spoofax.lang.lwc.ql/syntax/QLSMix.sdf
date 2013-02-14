@@ -15,12 +15,12 @@ exports
 					"|["	WidgetComponent				"]|"	-> E {cons("ToMetaExpr")}
 		"qls" "|["	Page           				"]|"	-> E {cons("ToMetaExpr")}
 		      "|["	Page           				"]|"	-> E {cons("ToMetaExpr")}
-		"qls" "|["	PagePart       				"]|"	-> E {cons("ToMetaExpr")}
-		      "|["	PagePart       				"]|"	-> E {cons("ToMetaExpr")}
-		"qls" "|["	SubPagePart    				"]|"	-> E {cons("ToMetaExpr")}
-		      "|["	SubPagePart    				"]|"	-> E {cons("ToMetaExpr")}
-		"qls" "|["	SubSubPagePart 				"]|"	-> E {cons("ToMetaExpr")}
-		      "|["	SubSubPagePart				"]|"	-> E {cons("ToMetaExpr")}
+		"qls" "|["	Section           		"]|"	-> E {cons("ToMetaExpr")}
+		      "|["	Section           		"]|"	-> E {cons("ToMetaExpr")}
+		"qls" "|["	SubSection           	"]|"	-> E {cons("ToMetaExpr")}
+		      "|["	SubSection           	"]|"	-> E {cons("ToMetaExpr")}
+		"qls" "|["	Ref           				"]|"	-> E {cons("ToMetaExpr")}
+		      "|["	Ref           				"]|"	-> E {cons("ToMetaExpr")}		      
 
 	variables
 
@@ -35,6 +35,7 @@ exports
 		("pagepart"|"pp") [0-9]*			-> PagePart   {prefer}
 		("pagepart"|"pp") [0-9]* "*"	-> PagePart   {prefer}
 		("style"|"s") [0-9]*					-> Style      {prefer}
+		("style"|"s") [0-9]* "*"			-> Style*			{prefer}
 		("color"|"co") [0-9]*					-> Color      {prefer}
 		("widget"|"w") [0-9]*					-> Widget     {prefer}
 		("section"|"s") [0-9]*				-> Section    {prefer}

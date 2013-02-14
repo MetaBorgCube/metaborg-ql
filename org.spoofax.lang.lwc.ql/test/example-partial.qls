@@ -15,9 +15,10 @@ define style C {
 
 
 page "PAGE HEADING" for Box1HouseOwning {
-	hasBoughtHouse
-	hasLivedAbroad { style = A }
-	
+	// with style B {
+		hasBoughtHouse
+		hasLivedAbroad { style = A }
+	// }
 	
 	section "SECTION HEADING" {
 		subsection "SUBSECTION HEADING" {
