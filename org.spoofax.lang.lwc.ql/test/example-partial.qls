@@ -1,19 +1,19 @@
 
 define style A {
-	
-}
- 
-define style B {
-	style = A
-}
- 
-define style C {
 	font = "Helvetica"
-	color = #333333
+}
+
+define style B {
+	color = #333333	
+}
+
+define style C {
+	style = A
+	style = B
 	integer widget = radio
 	boolean widget = checkbox
 }
-	
+
 
 page "PAGE HEADING" for Box1HouseOwning {
 	hasBoughtHouse

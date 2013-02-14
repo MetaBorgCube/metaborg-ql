@@ -15,7 +15,5 @@ rules // styles
 	constraint-error:
 		|[ define style sid { stydef* }]| -> (sid, $[Style [sid] has cyclic dependencies])
 		where
-			<qls-get-dependent-styles> sid;
-			qls-get-all-dependent-styles;
-			fetch(?sid)
+			<qls-has-circular-dependency-style> sid
 		
