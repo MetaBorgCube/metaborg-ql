@@ -22,8 +22,8 @@ exports
 
 		("group"|"question"|"g"|"q") [0-9]* "*"	-> Group* {prefer}
 		("group"|"question"|"g"|"q") [0-9]*			-> Group	{prefer}
-		("cond"|"expr"|"exp"|"c") [0-9]*				-> Expr		{prefer}
-		("label"|"text"|"l"|"t") [0-9]*					-> Label	{prefer}
+		("cond"|"expr"|"exp"|"e"|"c") [0-9]*		-> Expr		{prefer}
+		("label"|"text"|"l") [0-9]*					    -> Label	{prefer}
 		("type"|"t") [0-9]*											-> Type		{prefer}
 		("texpr"|"texp"|"te") [0-9]*						-> TyExpr	{prefer}
 		[fgq] "id" [0-9]*												-> ID     {prefer}

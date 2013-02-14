@@ -44,7 +44,7 @@ templates // expressions
 	
 	Expr.Ref = <<ID>>
 	
-	Expr.Not	= <!<Expr>>
+	Expr.Not	= <!<Expr>> 
 	Expr.And	= <<Expr> && <Expr>> {left}
 	Expr.Or	= <<Expr> || <Expr>> {left}
 	
@@ -58,6 +58,16 @@ templates // expressions
   Expr.Minus = <<Expr> - <Expr>> {left}        
   Expr.Mul   = <<Expr> * <Expr>> {left}
   Expr.Div  = <<Expr> / <Expr>> {left}
+  
+context-free priorities 
+
+	Expr.Not > 
+	{non-assoc: Expr.Lt Expr. Leq Expr.Gt Expr.Geq Expr.Eq } >
+	{left: Expr.Mul Expr.Div } >
+	{left: Expr.Plus Expr.Minus } >
+	{left: Expr.And } >
+	{left: Expr.Or } 
+
 
 
 	
