@@ -1,0 +1,9 @@
+module qls/generate
+
+imports
+	
+rules
+	
+	compile-qls:
+		|[ page str1 for fref* { pp* } ]| -> <id>
+		

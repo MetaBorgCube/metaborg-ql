@@ -101,7 +101,7 @@ rules // Compilation
     (selected, position, ast, path, project-path) -> (filename, result)
     with
     	filename := <guarantee-extension(|"app")> path;
-    	webdsl   := <compile> selected;
+    	webdsl   := <compile-ql> selected;
     	result   := <pp-webdsl-string> webdsl
     	
   pp-webdsl-string =

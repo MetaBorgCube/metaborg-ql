@@ -18,11 +18,15 @@ exports
 
 	variables
 
-		("page"|"p") [0-9]* "*"	   -> Page* {prefer}
-		("page"|"p") [0-9]*	       -> Page {prefer}
-		("style"|"s") [0-9]*       -> Style {prefer}
-		("color"|"co") [0-9]*      -> Color {prefer}
-		("widget"|"w") [0-9]*      -> Widget {prefer}
-		("section"|"s") [0-9]*     -> Section {prefer}
-		("subsection"|"ss") [0-9]* -> SubSection {prefer}
-		("str") [0-9]*             -> STRING {prefer}
+		("page"|"p") [0-9]* "*"	   	 -> Page* 		 {prefer}
+		("page"|"p") [0-9]*	       	 -> Page 			 {prefer}
+		"fref" [0-9]*						     -> FormRef    {prefer}
+		"fref" [0-9]* "*"			       -> FormRef*   {prefer}
+		("pagepart"|"pp") [0-9]*	 	 -> PagePart   {prefer}
+		("pagepart"|"pp") [0-9]* "*" -> PagePart   {prefer}
+		("style"|"s") [0-9]*       	 -> Style      {prefer}
+		("color"|"co") [0-9]*      	 -> Color      {prefer}
+		("widget"|"w") [0-9]*      	 -> Widget     {prefer}
+		("section"|"s") [0-9]*     	 -> Section    {prefer}
+		("subsection"|"ss") [0-9]* 	 -> SubSection {prefer}
+		("str") [0-9]*               -> STRING     {prefer}
