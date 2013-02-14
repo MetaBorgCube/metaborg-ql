@@ -1,0 +1,70 @@
+/**
+* Example QLS styling where question referencing is not expected to be exhaustive.
+* Instead dependency questions are inserted automatically at the right (??!!) place.
+*/
+
+// the order of pages is implicitly dictated by the ordering of page declarations in QLS
+ 
+page "PAGE HEADING" { // page titled PAGE HEADING
+	// mentions that page PAGE_IDENT is concerned with styling of questions in form Box1HouseOwning
+	styles Box1HouseOwning
+	
+	// if multiple forms are imported then question names have to be qualified with FORM.QUESTION
+	styles Box1HouseOwning Box2FraudulentIncomes
+
+	// the QLS order of sub-page elements dictates the presentation order within the page
+	hasBoughtHouse
+	hasLivedAbroad
+	
+	// is inserted here automatically because it is its original position and not mentioned anywhere else
+	// hasBoughtHouse
+	
+	section "SECTION HEADING" { // only visible if at least one of the question inside are visible.
+		// note the diffs between cases 1, 2, 3 and 4 below:
+		
+		/* case 1 */
+		hasSoldHouse
+		subsection "SUBSECTION HEADING" {
+			sellingPrice
+			privateDebt
+			valueResidue
+		}
+		/* case 2 */
+		subsection "SUBSECTION HEADING" {
+			hasSoldHouse
+			sellingPrice
+			privateDebt
+			valueResidue
+		}
+		/* case 3 */
+		subsection "SUBSECTION HEADING" {
+			hasSoldHouse
+			valueResidue // error on this because the dependencies *sellingPrice* and *privateDebt* are not satisfied YET
+			sellingPrice
+			privateDebt
+		}
+		/* case 4 */
+		subsection "SUBSECTION HEADING" {
+			hasSoldHouse
+			sellingPrice
+			privateDebt
+			// valueResidue // not in this subsection
+		}
+	}
+	
+	// Are inserted here automatically...
+	// hasMoreHouses
+	// netHousesWorth
+	
+	subsection "FOO" { // error on bad nesting (parse error is easy, semantic has better msg)
+	}
+}
+
+// since PAGE 2 only mentions
+
+// since PAGE 3 does not mention anything it is eliminated before generation. a warning is displayed.
+page "PAGE HEADING 3" {
+	styles Box1HouseOwning
+	
+	netHousesWorth
+}
