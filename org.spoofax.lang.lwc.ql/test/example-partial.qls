@@ -1,6 +1,16 @@
+
+define style STYLE1 {
+	font = "Helvetica"
+	color = #333333
+	integer widget = radio
+	boolean widget = checkbox
+}
+	
+
 page "PAGE HEADING" for Box1HouseOwning {
 	hasBoughtHouse
-	hasLivedAbroad
+	hasLivedAbroad { style = STYLE1 }
+	
 	
 	section "SECTION HEADING" {
 		subsection "SUBSECTION HEADING" {
@@ -11,6 +21,7 @@ page "PAGE HEADING" for Box1HouseOwning {
 
 		subsection "SUBSECTION HEADING" {
 			hasSoldHouse {
+				style  = STYLE1
 				font   = "Comic Sans"
 				color  = #000000
 				widget = radio 

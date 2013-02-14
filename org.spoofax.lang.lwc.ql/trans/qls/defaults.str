@@ -1,0 +1,16 @@
+module qls/defaults
+
+imports
+	include/QL
+
+rules // widgets, font, color defaults
+	default-widget: BoolTy() -> Widget(CheckBox())
+	default-widget: FloatTy() -> Widget(Text())
+	default-widget: IntTy() -> Widget(Text())
+	default-widget: MoneyTy() -> Widget(Text())
+	default-widget: DateTy() -> Widget(DatePicker())
+
+	default-font = !Font("Helvetica")
+	default-color = !Color("#000000")
+	
+	

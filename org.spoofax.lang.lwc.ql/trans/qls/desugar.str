@@ -1,0 +1,28 @@
+module qls/desugar
+
+imports
+	include/QL
+	// nbl-library.generated
+	// index-library.generated
+	// analysis-library.generated
+	types
+	qls/defaults
+	
+strategies
+	// qls-desugar-top = innermost(qls-desugar)
+	qls-desugar-top = id
+
+rules
+	// qls-desugar:
+		// Ref(q) -> StyledRef(t1, t2)
+		// Ref(q, Styles(ss*)) -> Ref(q, Styles([ss*,widget]))
+		// where
+		// 	not(fetch-elem(?Widget(_)))
+		// 	;widget := <type-of;default-widget> q
+	
+	qls-desugar:
+		SimpleRef(q) -> StyledRef(Ref(q), Styles(ss))
+		with
+			ss := [<default-font>, <default-color>, <default-widget>]
+			
+		

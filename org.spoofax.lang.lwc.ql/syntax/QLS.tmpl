@@ -4,7 +4,11 @@ lexical syntax
 
 templates // top-level
   
-  QLS.QLS = <<Page*; separator="\n\n">>
+  QLS.QLS = <
+  	<StyleDef*; separator="\n\n">
+  
+  	<Page*; separator="\n\n">
+  >
   
   FormRef.FormRef = <<ID>>
   
@@ -16,12 +20,32 @@ templates // top-level
 
 templates // questions
 	
-	Ref.Ref = <<ID>>
+	Ref.SimpleRef = <<ID>>
 	
-	Ref.Ref = <<Ref> <Styles>>
+	Ref.StyledRef = <<ID> <Styles>>
 
   PagePart = <<Ref>>
 	
+templates // style definitions
+	
+	StyleDef.StyleDef = <
+		define style <ID> {
+			<DefStyle+;separator=" ">
+		}
+	>
+	
+	DefStyle = <<StyleComponent>>
+	DefStyle.TypedWidget = <<Type> <WidgetComponent>>
+
+templates // types redefined
+
+	Type.BoolTy = <boolean>
+	Type.StringTy = <string>
+	Type.IntTy = <integer>
+	Type.DateTy = <date>
+	Type.FloatTy = <decimal>
+	Type.MoneyTy = <money>
+
 templates // styling
 
   Styles.Styles = < { 
@@ -29,16 +53,21 @@ templates // styling
 		}
 	>
 	
-  Style.Font   = <font = <STRING>>
-  Style.Color  = <color = <COLOR>>
-  Style.Widget = <widget = <Widget>>
+	Style = <<StyleComponent>>
+	Style = <<WidgetComponent>>
+	
+	StyleComponent.StyleRef = <style = <ID>>
+  StyleComponent.Font   = <font = <STRING>>
+  StyleComponent.Color  = <color = <COLOR>>
+  
+  WidgetComponent.Widget = <widget = <Widget>>
   
   Widget.CheckBox = <checkbox>
   Widget.Radio    = <radio>
   Widget.Dropdown = <dropdown>
   Widget.Text     = <text>
   Widget.Slider   = <slider>
-  Widget.DatePicker = <picker>
+  Widget.DatePicker = <datepicker>
 	
 templates // section
 

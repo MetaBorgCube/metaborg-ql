@@ -1,0 +1,19 @@
+module qls/types
+
+imports
+	include/QL
+	// nbl-library.generated
+	// index-library.generated
+	// analysis-library.generated
+	types
+	
+rules
+
+	qls-type-of: ref@Ref(q) -> <type-of> ref 
+	
+	qls-type-of: CheckBox() -> [BoolTy()]
+	qls-type-of: Radio() -> [BoolTy()]
+	qls-type-of: Dropdown() -> [BoolTy(), StringTy()]
+	qls-type-of: Text() -> [StringTy(), IntTy(), FloatTy()]
+	qls-type-of: Slider() -> [IntTy()]
+	qls-type-of: DatePicker() -> [DateTy()]

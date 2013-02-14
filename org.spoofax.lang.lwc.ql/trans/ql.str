@@ -17,7 +17,11 @@ imports
   refactor
 	types
 	dependencies
+	
   qls/names-qls
+ //  qls/types
+ //  qls/check
+	// qls/desugar
 	
 rules // Analysis
   
@@ -27,9 +31,15 @@ rules // Analysis
     (ast, path, project-path) -> (ast'', errors, warnings, notes, filesToAnalyze')
     with
       ast'                    := <id> ast; // Optional AST desugaring
+      // if not(QLS(_,_) := ast) then
+      // 		ast' := ast
+      // else
+      // 		ast' := <qls-desugar-top> ast
+      // end;
+      
       (ast'', filesToAnalyze) := <analyze-top(|<language>)> (ast', path, project-path);
       index-transaction(
-      	if not(QLS(_) := ast) then
+      	if not(QLS(_,_) := ast) then
 	        <analyze-dependencies> ast''
 	      end;
 	      errors                := <collect-all(constraint-error, conc)> ast'';
