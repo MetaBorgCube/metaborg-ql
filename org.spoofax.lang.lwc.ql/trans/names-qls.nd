@@ -1,0 +1,16 @@
+module names-qls
+
+imports 
+  
+  names
+  include/QL
+  
+namespaces FrmImport
+  
+rules
+
+  FormRef(f):
+  	defines non-unique FrmImport f
+  	refers to Frm f
+  	imports Quest from Frm f {current-file}
+  	

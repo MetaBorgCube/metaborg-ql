@@ -12,6 +12,7 @@ imports
   lib/compilation-library.generated
   lib/nbl-library.generated
   names
+  names-qls
   check
   generate
   refactor
@@ -28,7 +29,9 @@ rules // Analysis
       ast'                    := <id> ast; // Optional AST desugaring
       (ast'', filesToAnalyze) := <analyze-top(|<language>)> (ast', path, project-path);
       index-transaction(
-	      <analyze-dependencies> ast'';
+      	if not(QLS(_) := ast) then
+	        <analyze-dependencies> ast''
+	      end;
 	      errors                := <collect-all(constraint-error, conc)> ast'';
 	      warnings              := <collect-all(constraint-warning, conc)> ast'';
 	      notes                 := <collect-all(constraint-note, conc)> ast''

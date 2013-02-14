@@ -1,4 +1,4 @@
-page "PAGE HEADING" for Box1HouseOwning Box2FraudulentIncomes {
+page "PAGE HEADING" for Box1HouseOwning {
 	hasBoughtHouse
 	hasLivedAbroad
 	
