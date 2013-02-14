@@ -14,6 +14,5 @@ org.spoofax.lang.lwc.ql/.servletapp
 org.spoofax.lang.lwc.ql/test/*.app
 org.spoofax.lang.lwc.ql/syntax/QLS.generated.str
 org.spoofax.lang.lwc.ql/syntax/QLSgenerated.sdf
-org.spoofax.lang.lwc.ql/syntax/Stratego-QLS-QL-WebDSL.sdf
 org.spoofax.lang.lwc.qls/bin/.settings
 org.spoofax.lang.lwc.qls/bin/editor/*.generated.esv
