@@ -27,11 +27,13 @@ rules // widget types
 		<qls-type-error(elem)> (type, widge)
 
 	// untyped widget in question styling
-	constraint-note:
-		qls |[ qid { style* }]| -> <id> // (qid, $[Question is of type [pp-qid-type]])
-		where fail
-			// <qls-type-of> qid => qid-type;
-			// <pp-ql-string> qid-type => pp-qid-type
+	constraint-error =
+		?|[ qid { style* }]|;
+		qls-type-of => q-type;
+		<filter(?Widget(<id>))> style*;
+		map(!(q-type, <id>));
+		filter(qls-type-error(elem))
+		 
 			
 
 rules // type error reporter helper

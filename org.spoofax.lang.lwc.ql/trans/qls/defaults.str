@@ -12,5 +12,3 @@ rules // widgets, font, color defaults
 
 	default-font = !Font("Helvetica")
 	default-color = !Color("#000000")
-	
-	

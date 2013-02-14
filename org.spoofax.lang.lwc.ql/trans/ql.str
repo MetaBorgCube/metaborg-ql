@@ -32,12 +32,6 @@ rules // Analysis
     (ast, path, project-path) -> (ast'', errors, warnings, notes, filesToAnalyze')
     with
       ast'                    := <id> ast; // Optional AST desugaring
-      // if not(QLS(_,_) := ast) then
-      // 		ast' := ast
-      // else
-      // 		ast' := <qls-desugar-top> ast
-      // end;
-      
       (ast'', filesToAnalyze) := <analyze-top(|<language>)> (ast', path, project-path);
       index-transaction(
       	if (QLS(_,_) := ast) then

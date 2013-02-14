@@ -15,11 +15,9 @@ define style C {
 
 
 page "PAGE HEADING" for Box1HouseOwning {
-	// with style B {
 		hasBoughtHouse
 		hasLivedAbroad { style = A }
-	// }
-	
+
 	section "SECTION HEADING" {
 		subsection "SUBSECTION HEADING" {
 			sellingPrice
@@ -32,10 +30,12 @@ page "PAGE HEADING" for Box1HouseOwning {
 				style  = C
 				font   = "Comic Sans"
 				color  = #000000
-				widget = radio
+				widget = datepicker
+				widget = text
+				widget = dropdown
 			}	
 			sellingPrice
-			privateDebt
+			privateDebt 
 			valueResidue
 		}
 
