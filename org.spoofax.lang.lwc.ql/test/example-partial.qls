@@ -1,5 +1,13 @@
 
-define style STYLE1 {
+define style A {
+	
+}
+ 
+define style B {
+	style = A
+}
+ 
+define style C {
 	font = "Helvetica"
 	color = #333333
 	integer widget = radio
@@ -9,7 +17,7 @@ define style STYLE1 {
 
 page "PAGE HEADING" for Box1HouseOwning {
 	hasBoughtHouse
-	hasLivedAbroad { style = STYLE1 }
+	hasLivedAbroad { style = A }
 	
 	
 	section "SECTION HEADING" {
@@ -21,10 +29,10 @@ page "PAGE HEADING" for Box1HouseOwning {
 
 		subsection "SUBSECTION HEADING" {
 			hasSoldHouse {
-				style  = STYLE1
+				style  = C
 				font   = "Comic Sans"
 				color  = #000000
-				widget = radio 
+				widget = radio
 			}	
 			sellingPrice
 			privateDebt

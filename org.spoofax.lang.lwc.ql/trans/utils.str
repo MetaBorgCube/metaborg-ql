@@ -1,0 +1,21 @@
+module utils
+
+imports
+	index-library.generated
+
+rules // set transitive closure
+	
+	transitive-closure(s) = transitive-closure(s|[])
+	
+	transitive-closure(s|accu): []		-> accu
+	transitive-closure(s|accu): [h|t]	-> result
+		where
+			if <elem> (h, accu) then
+				result := <transitive-closure(s|accu)> t
+			else
+				result := <conc; transitive-closure(s|[h|accu])> (<s> h, t)
+			end
+
+rules // index helpers
+			
+	index-add-all = index-add-all(|<index-get-current-file>)

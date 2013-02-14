@@ -19,8 +19,9 @@ imports
 	dependencies
 	
   qls/names-qls
+  qls/dependencies
+  qls/check
  //  qls/types
- //  qls/check
 	// qls/desugar
 	
 rules // Analysis
@@ -39,7 +40,9 @@ rules // Analysis
       
       (ast'', filesToAnalyze) := <analyze-top(|<language>)> (ast', path, project-path);
       index-transaction(
-      	if not(QLS(_,_) := ast) then
+      	if (QLS(_,_) := ast) then
+      		<qls-analyze-dependencies> ast''
+      	else
 	        <analyze-dependencies> ast''
 	      end;
 	      errors                := <collect-all(constraint-error, conc)> ast'';

@@ -1,4 +1,21 @@
 module qls/check
 
-rules
+imports
+	include/QL
+	qls/dependencies
+
+rules // generic
 	
+	constraint-warning = fail
+	
+	constraint-note = fail
+
+rules // styles
+	
+	constraint-error:
+		|[ define style sid { stydef* }]| -> (sid, $[Style [sid] has cyclic dependencies])
+		where
+			<qls-get-dependent-styles> sid;
+			qls-get-all-dependent-styles;
+			fetch(?sid)
+		

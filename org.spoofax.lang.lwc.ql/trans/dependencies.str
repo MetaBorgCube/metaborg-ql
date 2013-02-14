@@ -5,6 +5,7 @@ imports
 	analysis-library.generated
 	include/QL
 	names
+	utils
 	
 signature constructors
 	
@@ -55,22 +56,5 @@ rules
 		index-lookup;
 		index-get-data-all(|Type());
 		make-set
-
-	
-rules
-	
-	transitive-closure(s) = transitive-closure(s|[])
-	
-	transitive-closure(s|accu): []		-> accu
-	transitive-closure(s|accu): [h|t]	-> result
-		where
-			if <elem> (h, accu) then
-				result := <transitive-closure(s|accu)> t
-			else
-				result := <conc; transitive-closure(s|[h|accu])> (<s> h, t)
-			end
-			
-			
-	index-add-all = index-add-all(|<index-get-current-file>)
 	
 	 

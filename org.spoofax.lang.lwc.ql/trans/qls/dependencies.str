@@ -1,0 +1,39 @@
+module qls/dependencies
+
+imports
+	index-library.generated
+	analysis-library.generated
+	include/QL
+	utils
+	
+/*
+* Analyze and store dependencies of styles
+*/
+
+signature
+	constructors
+		StyDependencies: DefDataKind
+
+rules
+
+	qls-analyze-dependencies:
+		QLS(sdefs, _) -> <map(qls-analyze-dependencies)> sdefs
+	
+	qls-analyze-dependencies:
+		|[ define style sid { stydef* } ]| -> <index-add-all> [ DefData(uri, StyDependencies(), deps) ]
+		with
+			deps := <filter(?StyleRef(_))> stydef*;
+			uri := <index-uri> sid
+
+rules
+	
+	qls-get-dependent-styles =
+		index-lookup;
+		index-get-data-all(|StyDependencies());
+		unions;
+		filter(?StyleRef(<id>))
+	
+	qls-get-all-dependent-styles =
+		(is-list <+ MkSingleton);
+		transitive-closure(qls-get-dependent-styles)
+	

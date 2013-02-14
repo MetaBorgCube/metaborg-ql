@@ -7,6 +7,8 @@ exports
 
 
 	context-free syntax
+		"qls" "|[" StyleDef				"]|" -> E {cons("ToMetaExpr")}
+					"|[" StyleDef				"]|" -> E {cons("ToMetaExpr")}
 		"qls" "|[" Page           "]|" -> E {cons("ToMetaExpr")}
 		      "|[" Page           "]|" -> E {cons("ToMetaExpr")}
 		"qls" "|[" PagePart       "]|" -> E {cons("ToMetaExpr")}
@@ -18,15 +20,20 @@ exports
 
 	variables
 
-		("page"|"p") [0-9]* "*"	   	 -> Page* 		 {prefer}
-		("page"|"p") [0-9]*	       	 -> Page 			 {prefer}
-		"fref" [0-9]*						     -> FormRef    {prefer}
-		"fref" [0-9]* "*"			       -> FormRef*   {prefer}
-		("pagepart"|"pp") [0-9]*	 	 -> PagePart   {prefer}
-		("pagepart"|"pp") [0-9]* "*" -> PagePart   {prefer}
-		("style"|"s") [0-9]*       	 -> Style      {prefer}
-		("color"|"co") [0-9]*      	 -> Color      {prefer}
-		("widget"|"w") [0-9]*      	 -> Widget     {prefer}
-		("section"|"s") [0-9]*     	 -> Section    {prefer}
-		("subsection"|"ss") [0-9]* 	 -> SubSection {prefer}
-		("str") [0-9]*               -> STRING     {prefer}
+		"stydef" [0-9]* "*"						-> DefStyle*	{prefer}
+		"stydef" [0-9]*								-> DefStyle		{prefer}
+		("page"|"p") [0-9]* "*"				-> Page*			{prefer}
+		("page"|"p") [0-9]*						-> Page				{prefer}
+		"fref" [0-9]*									-> FormRef    {prefer}
+		"fref" [0-9]* "*"							-> FormRef*   {prefer}
+		("pagepart"|"pp") [0-9]*			-> PagePart   {prefer}
+		("pagepart"|"pp") [0-9]* "*"	-> PagePart   {prefer}
+		("style"|"s") [0-9]*					-> Style      {prefer}
+		("color"|"co") [0-9]*					-> Color      {prefer}
+		("widget"|"w") [0-9]*					-> Widget     {prefer}
+		("section"|"s") [0-9]*				-> Section    {prefer}
+		("subsection"|"ss") [0-9]*		-> SubSection {prefer}
+		("str") [0-9]*								-> STRING     {prefer}
+		"sid" [0-9]*									-> ID					{prefer}
+		"sid" [0-9]* "*"							-> ID*				{prefer}
+		
