@@ -1,3 +1,7 @@
+lexical syntax
+
+  "#" [0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F] -> COLOR
+
 templates // top-level
   
   QLS.QLS = <<Page*; separator="\n\n">>
@@ -11,10 +15,27 @@ templates // top-level
 	>
 
 templates // questions
+	
+	Ref.QuestionRef = <<ID> <Styles?>>
 
   PagePart = <<Ref>>
+	
+templates // styling
 
-	Ref.Ref = <<ID>>
+  Styles.Styles = < { 
+  		<Style+; separator=" ">
+		}
+	>
+	
+  Style.Font   = <font = <STRING>>
+  Style.Color  = <color = <COLOR>>
+  Style.Widget = <widget = <Widget>>
+  
+  Widget.CheckBox = <checkbox>
+  Widget.CheckBox = <radio>
+  Widget.CheckBox = <dropdown>
+  Widget.CheckBox = <text>
+  Widget.CheckBox = <slider>
 	
 templates // section
 
