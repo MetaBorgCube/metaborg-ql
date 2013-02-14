@@ -1,0 +1,28 @@
+module QLSMix[E]
+
+imports
+	QLS
+	
+exports
+
+
+	context-free syntax
+		"qls" "|[" Page           "]|" -> E {cons("ToMetaExpr")}
+		      "|[" Page           "]|" -> E {cons("ToMetaExpr")}
+		"qls" "|[" PagePart       "]|" -> E {cons("ToMetaExpr")}
+		      "|[" PagePart       "]|" -> E {cons("ToMetaExpr")}
+		"qls" "|[" SubPagePart    "]|" -> E {cons("ToMetaExpr")}
+		      "|[" SubPagePart    "]|" -> E {cons("ToMetaExpr")}
+		"qls" "|[" SubSubPagePart "]|" -> E {cons("ToMetaExpr")}
+		      "|[" SubSubPagePart "]|" -> E {cons("ToMetaExpr")}
+
+	variables
+
+		("page"|"p") [0-9]* "*"	   -> Page* {prefer}
+		("page"|"p") [0-9]*	       -> Page {prefer}
+		("style"|"s") [0-9]*       -> Style {prefer}
+		("color"|"co") [0-9]*      -> Color {prefer}
+		("widget"|"w") [0-9]*      -> Widget {prefer}
+		("section"|"s") [0-9]*     -> Section {prefer}
+		("subsection"|"ss") [0-9]* -> SubSection {prefer}
+		("str") [0-9]*             -> STRING {prefer}

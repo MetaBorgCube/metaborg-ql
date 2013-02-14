@@ -4,7 +4,7 @@
         
         <!-- Key input modules -->
         <property name="sdfmodule" value="QL"/>
-        <property name="metasdfmodule" value="Stratego-QL-WebDSL"/>
+        <property name="metasdfmodule" value="Stratego-QLS-QL-WebDSL"/>
         <property name="esvmodule" value="QL"/>
         <property name="strmodule" value="ql"/>
     
