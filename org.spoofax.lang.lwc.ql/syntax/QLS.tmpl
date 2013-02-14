@@ -1,0 +1,31 @@
+templates // top-level
+  
+  QLS.QLS = <<Page*; separator="\n\n">>
+  
+	Page.Page = <
+		page <STRING> for <ID+; separator=" "> {
+			<PagePart*; separator="\n">
+		}
+	>
+
+templates // question
+
+	PagePart.Ref = <<ID>>
+	
+templates // section
+
+  PagePart.Section = <
+  	section <STRING> {
+  		<SubPagePart*; separator="\n">
+  	}
+  >
+  
+  SubPagePart.Ref = <<ID>>
+  
+  SubPagePart.SubSection = <
+  	subsection <STRING> {
+  		<SubSubPagePart*; separator="\n">
+  	}
+  >
+  
+  SubSubPagePart.Ref = <<ID>>
