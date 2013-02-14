@@ -7,21 +7,27 @@ exports
 
 
 	context-free syntax
-		"qls" "|[" StyleDef				"]|" -> E {cons("ToMetaExpr")}
-					"|[" StyleDef				"]|" -> E {cons("ToMetaExpr")}
-		"qls" "|[" Page           "]|" -> E {cons("ToMetaExpr")}
-		      "|[" Page           "]|" -> E {cons("ToMetaExpr")}
-		"qls" "|[" PagePart       "]|" -> E {cons("ToMetaExpr")}
-		      "|[" PagePart       "]|" -> E {cons("ToMetaExpr")}
-		"qls" "|[" SubPagePart    "]|" -> E {cons("ToMetaExpr")}
-		      "|[" SubPagePart    "]|" -> E {cons("ToMetaExpr")}
-		"qls" "|[" SubSubPagePart "]|" -> E {cons("ToMetaExpr")}
-		      "|[" SubSubPagePart "]|" -> E {cons("ToMetaExpr")}
+		"qls" "|["	StyleDef							"]|"	-> E {cons("ToMetaExpr")}
+					"|["	StyleDef							"]|"	-> E {cons("ToMetaExpr")}
+		"qls" "|["	TypedWidgetComponent	"]|"	-> E {cons("ToMetaExpr")}
+					"|["	TypedWidgetComponent	"]|"	-> E {cons("ToMetaExpr")}
+		"qls" "|["	WidgetComponent				"]|"	-> E {cons("ToMetaExpr")}
+					"|["	WidgetComponent				"]|"	-> E {cons("ToMetaExpr")}
+		"qls" "|["	Page           				"]|"	-> E {cons("ToMetaExpr")}
+		      "|["	Page           				"]|"	-> E {cons("ToMetaExpr")}
+		"qls" "|["	PagePart       				"]|"	-> E {cons("ToMetaExpr")}
+		      "|["	PagePart       				"]|"	-> E {cons("ToMetaExpr")}
+		"qls" "|["	SubPagePart    				"]|"	-> E {cons("ToMetaExpr")}
+		      "|["	SubPagePart    				"]|"	-> E {cons("ToMetaExpr")}
+		"qls" "|["	SubSubPagePart 				"]|"	-> E {cons("ToMetaExpr")}
+		      "|["	SubSubPagePart				"]|"	-> E {cons("ToMetaExpr")}
 
 	variables
 
 		"stydef" [0-9]* "*"						-> DefStyle*	{prefer}
 		"stydef" [0-9]*								-> DefStyle		{prefer}
+		"widge" [0-9]*								-> Widget			{prefer}
+		("type"|"t") [0-9]*						-> Type				{prefer}
 		("page"|"p") [0-9]* "*"				-> Page*			{prefer}
 		("page"|"p") [0-9]*						-> Page				{prefer}
 		"fref" [0-9]*									-> FormRef    {prefer}

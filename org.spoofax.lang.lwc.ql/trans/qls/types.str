@@ -14,6 +14,6 @@ rules
 	qls-type-of: CheckBox() -> [BoolTy()]
 	qls-type-of: Radio() -> [BoolTy()]
 	qls-type-of: Dropdown() -> [BoolTy(), StringTy()]
-	qls-type-of: Text() -> [StringTy(), IntTy(), FloatTy()]
+	qls-type-of: Text() -> [StringTy(), IntTy(), FloatTy(), DateTy()]
 	qls-type-of: Slider() -> [IntTy()]
 	qls-type-of: DatePicker() -> [DateTy()]

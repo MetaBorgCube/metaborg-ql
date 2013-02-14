@@ -10,8 +10,7 @@ define style B {
 define style C {
 	style = A
 	style = B
-	integer widget = radio
-	boolean widget = checkbox
+	boolean widget = radio
 }
 
 
