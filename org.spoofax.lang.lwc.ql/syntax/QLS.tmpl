@@ -2,15 +2,19 @@ templates // top-level
   
   QLS.QLS = <<Page*; separator="\n\n">>
   
+  FormRef.FormRef = <<ID>>
+  
 	Page.Page = <
-		page <STRING> for <ID+; separator=" "> {
+		page <STRING> for <FormRef+; separator=" "> {
 			<PagePart*; separator="\n">
 		}
 	>
 
-templates // question
+templates // questions
 
-	PagePart.Ref = <<ID>>
+  PagePart = <<Ref>>
+
+	Ref.Ref = <<ID>>
 	
 templates // section
 
@@ -20,7 +24,7 @@ templates // section
   	}
   >
   
-  SubPagePart.Ref = <<ID>>
+  SubPagePart = <<Ref>>
   
   SubPagePart.SubSection = <
   	subsection <STRING> {
@@ -28,4 +32,4 @@ templates // section
   	}
   >
   
-  SubSubPagePart.Ref = <<ID>>
+  SubSubPagePart = <<Ref>>
