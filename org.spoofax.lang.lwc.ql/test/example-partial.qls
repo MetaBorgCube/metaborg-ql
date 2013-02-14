@@ -10,7 +10,11 @@ page "PAGE HEADING" for Box1HouseOwning {
 		}
 
 		subsection "SUBSECTION HEADING" {
-			hasSoldHouse
+			hasSoldHouse {
+				font   = "Comic Sans"
+				color  = #000000
+				widget = radio 
+			}	
 			sellingPrice
 			privateDebt
 			valueResidue
