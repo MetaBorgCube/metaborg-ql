@@ -1,6 +1,7 @@
 module generate
 
 imports
+	
 	libstratego-lib
 	libstratego-gpp
 	libstratego-aterm
@@ -16,23 +17,10 @@ signature
 		
 		String : STRING -> String
 		Text   : STRING -> Text
-	
-rules // Incremental code generation
-			
-	index-compile-ast(|file, subfile):
-		ast -> None()
-		with
-			webdsl     := <compile> ast;
-			full-path  := <dirname> file;
-			filename   := <guarantee-extension(|"app")> <base-filename> file;
-			writePath  := $[[full-path]/];
-			writeFile  :=	$[[writePath][filename]];
-			try(<mkdir> writePath);
-			<fclose> <fputs> (webdsl, <fopen> (writeFile, "w"))
 
 rules // QL to WebDSL compilation
 	
-  compile: 
+  compile-ql: 
   	form@|[ form fid { question* } ]| -> 
 	  |[ 
 	  	module form 
@@ -45,30 +33,30 @@ rules // QL to WebDSL compilation
 	  ]|
 	  where
 	  	x    := fid;
-	  	ent  := <compile-entity> form;
-	  	tdef := <compile-template> form
+	  	ent  := <compile-ql-entity> form;
+	  	tdef := <compile-ql-template> form
 	  	
 rules // QL questions to WebDSL entity
 	  
-  compile-entity: 
+  compile-ql-entity: 
   	|[ form fid { question* } ]| -> |[ entity x_formID { ebd* } ]|
   	where
   		x_formID := fid;
-	  	ebd*     := <collect-all(compile-entity-part)> question*
+	  	ebd*     := <collect-all(compile-ql-entity-part)> question*
 	  	
-  compile-entity-part: 
+  compile-ql-entity-part: 
   	|[ qid : label t ]| -> |[ x_formID :: srt_type ]|
     where
   	  x_formID := qid;
-  	  srt_type := <compile-type> t
+  	  srt_type := <compile-ql-type> t
 
 rules // QL questions to WebDSL template
 	
-  compile-template: 
+  compile-ql-template: 
   	|[ form fid { question* } ]| -> 
 	  tdef |[
-	    define showForm(form : x_formID) {
-	    	horizontalForm {
+	    define showForm(form : x_formID, name : String) {
+	    	horizontalForm(name) {
 	  		  elem_group*
 	  		  
 			    formActions {
@@ -83,51 +71,51 @@ rules // QL questions to WebDSL template
 	  ]|
     where
     	x_formID    := fid;
-    	elem_group* := <map(compile-template-part)> question*
+    	elem_group* := <map(compile-ql-template-part)> question*
   
-  compile-template-part: 
+  compile-ql-template-part: 
   	|[ qid : label t ]| -> elem |[ controlGroup(e_label) { input(form.x_id) } ]|
   	where
   		x_id    := qid;
-  		e_label := <compile-exp> label
+  		e_label := <compile-ql-exp> label
   		
-  compile-template-part: 
+  compile-ql-template-part: 
   	|[ qid : label t ( exp ) ]| -> elem |[ controlGroup(e_label) { output(e_typeExp) } ]|
   	where
-  		e_label   := <compile-exp> label;
-  		e_typeExp := <compile-exp> exp
+  		e_label   := <compile-ql-exp> label;
+  		e_typeExp := <compile-ql-exp> exp
   		
-  compile-template-part: 
+  compile-ql-template-part: 
   	|[ if ( cond ) { q* } ]| -> elem |[ if (e_cond) { elem_question* } ]|
   	where
-  		e_cond         := <compile-exp> cond;
-  		elem_question* := <map(compile-template-part)> q*
+  		e_cond         := <compile-ql-exp> cond;
+  		elem_question* := <map(compile-ql-template-part)> q*
 
 rules // QL types to WebDSL types
   
-  compile-type: ql |[ boolean ]| -> webdsl |[ Bool   ]|
-  compile-type: ql |[ string  ]| -> webdsl |[ String ]|
-  compile-type: ql |[ integer ]| -> webdsl |[ Int    ]|
-  compile-type: ql |[ date    ]| -> webdsl |[ Date   ]|
-  compile-type: ql |[ decimal ]| -> webdsl |[ Float  ]|
-  compile-type: ql |[ money   ]| -> webdsl |[ Float  ]|
+  compile-ql-type: ql |[ boolean ]| -> webdsl |[ Bool   ]|
+  compile-ql-type: ql |[ string  ]| -> webdsl |[ String ]|
+  compile-ql-type: ql |[ integer ]| -> webdsl |[ Int    ]|
+  compile-ql-type: ql |[ date    ]| -> webdsl |[ Date   ]|
+  compile-ql-type: ql |[ decimal ]| -> webdsl |[ Float  ]|
+  compile-ql-type: ql |[ money   ]| -> webdsl |[ Float  ]|
   
 rules // QL expressions to WebDSL expressions
   
-  compile-exp = bottomup(try(compile-exp-part))
+  compile-ql-exp = bottomup(try(compile-ql-exp-part))
   
-  compile-exp-part: Label(s) -> String(<try(un-double-quote)> s)
-  compile-exp-part: Ref(qid) -> |[ form.x ]| where x := qid
+  compile-ql-exp-part: Label(s) -> String(<try(un-double-quote)> s)
+  compile-ql-exp-part: Ref(qid) -> |[ form.x ]| where x := qid
   
-  compile-exp-part: ql |[    !e    ]| -> webdsl:e |[    !e    ]|
-  compile-exp-part: ql |[ e1 && e2 ]| -> webdsl:e |[ e1 && e2 ]|
-  compile-exp-part: ql |[ e1 || e2 ]| -> webdsl:e |[ e1 || e2 ]|
-  compile-exp-part: ql |[ e1 <  e2 ]| -> webdsl:e |[ e1 <  e2 ]|
-  compile-exp-part: ql |[ e1 <= e2 ]| -> webdsl:e |[ e1 <= e2 ]|
-  compile-exp-part: ql |[ e1 >  e2 ]| -> webdsl:e |[ e1 >  e2 ]|
-  compile-exp-part: ql |[ e1 >= e2 ]| -> webdsl:e |[ e1 >= e2 ]|
-  compile-exp-part: ql |[ e1 == e2 ]| -> webdsl:e |[ e1 == e2 ]|
-  compile-exp-part: ql |[ e1 +  e2 ]| -> webdsl:e |[ e1 +  e2 ]|
-  compile-exp-part: ql |[ e1 -  e2 ]| -> webdsl:e |[ e1 -  e2 ]|
-  compile-exp-part: ql |[ e1 *  e2 ]| -> webdsl:e |[ e1 *  e2 ]|
-  compile-exp-part: ql |[ e1 /  e2 ]| -> webdsl:e |[ e1 /  e2 ]|
+  compile-ql-exp-part: ql |[    !e    ]| -> webdsl:e |[    !e    ]|
+  compile-ql-exp-part: ql |[ e1 && e2 ]| -> webdsl:e |[ e1 && e2 ]|
+  compile-ql-exp-part: ql |[ e1 || e2 ]| -> webdsl:e |[ e1 || e2 ]|
+  compile-ql-exp-part: ql |[ e1 <  e2 ]| -> webdsl:e |[ e1 <  e2 ]|
+  compile-ql-exp-part: ql |[ e1 <= e2 ]| -> webdsl:e |[ e1 <= e2 ]|
+  compile-ql-exp-part: ql |[ e1 >  e2 ]| -> webdsl:e |[ e1 >  e2 ]|
+  compile-ql-exp-part: ql |[ e1 >= e2 ]| -> webdsl:e |[ e1 >= e2 ]|
+  compile-ql-exp-part: ql |[ e1 == e2 ]| -> webdsl:e |[ e1 == e2 ]|
+  compile-ql-exp-part: ql |[ e1 +  e2 ]| -> webdsl:e |[ e1 +  e2 ]|
+  compile-ql-exp-part: ql |[ e1 -  e2 ]| -> webdsl:e |[ e1 -  e2 ]|
+  compile-ql-exp-part: ql |[ e1 *  e2 ]| -> webdsl:e |[ e1 *  e2 ]|
+  compile-ql-exp-part: ql |[ e1 /  e2 ]| -> webdsl:e |[ e1 /  e2 ]|

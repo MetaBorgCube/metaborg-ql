@@ -19,25 +19,45 @@ imports
 	types
 	dependencies
 	
+  qls/names-qls
+  qls/styles
+  qls/check
+ //  qls/types
+	// qls/desugar
+	
 rules // Analysis
   
 	// Analyzes the current program, returning a tuple with the analyzed AST, errors, warnings, notes and
 	// files that should be re-analyzed.
   analyze:
-    (ast, path, project-path) -> (ast''', errors, warnings, notes, filesToAnalyze')
+    (ast, path, project-path) -> (ast'''', errors, warnings, notes, filesToAnalyze')
     with
-      ast'                    := <desugar-all> ast; // Optional AST desugaring
+    	if not(QLS(_,_) := ast) then
+	      ast'                    := <desugar-all> ast
+	    else
+	    	ast'                    := ast
+    	end;
       (ast'', filesToAnalyze) := <analyze-top(|<language>)> (ast', path, project-path);
       index-transaction(
-	      <analyze-dependencies> ast'';
+      	if (QLS(_,_) := ast) then
+      		<qls-analyze-dependencies> ast'';
+      		<qls-store-styles> ast''
+      	else
+	        <analyze-dependencies> ast''
+	      end;
 	      errors                := <collect-all(constraint-error, conc)> ast'';
 	      warnings              := <collect-all(constraint-warning, conc)> ast'';
-	      notes                 := <collect-all(constraint-note, conc)> ast''
+	      notes                 := <collect-all(constraint-note, conc)> ast'';
+	      if (QLS(_,_) := ast'') then
+	      	ast''' := <qls-normalize-top> ast''
+	      else
+	      	ast''' := ast''
+	      end
       );
       if <?[]> errors then
-      	ast''' := <one(sort-questions)> ast''
+      	ast'''' := <one(sort-questions)> ast'''
       else
-      	ast''' := ast''
+      	ast'''' := ast'''
       end;
       filesToAnalyze'         := <index-filepairs-to-files> filesToAnalyze
 
@@ -104,7 +124,7 @@ rules // Compilation
     (selected, position, ast, path, project-path) -> (filename, result)
     with
     	filename := <guarantee-extension(|"app")> path;
-    	webdsl   := <compile> selected;
+    	webdsl   := <compile-ql> selected;
     	result   := <pp-webdsl-string> webdsl
     	
   pp-webdsl-string =
@@ -134,7 +154,7 @@ rules // Debugging
     with
       editor-init;
       filename := <guarantee-extension(|"analyzed.aterm")> path;
-      result   := <analyze-top(|<language>)> (selected, path, project-path)   
+      result   := ast   
       
   // Prints the entries in the index of the current file.
   debug-index-show-current-file:

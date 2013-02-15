@@ -1,0 +1,137 @@
+module qls/styles
+
+imports
+	index-library.generated
+	analysis-library.generated
+	include/QL
+	utils
+	qls/types
+	qls/defaults
+	
+signature
+	constructors
+		Dependencies: DefDataKind
+		StyleDefinitions: DefDataKind
+		
+rules
+	/*
+	* Analyze and store dependencies of styles
+	*/
+
+	qls-analyze-dependencies:
+		QLS(sdefs, _) -> <map(qls-analyze-dependencies)> sdefs
+	
+	qls-analyze-dependencies:
+		|[ define style sid { stydef* } ]| -> <index-add-all> [ DefData(uri, Dependencies(), deps) ]
+		with
+			deps := <filter(?StyleRef(_))> stydef*;
+			uri := <index-uri> sid
+	
+rules
+	/*
+	* Query dependencies of style (SHALLOW)
+	*/
+	
+	qls-get-dependent-styles =
+		index-lookup;
+		index-get-data-all(|Dependencies());
+		unions;
+		filter(?StyleRef(<id>))
+	
+	
+	/*
+	* Query dependencies of style (DEEP)
+	*/
+	qls-get-all-dependent-styles =
+		(is-list <+ MkSingleton);
+		transitive-closure(qls-get-dependent-styles)
+	
+	/*
+	* Succeed if style has circular dependency (DEEP)
+	*/
+	qls-has-circular-dependency-style =
+		?sid;
+		qls-get-dependent-styles;
+		qls-get-all-dependent-styles;
+		fetch(?sid)
+
+rules
+	/*
+	* Store styling attributes in index, easier for lookups
+	*/
+	
+	qls-store-styles:
+		QLS(sdefs, _) -> <map(qls-store-styles)> sdefs
+		
+	qls-store-styles:
+		|[ define style sid { stydef* } ]| -> <index-add-all> [ DefData(uri, StyleDefinitions(), stydef*) ]
+		with
+			uri := <index-uri> sid
+		
+rules
+	/*
+	* Style linearization and concretization.
+	* Basically recursively expand StyleRefs
+	*/
+
+	qls-make-concrete-style =
+		?StyleRef(<id>);
+		index-lookup;
+		index-get-data(|StyleDefinitions())
+	
+	qls-make-all-concrete-style =
+		map(try(not(qls-has-circular-dependency-style);qls-make-concrete-style;qls-make-all-concrete-style));
+		flatten-list
+	
+	qls-make-all-concrete-style = not(is-list)
+
+rules
+	/*
+	* Style simplification
+	* The last provided styling is the one that wins
+	*/
+	qls-simplify-style =
+		make-set(is-same-style)
+	
+	is-same-style =
+		?(lc#(ll), rc#(rl));
+		<?lc> rc;
+		<eq> (<length> ll, <length> rl)
+		
+rules
+	/*
+	* Add attached type to the non-typed widget stylings
+	*/
+	entype-widgets(|ty) =
+		is-list;
+		map(try(entype-widget(|ty)))
+		
+	entype-widget(|ty):
+		Widget(w) -> TypedWidget(ty, w)
+
+rules
+	/* Normalize all SimpleRef and StyleRef.
+	* - all StyleRefs are made concrete and simplified
+	* - all SimpleRefs become StyleRef
+	*/
+	qls-normalize-top = alltd(qls-normalize)
+	
+	qls-normalize:
+		|[ qid { style0* }]| -> |[ qid { style1* }]|
+		where
+			qls-type-of => q-type;
+			<qls-make-all-concrete-style> style0*;
+			entype-widgets(|q-type);
+			qls-simplify-style => style1*
+	
+	qls-normalize:
+		SimpleRef(qid) -> StyledRef(qid, <qls-default-style(|q-ty)>)
+		where
+			qls-type-of => q-ty
+
+
+
+
+		
+	
+	

@@ -11,6 +11,6 @@ language General properties
   description   : "Spoofax/IMP-generated editor for the QL language"
   url           : http://strategoxt.org
                   
-  extensions    : ql
+  extensions    : ql, qls
   table         : include/QL.tbl
   start symbols : Form

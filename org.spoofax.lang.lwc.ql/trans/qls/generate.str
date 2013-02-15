@@ -1,0 +1,61 @@
+module qls/generate
+
+imports
+	
+	libstratego-lib
+	libstratego-gpp
+	libstratego-aterm
+	lib/editor-common.generated
+	lib/compilation-library.generated
+
+	include/QL
+	lib/webdsl/WebDSL
+	
+rules
+	
+	compile-qls: 
+		QLS(_, page*) -> <id>
+		/*webdsl |[
+			//form entities
+			
+			//globals
+			
+			//p1
+			//p2
+			//...
+			
+			//root page
+		]|*/
+		where
+			fref* := <mapconcat(qls-page-forms); make-set> page*
+			// use ql compiler to create referenced forms
+			// create globals for referenced forms
+			// compile each page
+			// create a root page that navigates to the first page
+
+  qls-page-forms:
+  	|[ page str1 for fref* { pp* } ]| -> fref*			
+	
+	compile-qls-page:
+		|[ page str1 for fref* { pp* } ]| -> 
+		webdsl |[ 
+			page page1() {
+				
+			}
+		]|
+	  where
+	  	id
+	  	// create page name
+	  	// for each part
+	  	//   if it is a question reference, compile it
+	  	//   if it is a section/subsection, compile it to a webdsl section/subsection and nest question references inside it
+	  	
+	compile-qls-part:
+		|[ qid { s* } ]| -> <id>
+		where
+			id
+			// get label, type and condition from the index
+			// if there is a condition, compile that first
+			// compile question, nested into the condition if needed
+			
+			

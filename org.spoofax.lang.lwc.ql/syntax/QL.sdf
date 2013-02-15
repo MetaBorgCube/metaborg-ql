@@ -3,6 +3,7 @@ module QL
 imports
 	Common
 	QLgenerated
+	QLS %% TODO: QLS should be the main SDF file that imports QL
 
 exports
 

@@ -1,0 +1,30 @@
+module qls/names-qls
+
+imports 
+  
+  names
+  include/QL
+  
+namespaces FrmImport Style
+  
+rules
+
+	QLS(_,_):
+		scopes Style
+  		
+  FormRef(f):
+  	defines non-unique FrmImport f
+  	refers to Frm f
+  	imports Quest from Frm f {current-file}
+
+ 	StyleDef(s, _):
+ 		defines Style s
+
+	StyleRef(s):
+		refers to Style s
+	
+	StyledRef(q, _):
+		refers to Quest q
+	
+	SimpleRef(q):
+		refers to Quest q

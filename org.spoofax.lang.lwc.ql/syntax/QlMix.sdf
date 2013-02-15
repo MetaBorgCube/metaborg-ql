@@ -31,4 +31,7 @@ exports
 		("label"|"text"|"l") [0-9]*					    -> Label	{prefer}
 		("type"|"t") [0-9]*											-> Type		{prefer}
 		("texpr"|"texp"|"te") [0-9]*						-> TyExpr	{prefer}
+		"qref" [0-9]*						     						-> Ref    {prefer}
+		"qref" [0-9]* "*"			       						-> Ref*   {prefer}
 		[fgq] "id" [0-9]*												-> ID     {prefer}
+		[fgq] "id" [0-9]*	"*"										-> ID*    {prefer}

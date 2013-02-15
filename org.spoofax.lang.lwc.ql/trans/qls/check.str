@@ -1,0 +1,46 @@
+module qls/check
+
+imports
+	include/QL
+	qls/styles
+	qls/types
+	lib/editor-common.generated
+	
+rules // generic
+	
+	constraint-warning = fail
+	
+	constraint-note = fail
+
+rules // style dependencies
+	
+	constraint-error:
+		|[ define style sid { stydef* }]| -> (sid, $[Style [sid] has cyclic dependencies])
+		where
+			<qls-has-circular-dependency-style> sid
+
+rules // widget types
+	
+	// typed widget declaration in style definition
+	constraint-error =
+		?|[type widget = widge ]|;
+		<qls-type-error(elem)> (type, widge)
+
+	// untyped widget in question styling
+	constraint-error =
+		?|[ qid { style* }]|;
+		qls-type-of => q-type;
+		<filter(?Widget(<id>))> style*;
+		map(!(q-type, <id>));
+		filter(qls-type-error(elem))
+
+rules // type error reporter helper
+	
+	qls-type-error(s): 
+		(type, widget) -> (widget, $[Widget ([pp-widget]) cannot be used for type [pp-type]])
+		where
+			<qls-type-of> widget => widget-ty;
+			<not(s)> (type, widget-ty);
+			<pp-ql-string> widget => pp-widget;
+			<pp-ql-string> type => pp-type
+
