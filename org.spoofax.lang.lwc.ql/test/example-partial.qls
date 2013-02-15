@@ -1,22 +1,33 @@
+// default style {
+// 		
+// }
 
 define style A {
-	font = "Helvetica"
+	font = "Helvetica6"
+	font = "Helvetica5"
+	font = "Helvetica4"
+	font = "Helvetica3"
+	font = "Helvetica2"
+	font = "Helvetica1"
 }
 
 define style B {
+	style = A
 	color = #333333	
+	font = "Font in B"
 }
 
 define style C {
-	style = A
 	style = B
+	font = "Cucu"
+	style = A
 	boolean widget = radio
 }
 
 
 page "PAGE HEADING" for Box1HouseOwning {
 		hasBoughtHouse
-		hasLivedAbroad { style = A }
+		// hasLivedAbroad { style = A }
 
 	section "SECTION HEADING" {
 		subsection "SUBSECTION HEADING" {
@@ -26,14 +37,15 @@ page "PAGE HEADING" for Box1HouseOwning {
 		}
 
 		subsection "SUBSECTION HEADING" {
-			hasSoldHouse {
-				style  = C
-				font   = "Comic Sans"
-				color  = #000000
-				widget = datepicker
-				widget = text
-				widget = dropdown
-			}	
+			hasSoldHouse
+			//  {
+			// 	style  = C
+			// 	font   = "Comic Sans"
+			// 	color  = #000000
+			// 	widget = datepicker
+			// 	widget = text
+			// 	widget = dropdown
+			// }	
 			sellingPrice
 			privateDebt 
 			valueResidue

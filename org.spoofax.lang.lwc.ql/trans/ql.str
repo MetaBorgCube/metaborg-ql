@@ -19,7 +19,7 @@ imports
 	dependencies
 	
   qls/names-qls
-  qls/dependencies
+  qls/styles
   qls/check
  //  qls/types
 	// qls/desugar
@@ -35,7 +35,8 @@ rules // Analysis
       (ast'', filesToAnalyze) := <analyze-top(|<language>)> (ast', path, project-path);
       index-transaction(
       	if (QLS(_,_) := ast) then
-      		<qls-analyze-dependencies> ast''
+      		<qls-analyze-dependencies> ast'';
+      		<qls-store-styles> ast''
       	else
 	        <analyze-dependencies> ast''
 	      end;

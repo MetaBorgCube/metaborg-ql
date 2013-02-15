@@ -1,0 +1,112 @@
+module qls/styles
+
+imports
+	index-library.generated
+	analysis-library.generated
+	include/QL
+	utils
+
+signature
+	constructors
+		Dependencies: DefDataKind
+		StyleDefinitions: DefDataKind
+		
+rules
+	/*
+	* Analyze and store dependencies of styles
+	*/
+
+	qls-analyze-dependencies:
+		QLS(sdefs, _) -> <map(qls-analyze-dependencies)> sdefs
+	
+	qls-analyze-dependencies:
+		|[ define style sid { stydef* } ]| -> <index-add-all> [ DefData(uri, Dependencies(), deps) ]
+		with
+			deps := <filter(?StyleRef(_))> stydef*;
+			uri := <index-uri> sid
+	
+rules
+	/*
+	* Query dependencies of style (SHALLOW)
+	*/
+	
+	qls-get-dependent-styles =
+		index-lookup;
+		index-get-data-all(|Dependencies());
+		unions;
+		filter(?StyleRef(<id>))
+	
+	
+	/*
+	* Query dependencies of style (DEEP)
+	*/
+	qls-get-all-dependent-styles =
+		(is-list <+ MkSingleton);
+		transitive-closure(qls-get-dependent-styles)
+	
+	/*
+	* Succeed if style has circular dependency (DEEP)
+	*/
+	qls-has-circular-dependency-style =
+		?sid;
+		qls-get-dependent-styles;
+		qls-get-all-dependent-styles;
+		fetch(?sid)
+
+rules
+	/*
+	* Store styling attributes in index, easier for lookups
+	*/
+	
+	qls-store-styles:
+		QLS(sdefs, _) -> <map(qls-store-styles)> sdefs
+		
+	qls-store-styles:
+		|[ define style sid { stydef* } ]| -> <index-add-all> [ DefData(uri, StyleDefinitions(), stydef*) ]
+		with
+			uri := <index-uri> sid
+		
+rules
+	/*
+	* Style linearization and concretization.
+	* Basically recursively expand StyleRefs
+	*/	
+	qls-make-concrete-style =
+		?StyleRef(<id>);
+		index-lookup;
+		index-get-data(|StyleDefinitions())
+	
+	qls-make-concrete-style = not(?StyleRef(_));MkSingleton
+	
+	qls-make-all-concrete-style =
+		(is-list <+ MkSingleton);
+		transitive-closure(qls-make-concrete-style);
+		filter(not(?StyleRef(_)));
+		reverse
+
+rules
+	/*
+	* Style simplification
+	* The last provided styling is the one that wins
+	*/
+	qls-simplify-style =
+		debug(!"A...");
+		make-set(style-same);
+		debug(!"B...")
+	
+	style-same=
+		debug(!"C...");
+		?(lc#(ll), rc#(rl));
+		debug(!"D...");
+		<?lc> rc;
+		debug(!"E...");
+		<eq> (<length> ll, <length> rl);
+		debug(!"F...")
+		
+	make-set(eq) = foldr(![], union(eq), ![<id>])
+
+
+
+		
+	
+	

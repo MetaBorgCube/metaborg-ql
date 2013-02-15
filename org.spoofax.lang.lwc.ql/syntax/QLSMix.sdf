@@ -20,7 +20,7 @@ exports
 		"qls" "|["	SubSection           	"]|"	-> E {cons("ToMetaExpr")}
 		      "|["	SubSection           	"]|"	-> E {cons("ToMetaExpr")}
 		"qls" "|["	Ref           				"]|"	-> E {cons("ToMetaExpr")}
-		      "|["	Ref           				"]|"	-> E {cons("ToMetaExpr")}		      
+		      "|["	Ref           				"]|"	-> E {cons("ToMetaExpr")}
 
 	variables
 
