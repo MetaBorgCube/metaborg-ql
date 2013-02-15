@@ -70,19 +70,18 @@ rules
 	/*
 	* Style linearization and concretization.
 	* Basically recursively expand StyleRefs
-	*/	
+	*/
+
 	qls-make-concrete-style =
 		?StyleRef(<id>);
 		index-lookup;
 		index-get-data(|StyleDefinitions())
 	
-	qls-make-concrete-style = not(?StyleRef(_));MkSingleton
-	
 	qls-make-all-concrete-style =
-		(is-list <+ MkSingleton);
-		transitive-closure(qls-make-concrete-style);
-		filter(not(?StyleRef(_)));
-		reverse
+		map(try(qls-make-concrete-style;qls-make-all-concrete-style));
+		flatten-list
+	
+	qls-make-all-concrete-style = not(is-list)
 
 rules
 	/*
@@ -90,20 +89,24 @@ rules
 	* The last provided styling is the one that wins
 	*/
 	qls-simplify-style =
-		debug(!"A...");
-		make-set(style-same);
-		debug(!"B...")
+		make-set(is-same-style)
 	
-	style-same=
-		debug(!"C...");
+	is-same-style =
 		?(lc#(ll), rc#(rl));
-		debug(!"D...");
 		<?lc> rc;
-		debug(!"E...");
-		<eq> (<length> ll, <length> rl);
-		debug(!"F...")
+		<eq> (<length> ll, <length> rl)
 		
-	make-set(eq) = foldr(![], union(eq), ![<id>])
+rules
+	/*
+	* Add attached type to the non-typed widget stylings
+	*/
+	entype-widgets(|ty) =
+		is-list;
+		map(try(entype-widget(|ty)))
+		
+	entype-widget(|ty):
+		Widget(w) -> TypedWidget(ty, w)
+		
 
 
 

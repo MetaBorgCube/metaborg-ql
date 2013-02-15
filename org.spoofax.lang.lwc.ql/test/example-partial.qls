@@ -27,7 +27,7 @@ define style C {
 
 page "PAGE HEADING" for Box1HouseOwning {
 		hasBoughtHouse
-		// hasLivedAbroad { style = A }
+		hasLivedAbroad { style = A }
 
 	section "SECTION HEADING" {
 		subsection "SUBSECTION HEADING" {
@@ -38,14 +38,14 @@ page "PAGE HEADING" for Box1HouseOwning {
 
 		subsection "SUBSECTION HEADING" {
 			hasSoldHouse
-			//  {
-			// 	style  = C
-			// 	font   = "Comic Sans"
-			// 	color  = #000000
-			// 	widget = datepicker
-			// 	widget = text
-			// 	widget = dropdown
-			// }	
+			 {
+				font   = "Comic Sans"
+				color  = #000000
+				style  = C
+				widget = datepicker
+				widget = text
+				widget = dropdown
+			}	
 			sellingPrice
 			privateDebt 
 			valueResidue

@@ -19,3 +19,8 @@ rules // set transitive closure
 rules // index helpers
 			
 	index-add-all = index-add-all(|<index-get-current-file>)
+	
+rules // lists & sets
+	
+	// make-set with custom equality checker
+	make-set(eq) = foldr(![], union(eq), ![<id>])
