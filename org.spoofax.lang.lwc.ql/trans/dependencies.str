@@ -56,6 +56,9 @@ rules
 		index-get-data-all(|Type());
 		make-set
 
+	depends-on: (qid1, qid2) -> <get-all-dependent-questions; fetch-elem(?qid2)> qid1
+	
+	sort-questions = sort-list(LSort(depends-on))
 	
 rules
 	

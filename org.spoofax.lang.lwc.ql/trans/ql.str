@@ -23,7 +23,7 @@ rules // Analysis
 	// Analyzes the current program, returning a tuple with the analyzed AST, errors, warnings, notes and
 	// files that should be re-analyzed.
   analyze:
-    (ast, path, project-path) -> (ast'', errors, warnings, notes, filesToAnalyze')
+    (ast, path, project-path) -> (ast''', errors, warnings, notes, filesToAnalyze')
     with
       ast'                    := <id> ast; // Optional AST desugaring
       (ast'', filesToAnalyze) := <analyze-top(|<language>)> (ast', path, project-path);
@@ -33,6 +33,11 @@ rules // Analysis
 	      warnings              := <collect-all(constraint-warning, conc)> ast'';
 	      notes                 := <collect-all(constraint-note, conc)> ast''
       );
+      if <?[]> errors then
+      	ast''' := <one(sort-questions)> ast''
+      else
+      	ast''' := ast''
+      end;
       filesToAnalyze'         := <index-filepairs-to-files> filesToAnalyze
 
   // Main entry point for analyzes, called when a single file is opened in the editor.
