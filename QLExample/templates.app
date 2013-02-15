@@ -14,3 +14,29 @@ module templates
   override template brand() { 
     navigate root() [class="brand"]{ "Spoofax Forms" }
   }
+  
+  define main() {
+	  title{"Spoofax Forms"}
+	  mainResponsiveStyle {
+	    navbarResponsive {
+	
+	    }
+	    
+	    gridContainer {
+	      gridRow {
+	        gridSpan(12) {
+	          elements
+	        }
+	      }
+	    }
+	    footer {
+	      gridContainer {     
+	        gridRow { 
+	          gridSpan(12) {
+	          	
+	          }
+	        }
+	      }
+	    }
+	  }
+  }

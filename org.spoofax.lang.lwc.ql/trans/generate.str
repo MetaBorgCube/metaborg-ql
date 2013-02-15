@@ -1,6 +1,7 @@
 module generate
 
 imports
+	
 	libstratego-lib
 	libstratego-gpp
 	libstratego-aterm
@@ -54,8 +55,8 @@ rules // QL questions to WebDSL template
   compile-ql-template: 
   	|[ form fid { question* } ]| -> 
 	  tdef |[
-	    define showForm(form : x_formID) {
-	    	horizontalForm {
+	    define showForm(form : x_formID, name : String) {
+	    	horizontalForm(name) {
 	  		  elem_group*
 	  		  
 			    formActions {

@@ -11,8 +11,8 @@ entity Form {
 
 var globalForm := Form {}
 
-template showForm(form : Form) {
-  horizontalForm("Form name") {
+template showForm(form : Form, name : String) {
+  horizontalForm(name) {
     controlGroup("Did you sell a house in 2010?") { input(form.hasSoldHouse) }
     controlGroup("Did you buy a house in 2010?") { input(form.hasBoughtHouse) }
     controlGroup("Did you enter a loan for maintainance/construction?") { input(form.hasMaintLoan) }

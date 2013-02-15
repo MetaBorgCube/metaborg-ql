@@ -31,7 +31,7 @@ exports
 		("page"|"p") [0-9]* "*"				-> Page*			{prefer}
 		("page"|"p") [0-9]*						-> Page				{prefer}
 		"fref" [0-9]*									-> FormRef    {prefer}
-		"fref" [0-9]* "*"							-> FormRef*   {prefer}
+		"fref" [0-9]* "*"							-> FormRef+   {prefer}
 		("pagepart"|"pp") [0-9]*			-> PagePart   {prefer}
 		("pagepart"|"pp") [0-9]* "*"	-> PagePart   {prefer}
 		("style"|"s") [0-9]*					-> Style      {prefer}
