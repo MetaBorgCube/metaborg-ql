@@ -13,7 +13,10 @@ form Box1HouseOwning {
 		valueResidue: "Value residue:" money(sellingPrice - privateDebt)
 	}
 	
-	hasMoreHouses: "Do you own more than one house?" boolean
+	if (hasMoreHouses || hasSoldHouse || !hasMoreHouses ) {
+		hasMoreHouses: "Do you own more than one house?" boolean
+	}
+	
 	if(hasMoreHouses){
 		netHousesWorth: "Value of secondary houses?" money
 		netWorth: "Your net worth is:" money(valueResidue + netHousesWorth)

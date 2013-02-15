@@ -24,20 +24,20 @@ rules
 		where 
 			uri    := <index-uri> qid ;
 			ldata  := DefData(uri, Label(), label) ;
-			c'     := <innermost(normalize); innermost(normalize + sort-literals)> c;
+			c'     := <innermost(normalize); innermost(sort-literals); innermost(normalize)> c;
 			cdata  := DefData(uri, Condition(), c') ; 
 			ddata  := DefData(uri, Deps(), <collect-questions> c);
-			cddata := DefData(uri, CoreDeps(), <collect-questions> c) 
+			cddata := DefData(uri, CoreDeps(), <collect-questions> c') 
 	
 	analyze-dependencies: 
 	|[ if (c) { qid : label texpr } ]|	-> <index-add-all> [ ldata, cdata, ddata, cddata ]
 	where 
 		uri    := <index-uri> qid ;
 		ldata  := DefData(uri, Label(), label) ;
-		c'     := <innermost(normalize); innermost(normalize + sort-literals)> c;
+		c'     := <innermost(normalize); innermost(sort-literals); innermost(normalize)> c;
 		cdata  := DefData(uri, Condition(), c') ; 
 		ddata  := DefData(uri, Deps(), <collect-questions> c);
-		cddata := DefData(uri, CoreDeps(), <collect-questions> c) 
+		cddata := DefData(uri, CoreDeps(), <collect-questions> c') 
 			
 	collect-questions = collect-all(?Ref(<id>), union)
 	
@@ -65,7 +65,7 @@ rules
 		
 	get-core-dependencies =
 		index-lookup;
-		index-get-data-all(|Deps());
+		index-get-data-all(|CoreDeps());
 		unions
 		
 	get-all-dependencies = 
