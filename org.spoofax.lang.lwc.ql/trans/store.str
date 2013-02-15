@@ -10,6 +10,7 @@ imports
 signature constructors
 	
 	AST				: DefDataKind
+	Questions	: DefDataKind
 
 strategies
 	
@@ -18,11 +19,18 @@ strategies
 rules
 	
 	store:
+		|[ form fid { q* } ]| -> <id>
+		where
+			<topdown(try(store(|fid)))> q*
+	
+	store(|fid):
 		|[ if ( cond ) { qid : label t } ]| -> <id>
 		where
-			<index-add> DefData(<index-uri> qid, AST(), <id>)
+			<index-add> DefData(<index-uri> qid, AST(), <id>);
+			<index-add> DefData(<index-uri> fid, Questions(), <index-uri> qid)
 			
-	store:
+	store(|fid):
 		|[ if ( cond ) { qid : label t ( exp ) } ]| -> <id>
 		where
-			<index-add> DefData(<index-uri> qid, AST(), <id>)
+			<index-add> DefData(<index-uri> qid, AST(), <id>);
+			<index-add> DefData(<index-uri> fid, Questions(), <index-uri> qid)
