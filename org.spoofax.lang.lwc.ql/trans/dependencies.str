@@ -88,6 +88,19 @@ rules
 			
 	sort-questions:
 		q* -> <sort-list(LSort(depends-on))> q*
+
+	/*
+	* Evaluates whether questions given are in the correct order, dependency-wise.
+	* @type List(ID) -> List(ID)
+	* @return
+	*				- List() if all referenced questions are in order.
+	*				- List((ID,List(ID))) contains:
+	*							-- LHS of tuple is the question-ids that is out of place
+	*							-- RHS of tuple is the list of question-ids that the LHS has as broken dependencies. 
+	*/
+	// TODO
+	sort-question-ids = with(fail|"Not implemented")
+
 		
 	sort-form: 
 		|[form fid { question1* } ]| -> |[form fid { question2* } ]|

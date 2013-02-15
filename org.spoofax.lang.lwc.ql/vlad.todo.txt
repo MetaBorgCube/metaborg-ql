@@ -1,0 +1,14 @@
+=> 1. analyze and store all style dependencies
+=> 2. add check for cyclical dependency of styles
+=> 3. implement type checking for widget declaration in style declaration
+=> 4. implement type checking for widget declaration in style specification
+=> 5. implement linearization/combination/overriding of styles
+=> 6. add default style declaration
+=> 7. implement rewrite of SimpleRef to StyledRef using default style / built-in default style 
+8. change syntax for referencing styles in style declarations or uses
+9. change the semantics of style overriding such that local style declaration always override the imported style.
+		this can be done by reordering the list of styling options to have the style references at the top of the import
+10. phase 1: add constraint check that questions are in order. uses the strategy 'ql-are-questions-in-order'.
+11. phase 2: all questions that are depended upon that are not already displayed in pre-position should be added as late as possible
+12. phase 3: all questions that are not yet presented should be added on the last page that imports the respective form
+13. extra: refactoring to repair question ordering when broken.
