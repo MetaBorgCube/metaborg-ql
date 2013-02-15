@@ -4,6 +4,7 @@ imports
 	include/QL
 
 rules // widgets, font, color defaults
+	
 	qls-default-widget: BoolTy() -> Widget(CheckBox())
 	qls-default-widget: FloatTy() -> Widget(Text())
 	qls-default-widget: IntTy() -> Widget(Text())
@@ -13,4 +14,5 @@ rules // widgets, font, color defaults
 	qls-default-font = !Font("Helvetica")
 	qls-default-color = !Color("#000000")
 	
-	qls-default-style(|ty) = !Styles([<qls-default-widget> ty, <qls-default-font>, <qls-default-color>])
+	qls-default-style(|ty) = ![<qls-default-widget> ty, <qls-default-font>, <qls-default-color>]
+	

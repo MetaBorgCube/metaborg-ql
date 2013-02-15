@@ -119,13 +119,16 @@ rules
 	qls-normalize:
 		|[ qid { style0* }]| -> |[ qid { style1* }]|
 		where
-			qls-type-of => q-type;
+			qls-type-of => q-ty;
+			qls-default-style(|q-ty) => def-style
+		where
 			<qls-make-all-concrete-style> style0*;
-			entype-widgets(|q-type);
+			entype-widgets(|q-ty);
+			<conc> (def-style, <id>);
 			qls-simplify-style => style1*
 	
 	qls-normalize:
-		SimpleRef(qid) -> StyledRef(qid, <qls-default-style(|q-ty)>)
+		SimpleRef(qid) -> StyledRef(qid, Styles(<qls-default-style(|q-ty)>))
 		where
 			qls-type-of => q-ty
 
