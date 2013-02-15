@@ -23,8 +23,7 @@ imports
   qls/names-qls
   qls/styles
   qls/check
- //  qls/types
-	// qls/desugar
+	qls/desugar
 	
 rules // Analysis
 
@@ -35,7 +34,7 @@ rules // Analysis
   analyze:
     (ast, path, project-path) -> (ast4, errors, warnings, notes, filesToAnalyze')
     with
-    	ast1 := <ql-or-qls(desugar-all, id)> ast;
+    	ast1 := <ql-or-qls(desugar-all, qls-desugar-all)> ast;
       (ast2, filesToAnalyze) := <analyze-top(|<language>)> (ast1, path, project-path);
       index-transaction(
       	<ql-or-qls(analyze-dependencies, where(qls-analyze-dependencies); where(qls-store-styles))> ast2;

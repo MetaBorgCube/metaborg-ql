@@ -12,22 +12,22 @@ define style A {
 }
 
 define style B {
-	style = A
+	// style = A
 	color = #333333	
 	font = "Font in B"
 }
 
 define style C {
-	style = B
+	use B
 	font = "Cucu"
-	style = A
+	use A
 	boolean widget = radio
 }
 
 
 page "PAGE HEADING" for Box1HouseOwning {
 		hasBoughtHouse
-		hasLivedAbroad { style = A }
+		hasLivedAbroad { use A }
 
 	section "SECTION HEADING" {
 		subsection "SUBSECTION HEADING" {
@@ -41,9 +41,9 @@ page "PAGE HEADING" for Box1HouseOwning {
 			 {
 				font   = "Comic Sans"
 				color  = #000000
-				style  = C
-				widget = datepicker
-				widget = text
+				use C
+				// widget = datepicker
+				// widget = text
 				widget = dropdown
 			}	
 			sellingPrice

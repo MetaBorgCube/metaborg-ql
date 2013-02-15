@@ -5,6 +5,7 @@ imports
 	qls/styles
 	qls/types
 	lib/editor-common.generated
+	utils
 	
 rules // generic
 	
@@ -19,7 +20,7 @@ rules // style dependencies
 		where
 			<qls-has-circular-dependency-style> sid
 
-rules // widget types
+rules // styling general
 	
 	// typed widget declaration in style definition
 	constraint-error =
@@ -34,6 +35,15 @@ rules // widget types
 		map(!(q-type, <id>));
 		filter(qls-type-error(elem))
 
+	// duplicate style customization
+	constraint-error =
+		(?Styles(ss) + ?StyleDef(_,ss));
+		<reverse;make-set(is-same-style)> ss;
+		<diff> (ss, <id>);
+		map(!(<id>, $[Duplicate styling]))
+		
+		
+		
 rules // type error reporter helper
 	
 	qls-type-error(s): 

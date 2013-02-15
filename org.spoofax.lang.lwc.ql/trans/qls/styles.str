@@ -83,8 +83,6 @@ rules
 		map(try(not(qls-has-circular-dependency-style);qls-make-concrete-style;qls-make-all-concrete-style));
 		flatten-list
 	
-	qls-make-all-concrete-style = not(is-list)
-
 rules
 	/*
 	* Style simplification

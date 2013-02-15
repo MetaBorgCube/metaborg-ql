@@ -1,0 +1,16 @@
+module qls/desugar
+
+imports
+	include/QL
+	
+strategies
+	qls-desugar-all = alltd(qls-desugar)
+	
+rules
+	
+	qls-desugar:
+		StyleDef(s, ss) -> StyleDef(s, <debug(!"0...");map(try(qls-desugar));debug(!"1...");flatten-list;debug(!"3...")> ss) 
+		
+	qls-desugar:
+		StyleRef(ss) -> <map(debug(!"A...");!StyleRef(<id>);debug(!"B..."))> ss   
+		
