@@ -32,13 +32,10 @@ rules
 	
 	normalize-group: 
 		|[ if (c) { q1 q2 q1* } q2* ]| -> |[ if (c) { q1 } if(c) { q2 q1* } q2* ]|
-		
-			
+				
 rules
-	
-	// TODO: remove parentheses
-	
-	normalize: |[ exp1  <= exp2  ]| -> |[ (exp1 <  exp2) || (exp1 == exp2) ]|
+		
+	normalize: |[ exp1  <= exp2  ]| -> |[ exp1 <  exp2 || exp1 == exp2 ]|
 	normalize: |[ exp1  >  exp2  ]| -> |[ exp2 <  exp1 ]|
 	normalize: |[ exp1  >= exp2  ]| -> |[ exp2 <= exp1 ]|
 	normalize: |[ exp   == exp   ]| -> |[ true ]|
@@ -47,20 +44,42 @@ rules
 	normalize: |[ false && exp   ]| -> |[ false ]|
 	normalize: |[ exp   && true  ]| -> |[ exp   ]|
 	normalize: |[ exp   && false ]| -> |[ false ]|
+	normalize: |[ exp   && exp   ]| -> |[ exp   ]|
+	normalize: |[  exp  && !exp  ]| -> |[ false ]|
+	normalize: |[ !exp  &&  exp  ]| -> |[ false ]|
 	normalize: |[ true  || exp   ]| -> |[ true  ]|
 	normalize: |[ false || exp   ]| -> |[ exp   ]|
 	normalize: |[ exp   || true  ]| -> |[ true  ]|
 	normalize: |[ exp   || false ]| -> |[ exp   ]|
-
+	normalize: |[ exp   || exp   ]| -> |[ exp   ]|
+	normalize: |[  exp  || !exp  ]| -> |[ true  ]|
+	normalize: |[ !exp  ||  exp  ]| -> |[ true  ]|
+	
 	normalize: |[ !true           ]| -> |[ false ]|
 	normalize: |[ !false          ]| -> |[ true  ]|
 	normalize: |[ !!exp           ]| -> |[ exp   ]|
-	normalize: |[ !(exp1 <  exp2) ]| -> |[ exp1  >= exp2  ]|
-	normalize: |[ !(exp1 && exp2) ]| -> |[ (!exp1) || !exp2 ]|
-	normalize: |[ !(exp1 || exp2) ]| -> |[ (!exp1) && !exp2 ]|
+	normalize: |[ !(exp1 <  exp2) ]| -> |[  exp1 >=  exp2 ]|
+	normalize: |[ !(exp1 && exp2) ]| -> |[ !exp1 || !exp2 ]|
+	normalize: |[ !(exp1 || exp2) ]| -> |[ !exp1 && !exp2 ]|
 	
 	normalize: |[ (exp1 && exp2) || exp3 ]| -> |[ (exp1 || exp3) && (exp2 || exp3) ]|
 	normalize: |[ exp1 || (exp2 && exp3) ]| -> |[ (exp1 || exp2) && (exp1 || exp3) ]|
 	normalize: |[ exp1 || (exp2 || exp3) ]| -> |[  exp1 || exp2  || exp3 ]|
 	normalize: |[ exp1 && (exp2 && exp3) ]| -> |[  exp1 && exp2  && exp3 ]|
 	
+	normalize: |[ exp  ||  fid  ||  qid  ]| -> |[ exp  ||  qid ||  fid  ]| where <string-lt> (qid, fid) 
+	normalize: |[ exp  ||  fid  || !qid  ]| -> |[ exp  || !qid ||  fid  ]| where <string-lt> (qid, fid) 
+	normalize: |[ exp  || !fid  ||  qid  ]| -> |[ exp  ||  qid || !fid  ]| where <string-lt> (qid, fid) 
+	normalize: |[ exp  || !fid  || !qid  ]| -> |[ exp  || !qid || !fid  ]| where <string-lt> (qid, fid) 
+	normalize: |[ exp1 ||  exp2 ||  qid  ]| -> |[ exp1 ||  qid ||  exp2 ]| where <not(?Ref(_) + ?Not(Ref(_)))> exp2
+	normalize: |[ exp1 ||  exp2 || !qid  ]| -> |[ exp1 || !qid ||  exp2 ]| where <not(?Ref(_) + ?Not(Ref(_)))> exp2 
+	normalize: |[ exp1 ||  exp2 || !exp2 ]| -> |[ true ]|
+	normalize: |[ exp1 || !exp2 ||  exp2 ]| -> |[ true ]|
+	
+	normalize: |[  fid  ||  qid ]| -> |[  qid ||  fid  ]| where <string-lt> (qid, fid) 
+	normalize: |[  fid  || !qid ]| -> |[ !qid ||  fid  ]| where <string-lt> (qid, fid) 
+	normalize: |[ !fid  ||  qid ]| -> |[  qid || !fid  ]| where <string-lt> (qid, fid) 
+	normalize: |[ !fid  || !qid ]| -> |[ !qid || !fid  ]| where <string-lt> (qid, fid) 
+	normalize: |[  exp  ||  qid ]| -> |[  qid ||  exp  ]| where <not(?Ref(_) + ?Not(Ref(_)))> exp
+	normalize: |[  exp  || !qid ]| -> |[ !qid ||  exp  ]| where <not(?Ref(_) + ?Not(Ref(_)))> exp
+		

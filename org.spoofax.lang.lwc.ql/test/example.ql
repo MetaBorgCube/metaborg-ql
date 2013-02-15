@@ -18,7 +18,7 @@ form Box1HouseOwning {
 		netHousesWorth: "Value of secondary houses?" money
 		netWorth: "Your net worth is:" money(valueResidue + netHousesWorth)
 	}
-	if(!hasMoreHouses){ 
-		netWorth: "Your net worth is:" money(valueResidue)
-	}
-} 
+	if(!hasMoreHouses || foo || hasMoreHouses){ 
+		netWorth: "Your net worth is:" money(valueResidue)	
+	} 
+}
