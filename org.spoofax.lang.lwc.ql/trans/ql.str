@@ -55,7 +55,7 @@ rules // Analysis
 	      end
       );
       if <?[]> errors then
-      	ast'''' := <one(sort-questions)> ast'''
+      	ast'''' := <sort-form> ast'''
       else
       	ast'''' := ast'''
       end;
