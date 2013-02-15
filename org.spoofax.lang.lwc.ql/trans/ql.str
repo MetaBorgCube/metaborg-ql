@@ -139,7 +139,7 @@ rules // Debugging
     with
       editor-init;
       filename := <guarantee-extension(|"analyzed.aterm")> path;
-      result   := <analyze-top(|<language>)> (selected, path, project-path)   
+      result   := ast   
       
   // Prints the entries in the index of the current file.
   debug-index-show-current-file:
