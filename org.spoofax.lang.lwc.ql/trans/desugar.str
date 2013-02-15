@@ -11,7 +11,7 @@ rules
 	desugar-all:
 		|[ form fid { q1* } ]| -> |[ form fid { q2* } ]|
 		where
-			<normalize-questions; innermost(normalize)> q1* => q2*
+			<normalize-questions> q1* => q2*
 
 	normalize-questions: [] -> []
 	normalize-questions =
@@ -66,20 +66,20 @@ rules
 	normalize: |[ exp1 || (exp2 && exp3) ]| -> |[ (exp1 || exp2) && (exp1 || exp3) ]|
 	normalize: |[ exp1 || (exp2 || exp3) ]| -> |[  exp1 || exp2  || exp3 ]|
 	normalize: |[ exp1 && (exp2 && exp3) ]| -> |[  exp1 && exp2  && exp3 ]|
-	
-	normalize: |[ exp  ||  fid  ||  qid  ]| -> |[ exp  ||  qid ||  fid  ]| where <string-lt> (qid, fid) 
-	normalize: |[ exp  ||  fid  || !qid  ]| -> |[ exp  || !qid ||  fid  ]| where <string-lt> (qid, fid) 
-	normalize: |[ exp  || !fid  ||  qid  ]| -> |[ exp  ||  qid || !fid  ]| where <string-lt> (qid, fid) 
-	normalize: |[ exp  || !fid  || !qid  ]| -> |[ exp  || !qid || !fid  ]| where <string-lt> (qid, fid) 
-	normalize: |[ exp1 ||  exp2 ||  qid  ]| -> |[ exp1 ||  qid ||  exp2 ]| where <not(?Ref(_) + ?Not(Ref(_)))> exp2
-	normalize: |[ exp1 ||  exp2 || !qid  ]| -> |[ exp1 || !qid ||  exp2 ]| where <not(?Ref(_) + ?Not(Ref(_)))> exp2 
 	normalize: |[ exp1 ||  exp2 || !exp2 ]| -> |[ true ]|
 	normalize: |[ exp1 || !exp2 ||  exp2 ]| -> |[ true ]|
 	
-	normalize: |[  fid  ||  qid ]| -> |[  qid ||  fid  ]| where <string-lt> (qid, fid) 
-	normalize: |[  fid  || !qid ]| -> |[ !qid ||  fid  ]| where <string-lt> (qid, fid) 
-	normalize: |[ !fid  ||  qid ]| -> |[  qid || !fid  ]| where <string-lt> (qid, fid) 
-	normalize: |[ !fid  || !qid ]| -> |[ !qid || !fid  ]| where <string-lt> (qid, fid) 
-	normalize: |[  exp  ||  qid ]| -> |[  qid ||  exp  ]| where <not(?Ref(_) + ?Not(Ref(_)))> exp
-	normalize: |[  exp  || !qid ]| -> |[ !qid ||  exp  ]| where <not(?Ref(_) + ?Not(Ref(_)))> exp
+	sort-literals: |[ exp  ||  fid  ||  qid  ]| -> |[ exp  ||  qid ||  fid  ]| where <string-lt> (qid, fid) 
+	sort-literals: |[ exp  ||  fid  || !qid  ]| -> |[ exp  || !qid ||  fid  ]| where <string-lt> (qid, fid) 
+	sort-literals: |[ exp  || !fid  ||  qid  ]| -> |[ exp  ||  qid || !fid  ]| where <string-lt> (qid, fid) 
+	sort-literals: |[ exp  || !fid  || !qid  ]| -> |[ exp  || !qid || !fid  ]| where <string-lt> (qid, fid) 
+	sort-literals: |[ exp1 ||  exp2 ||  qid  ]| -> |[ exp1 ||  qid ||  exp2 ]| where <not(?Ref(_) + ?Not(Ref(_)))> exp2
+	sort-literals: |[ exp1 ||  exp2 || !qid  ]| -> |[ exp1 || !qid ||  exp2 ]| where <not(?Ref(_) + ?Not(Ref(_)))> exp2 
+	
+	sort-literals: |[  fid  ||  qid ]| -> |[  qid ||  fid  ]| where <string-lt> (qid, fid) 
+	sort-literals: |[  fid  || !qid ]| -> |[ !qid ||  fid  ]| where <string-lt> (qid, fid) 
+	sort-literals: |[ !fid  ||  qid ]| -> |[  qid || !fid  ]| where <string-lt> (qid, fid) 
+	sort-literals: |[ !fid  || !qid ]| -> |[ !qid || !fid  ]| where <string-lt> (qid, fid) 
+	sort-literals: |[  exp  ||  qid ]| -> |[  qid ||  exp  ]| where <not(?Ref(_) + ?Not(Ref(_)))> exp
+	sort-literals: |[  exp  || !qid ]| -> |[ !qid ||  exp  ]| where <not(?Ref(_) + ?Not(Ref(_)))> exp
 		
