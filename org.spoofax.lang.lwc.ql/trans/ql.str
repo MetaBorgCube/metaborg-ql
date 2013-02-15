@@ -12,6 +12,7 @@ imports
   lib/compilation-library.generated
   lib/nbl-library.generated
   names
+  desugar
   check
   generate
   refactor
@@ -25,7 +26,7 @@ rules // Analysis
   analyze:
     (ast, path, project-path) -> (ast''', errors, warnings, notes, filesToAnalyze')
     with
-      ast'                    := <id> ast; // Optional AST desugaring
+      ast'                    := <desugar-all> ast; // Optional AST desugaring
       (ast'', filesToAnalyze) := <analyze-top(|<language>)> (ast', path, project-path);
       index-transaction(
 	      <analyze-dependencies> ast'';

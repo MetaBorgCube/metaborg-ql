@@ -9,6 +9,8 @@ exports
 	context-free syntax
 		"ql" "|[" Form   "]|" -> E {cons("ToMetaExpr")}
 		     "|[" Form   "]|" -> E {cons("ToMetaExpr")}
+		"ql" "|[" Group* "]|" -> E {avoid, cons("ToMetaExpr")}
+		     "|[" Group* "]|" -> E {avoid, cons("ToMetaExpr")}
 		"ql" "|[" Group  "]|" -> E {cons("ToMetaExpr")}
 		     "|[" Group  "]|" -> E {cons("ToMetaExpr")}
 		"ql" "|[" TyExpr "]|" -> E {cons("ToMetaExpr")}
@@ -18,6 +20,9 @@ exports
 		"ql" "|[" Expr   "]|" -> E {cons("ToMetaExpr")}
 		     "|[" Expr   "]|" -> E {cons("ToMetaExpr")}
 
+		"true" 	-> Expr {"True"}
+		"false" -> Expr {"False"}
+		
 	variables
 
 		("group"|"question"|"g"|"q") [0-9]* "*"	-> Group* {prefer}

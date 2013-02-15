@@ -5,32 +5,42 @@ imports
 	analysis-library.generated
 	include/QL
 	names
+	desugar
 	
 signature constructors
 	
-	Dependencies: DefDataKind
 	Label				: DefDataKind
+	Condition		: DefDataKind
+	Deps        : DefDataKind
+	CoreDeps		: DefDataKind
 	
 rules
 	
 	analyze-dependencies: 
-		|[ form fid { question* } ]|-> <mapconcat(analyze-dependencies(|[]); index-add-all)> question*
-		
-	analyze-dependencies(|deps): 
-		|[ qid : label type ]|			->  [ DefData(uri, Dependencies(), deps)
-																		, DefData(uri, Label(), label)
-													 					]
-		where uri := <index-uri> qid
+		|[ form fid { question* } ]|-> <filter(analyze-dependencies)> question*
+			
+	analyze-dependencies: 
+		|[ if (c) { qid : label type } ]|	-> <index-add-all> [ ldata, cdata, ddata, cddata ]
+		where 
+			uri    := <index-uri> qid ;
+			ldata  := DefData(uri, Label(), label) ;
+			c'     := <innermost(normalize); innermost(sort-literals); innermost(normalize)> c;
+			cdata  := DefData(uri, Condition(), c') ; 
+			ddata  := DefData(uri, Deps(), <collect-questions> c);
+			cddata := DefData(uri, CoreDeps(), <collect-questions> c') 
 	
-	analyze-dependencies(|deps): 
-		|[ qid : label texpr ]|			->  [ DefData(uri, Dependencies(), deps)
-																		, DefData(uri, Label(), label)
-													 					]
-		where uri := <index-uri> qid
+	analyze-dependencies: 
+	|[ if (c) { qid : label texpr } ]|	-> <index-add-all> [ ldata, cdata, ddata, cddata ]
+	where 
+		uri    := <index-uri> qid ;
+		ldata  := DefData(uri, Label(), label) ;
+		c'     := <innermost(normalize); innermost(sort-literals); innermost(normalize)> c;
+		cdata  := DefData(uri, Condition(), c') ; 
+		ddata  := DefData(uri, Deps(), <collect-questions> c);
+		cddata := DefData(uri, CoreDeps(), <collect-questions> c') 
+			
+	collect-questions = collect-all(?Ref(<id>), union)
 	
-	analyze-dependencies(|deps):
-		|[ if (c) { question* } ]|	-> <mapconcat(analyze-dependencies(|[c|deps]))> question*
-		
 rules
 	
 	get-labels = 
@@ -38,28 +48,38 @@ rules
 		index-get-data-all(|Label());
 		make-set
 	
-	get-conditions =
+	get-conditions = 
 		index-lookup;
-		index-get-data-all(|Dependencies());
-		unions
-		
-	get-dependent-questions = 
-		get-conditions;
-		collect-all(?Ref(<id>), union)
-		
-	get-all-dependent-questions = 
-		(is-list <+ MkSingleton);
-		transitive-closure(get-dependent-questions)
-	
+		index-get-data-all(|Condition());
+		make-set
+			
 	get-defined-types = 
 		index-lookup;
 		index-get-data-all(|Type());
 		make-set
 
-	depends-on: (qid1, qid2) -> <get-all-dependent-questions; fetch-elem(?qid2)> qid1
+	get-dependencies =
+		index-lookup;
+		index-get-data-all(|Deps());
+		unions
+		
+	get-core-dependencies =
+		index-lookup;
+		index-get-data-all(|CoreDeps());
+		unions
+		
+	get-all-dependencies = 
+		(is-list <+ MkSingleton);
+		transitive-closure(get-dependencies)
+	
+	get-all-core-dependencies = 
+		(is-list <+ MkSingleton);
+		transitive-closure(get-core-dependencies)
+
+	depends-on: (qid1, qid2) -> <get-all-dependencies; fetch-elem(?qid2)> qid1
 	
 	sort-questions = sort-list(LSort(depends-on))
-	
+		
 rules
 	
 	transitive-closure(s) = transitive-closure(s|[])
