@@ -18,6 +18,7 @@ imports
   refactor
 	types
 	dependencies
+	store
 	
   qls/names-qls
   qls/styles
@@ -26,40 +27,25 @@ imports
 	// qls/desugar
 	
 rules // Analysis
+
+  ql-or-qls(ql, qls) = if ?QLS(_, _) then try(qls) else try(ql) end
   
 	// Analyzes the current program, returning a tuple with the analyzed AST, errors, warnings, notes and
 	// files that should be re-analyzed.
   analyze:
-    (ast, path, project-path) -> (ast'''', errors, warnings, notes, filesToAnalyze')
+    (ast, path, project-path) -> (ast4, errors, warnings, notes, filesToAnalyze')
     with
-    	if not(QLS(_,_) := ast) then
-	      ast'                    := <desugar-all> ast
-	    else
-	    	ast'                    := ast
-    	end;
-      (ast'', filesToAnalyze) := <analyze-top(|<language>)> (ast', path, project-path);
+    	ast1 := <ql-or-qls(desugar-all, id)> ast;
+      (ast2, filesToAnalyze) := <analyze-top(|<language>)> (ast1, path, project-path);
       index-transaction(
-      	if (QLS(_,_) := ast) then
-      		<qls-analyze-dependencies> ast'';
-      		<qls-store-styles> ast''
-      	else
-	        <analyze-dependencies> ast''
-	      end;
-	      errors                := <collect-all(constraint-error, conc)> ast'';
-	      warnings              := <collect-all(constraint-warning, conc)> ast'';
-	      notes                 := <collect-all(constraint-note, conc)> ast'';
-	      if (QLS(_,_) := ast'') then
-	      	ast''' := <qls-normalize-top> ast''
-	      else
-	      	ast''' := ast''
-	      end
+      	<ql-or-qls(analyze-dependencies, where(qls-analyze-dependencies); where(qls-store-styles))> ast2;
+	      errors   := <collect-all(constraint-error, conc)> ast2;
+	      warnings := <collect-all(constraint-warning, conc)> ast2;
+	      notes    := <collect-all(constraint-note, conc)> ast2;
+	      ast3     := <ql-or-qls(where(store-all), qls-normalize-top)> ast2
       );
-      if <?[]> errors then
-      	ast'''' := <sort-form> ast'''
-      else
-      	ast'''' := ast'''
-      end;
-      filesToAnalyze'         := <index-filepairs-to-files> filesToAnalyze
+      ast4            := <ql-or-qls(where([] := errors); sort-form, id)> ast3;
+      filesToAnalyze' := <index-filepairs-to-files> filesToAnalyze
 
   // Main entry point for analyzes, called when a single file is opened in the editor.
   editor-analyze:

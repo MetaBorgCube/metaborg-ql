@@ -20,6 +20,8 @@ rules // index helpers
 			
 	index-add-all = index-add-all(|<index-get-current-file>)
 	
+	index-add = index-add(|<index-get-current-file>)
+	
 rules // lists & sets
 	
 	// make-set with custom equality checker

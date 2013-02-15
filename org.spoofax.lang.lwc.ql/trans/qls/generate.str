@@ -28,7 +28,7 @@ rules
 		]|*/
 		where
 			fref* := <mapconcat(qls-page-forms); make-set> page*
-			// use ql compiler to create referenced forms
+			// use ql compiler to create entities for referenced forms
 			// create globals for referenced forms
 			// compile each page
 			// create a root page that navigates to the first page
