@@ -34,23 +34,6 @@ rules // widget types
 		map(!(q-type, <id>));
 		filter(qls-type-error(elem))
 
-rules // temporaries, to show simplificated styles
-
-	constraint-note:
-		|[ define style sid { stydef* }]| -> (sid, $[Simplified style [<map(pp-ql-string);concat-strings> lin]])
-		where
-			<qls-make-all-concrete-style;qls-simplify-style> stydef* => lin
-
-	constraint-note =
-		?|[ qid { style* }]|;
-		qls-type-of => q-type;
-		<qls-make-all-concrete-style> style*;
-		entype-widgets(|q-type);
-		qls-simplify-style;
-		map(pp-ql-string);
-		concat-strings;
-		!(qid, $[Simplified style [<id>]])
-
 rules // type error reporter helper
 	
 	qls-type-error(s): 
