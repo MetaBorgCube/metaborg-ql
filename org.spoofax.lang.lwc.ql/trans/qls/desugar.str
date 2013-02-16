@@ -9,8 +9,8 @@ strategies
 rules
 	
 	qls-desugar:
-		StyleDef(s, ss) -> StyleDef(s, <debug(!"0...");map(try(qls-desugar));debug(!"1...");flatten-list;debug(!"3...")> ss) 
+		StyleDef(s, ss) -> StyleDef(s, <map(try(qls-desugar)); flatten-list> ss) 
 		
 	qls-desugar:
-		StyleRef(ss) -> <map(debug(!"A...");!StyleRef(<id>);debug(!"B..."))> ss   
+		StyleRef(ss) -> <map(!StyleRef(<id>))> ss   
 		
