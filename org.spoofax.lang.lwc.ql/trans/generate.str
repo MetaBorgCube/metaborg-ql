@@ -66,7 +66,6 @@ rules // QL to WebDSL compilation
 	  ]|
 	  where
 	  	x_formID    := fid;
-	  	x_templName := <conc-strings> ("show", fid);
 	  	ent         := <compile-ql-entity> form;
 	  	def         := <compile-ql-page> form
 	  	
@@ -106,37 +105,31 @@ rules // QL questions to WebDSL template
 				    }
 				  }
 				  
-				  action submit() {
-				    form.save();
-				  }
-				  
-			  	action finish() {
-				    form.save();
-				    return finish();
-				  }
+				  action submit() {}
+			  	action finish() { return finish(); }
 		  	}
 	  	}
 	  ]|
     where
-    	elem_group* := <map(compile-ql-template-part)> question*
+    	elem_group* := <map(compile-ql-group)> question*
   
-  compile-ql-template-part: 
+  compile-ql-group: 
   	|[ qid : label t ]| -> elem |[ controlGroup(e_label) { input(x_id) } ]|
   	where
   		x_id    := <compile-ql-question-name> qid;
   		e_label := <compile-ql-exp> label
   		
-  compile-ql-template-part: 
+  compile-ql-group: 
   	|[ qid : label t ( exp ) ]| -> elem |[ controlGroup(e_label) { output(e_typeExp) } ]|
   	where
   		e_label   := <compile-ql-exp> label;
   		e_typeExp := <compile-ql-exp> exp
   		
-  compile-ql-template-part: 
-  	|[ if ( cond ) { q* } ]| -> elem |[ if (e_cond) { elem_question* } ]|
+  compile-ql-group: 
+  	|[ if ( cond ) { q* } ]| -> elem |[ if (e_cond) { elem_group* } ]|
   	where
-  		e_cond         := <compile-ql-exp> cond;
-  		elem_question* := <map(compile-ql-template-part)> q*
+  		e_cond      := <compile-ql-exp> cond;
+  		elem_group* := <map(compile-ql-group)> q*
 
 rules // QL types to WebDSL types
   

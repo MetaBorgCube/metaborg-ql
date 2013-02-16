@@ -21,13 +21,13 @@ rules // QLS to WebDSL compilation
 		|[
 			module forms
 			
-			def1
+			def1*
 			
 			ent
 			
 			session sess { user -> User	}
 			
-			def*
+			def2*
 			
 		  page root() {
 				var name := ""
@@ -55,11 +55,11 @@ rules // QLS to WebDSL compilation
 			}
 		]|
 		where
-			fref* := <mapconcat(qls-page-forms); make-set> page*;
-			def1  := <map(compile-qls-entity)> fref*;
-			ent   := <compile-qls-session-entity> fref*;
+			fref*  := <mapconcat(qls-page-forms); make-set> page*;
+			def1*  := <map(compile-qls-entity)> fref*;
+			ent    := <compile-qls-session-entity> fref*;
 			x_init := <compile-qls-session-init> fref*;
-			def*  := <zip(compile-qls-page(|<length> page*))> (page*, <length; upto; Tl> page*)
+			def2*  := <zip(compile-qls-page(|<length> page*))> (page*, <length; upto; Tl> page*)
 
 rules // QLS pages to WebDSL entities
 	  	
@@ -96,7 +96,7 @@ rules // QLS pages to WebDSL session Entity
 rules // QLS page to WebDSL template and page	
 	
 	compile-qls-page(|length):
-		(Page(x_heading, fref*, pp*), n) -> 
+		(Page(x_heading, fref*, part*), n) -> // TODO: Concrete syntax match? meta variable for STRING does not work..
 		def |[
 	    page x_pageName() {
 	    	main() {
@@ -108,46 +108,50 @@ rules // QLS page to WebDSL template and page
 				      elem_nextSubmit
 				    }
 				  }
-				  
-				  action submit() {
-				    form.save();
-				  }
-				  
-				  elem_nextAction
 		  	}
+				  
+			  action submit() {}
+			  elem_nextAction
 	  	}
 		]|
 	  where
 	  	x_pageName  := <conc-strings> ("page", <int-to-string> n);
-	  	// for each part
-	  	//   if it is a question reference, compile it
-	  	//   if it is a section/subsection, compile it to a webdsl section/subsection and nest question references inside it
-	  	elem_group* := [];
+	  	elem_group* := <map(compile-qls-part)> part*;
 	  	if <eq> (n, length) then
 	  		elem_nextSubmit := elem* |[ submitlink finish() [class="btn btn-primary"] { "Finish" } " " ]|;
-	  		elem_nextAction := elem  |[ action finish() { form.save(); return finish(); } ]|
+	  		elem_nextAction := elem  |[ action finish() { return finish(); } ]|
 	  	else
 	  		elem_nextSubmit := elem* |[ submitlink next() [class="btn btn-primary"] { "Next" } " " ]|;
 	  		x_nextPageName  := <conc-strings> ("page", <int-to-string> <inc> n);
-	  		elem_nextAction := elem  |[ action next() { form.save(); return x_nextPageName(); } ]|
+	  		elem_nextAction := elem  |[ action next() { return x_nextPageName(); } ]|
 	  	end
 	  	
 	compile-qls-part:
-		|[ qid { s* } ]| -> <id>
+		|[ qid { s* } ]| -> <compile-ql-group> question
 		where
-			id
-			// get label, type and condition from the index
-			// if there is a condition, compile that first
-			// compile question, nested into the condition if needed
-			// apply styles
+			question := <qls-get-question> qid
+			// TODO: apply styles
+			
+	compile-qls-part:
+		Section(elem_heading, part*) -> elem* |[ pageHeader() { elem_heading } elem_group* ]| // TODO: Concrete syntax match? meta variable for STRING does not work..
+		where
+			elem_group* := <map(compile-qls-part)> part*
+			
+	compile-qls-part:
+		SubSection(elem_heading, part*) -> elem* |[ pageHeader2() { elem_heading } elem_group* ]| // TODO: Concrete syntax match? meta variable for STRING does not work..
+		where
+			elem_group* := <map(compile-qls-part)> part*
 			
 rules // Projections
 	
   qls-page-forms:
-  	Page(_, fref*, _) -> fref*
+  	Page(_, fref*, _) -> fref* // TODO: Concrete syntax match? meta variable for STRING does not work..
 	
 rules // Index
 	
 	qls-get-questions =
 		index-get-data-all(|Questions());
-		map(index-get-data(|AST()))
+		map(qls-get-question)
+		
+	qls-get-question =
+		index-get-data(|AST())
