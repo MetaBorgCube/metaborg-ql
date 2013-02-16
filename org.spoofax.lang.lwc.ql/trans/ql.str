@@ -6,16 +6,15 @@ imports
   libstratego-aterm
   include/QL
   lib/editor-common.generated
-  lib/index-library.generated
-  lib/analysis-library.generated
-  lib/analysis-library-internal.generated
-  lib/compilation-library.generated
-  lib/nbl-library.generated
+  lib/index-library
+  lib/analysis-library
+  lib/analysis-library-internal
+  lib/compilation-library
+  lib/nbl-library
   names
   desugar
   check
   generate
-  refactor
 	types
 	dependencies
 	store
@@ -24,10 +23,11 @@ imports
   qls/styles
   qls/check
 	qls/desugar
+	qls/generate
 	
 rules // Analysis
 
-  ql-or-qls(ql, qls) = if ?QLS(_, _) then try(qls) else try(ql) end
+  ql-or-qls(ql, qls) = if ?QLS(_, _) then qls else ql end
   
 	// Analyzes the current program, returning a tuple with the analyzed AST, errors, warnings, notes and
 	// files that should be re-analyzed.
@@ -43,7 +43,7 @@ rules // Analysis
 	      notes    := <collect-all(constraint-note, conc)> ast2;
 	      ast3     := <ql-or-qls(where(store-all), qls-normalize-top)> ast2
       );
-      ast4            := <ql-or-qls(where([] := errors); sort-form, id)> ast3;
+      ast4            := <ql-or-qls(if [] := errors then sort-form else id end, id)> ast3;
       filesToAnalyze' := <index-filepairs-to-files> filesToAnalyze
 
   // Main entry point for analyzes, called when a single file is opened in the editor.
@@ -108,8 +108,9 @@ rules // Compilation
   compile-to-webdsl:
     (selected, position, ast, path, project-path) -> (filename, result)
     with
+    	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
     	filename := <guarantee-extension(|"app")> path;
-    	webdsl   := <compile-ql> selected;
+    	webdsl   := <ql-or-qls(compile-ql, compile-qls)> selected;
     	result   := <pp-webdsl-string> webdsl
     	
   pp-webdsl-string =

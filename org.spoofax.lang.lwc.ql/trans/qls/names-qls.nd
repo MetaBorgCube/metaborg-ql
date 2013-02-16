@@ -1,11 +1,13 @@
 module qls/names-qls
 
 imports 
-  
+  lib/analysis-library
+  lib/analysis-library-internal
+  lib/index-library
   names
   include/QL
   
-namespaces FrmImport Style
+namespaces Style
   
 rules
 
@@ -13,7 +15,6 @@ rules
 		scopes Style
   		
   FormRef(f):
-  	defines non-unique FrmImport f
   	refers to Frm f
   	imports Quest from Frm f {current-file}
 

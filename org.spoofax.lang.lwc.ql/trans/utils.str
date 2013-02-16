@@ -1,7 +1,8 @@
 module utils
 
 imports
-	index-library.generated
+	
+	lib/index-library
 
 rules // set transitive closure
 	

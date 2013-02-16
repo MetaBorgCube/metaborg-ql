@@ -6,17 +6,20 @@ imports
 	libstratego-gpp
 	libstratego-aterm
 	lib/editor-common.generated
-	lib/compilation-library.generated
+	lib/analysis-library
 
 	include/QL
 	lib/webdsl/WebDSL
+
+  generate
+  store
 	
 rules
 	
 	compile-qls: 
-		QLS(_, page*) -> <id>
-		/*webdsl |[
-			//form entities
+		QLS(_, page*) ->
+		webdsl |[
+			x
 			
 			//globals
 			
@@ -25,16 +28,24 @@ rules
 			//...
 			
 			//root page
-		]|*/
+		]|
 		where
-			fref* := <mapconcat(qls-page-forms); make-set> page*
+			fref* := <mapconcat(qls-page-forms); make-set> page*;
+			x     := <debug; map(compile-qls-entity); debug> fref*
 			// use ql compiler to create entities for referenced forms
 			// create globals for referenced forms
 			// compile each page
 			// create a root page that navigates to the first page
 
   qls-page-forms:
-  	|[ page str1 for fref* { pp* } ]| -> fref*			
+  	//|[ page str for fref* { pp* } ]| -> fref*
+  	Page(_, fref*, _) -> fref*
+  	
+  compile-qls-entity:
+  	FormRef(x_formID) -> |[ entity x_formID { ebd* } ]|
+  	where
+  	  question* := <debug; index-get-data-all(|AST()); debug> x_formID;
+	  	ebd*      := <collect-all(compile-ql-entity-part)> question*
 	
 	compile-qls-page:
 		|[ page str1 for fref* { pp* } ]| -> 

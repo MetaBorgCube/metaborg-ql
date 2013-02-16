@@ -1,6 +1,10 @@
 module names
 
-imports include/QL
+imports 
+  lib/analysis-library
+  lib/analysis-library-internal
+  lib/index-library
+  include/QL
 	
 namespaces Frm Quest
 

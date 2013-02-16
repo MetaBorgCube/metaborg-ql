@@ -4,10 +4,10 @@ imports
 	libstratego-lib
 	include/QL
 	lib/editor-common.generated
-	lib/index-library.generated
-	lib/analysis-library.generated
-	lib/analysis-library-internal.generated
-	lib/nbl-library.generated
+	lib/index-library
+	lib/analysis-library
+	lib/analysis-library-internal
+	lib/nbl-library
 
 	types
 	dependencies

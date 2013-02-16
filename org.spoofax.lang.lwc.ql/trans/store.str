@@ -2,8 +2,8 @@ module store
 
 imports
 	
-	index-library.generated
-	analysis-library.generated
+	lib/index-library
+	lib/analysis-library
 	include/QL
 	utils
 	

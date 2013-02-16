@@ -1,8 +1,8 @@
 module qls/styles
 
 imports
-	index-library.generated
-	analysis-library.generated
+	lib/index-library
+	lib/analysis-library
 	include/QL
 	utils
 	qls/types
