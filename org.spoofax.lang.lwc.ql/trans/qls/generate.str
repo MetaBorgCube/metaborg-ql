@@ -32,20 +32,14 @@ rules
 		where
 			fref* := <mapconcat(qls-page-forms); make-set> page*;
 			x     := <map(compile-qls-entity)> fref*
-			// use ql compiler to create entities for referenced forms
 			// create globals for referenced forms
 			// compile each page
 			// create a root page that navigates to the first page
-
-  qls-page-forms:
-  	Page(_, fref*, _) -> fref*
   	
   compile-qls-entity:
   	FormRef(x_formID) -> |[ entity x_formID { ebd* } ]|
   	where
-  	  qid* := <index-get-data-all(|Questions())> x_formID;
-  	  q*   := <map(index-get-data(|AST()))> qid*;
-	  	ebd* := <collect-all(compile-ql-entity-part)> q*
+	  	ebd* := <qls-get-questions; collect-all(compile-ql-entity-part)> x_formID
 	
 	compile-qls-page:
 		|[ page str1 for fref* { pp* } ]| -> 
@@ -69,4 +63,15 @@ rules
 			// if there is a condition, compile that first
 			// compile question, nested into the condition if needed
 			
-			
+rules // Projections
+	
+  qls-page-forms:
+  	Page(_, fref*, _) -> fref*
+	
+rules // Index
+	
+	qls-get-questions =
+		index-get-data-all(|Questions());
+		map(index-get-data(|AST()))
+
+		
