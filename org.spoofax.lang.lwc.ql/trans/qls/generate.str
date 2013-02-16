@@ -14,46 +14,123 @@ imports
   generate
   store
 	
-rules
+rules // QLS to WebDSL compilation
 	
 	compile-qls: 
 		QLS(_, page*) ->
-		webdsl |[
-			x
+		|[
+			module forms
 			
-			//globals
+			def1
 			
-			//p1
-			//p2
-			//...
+			ent
 			
-			//root page
+			session sess { user -> User	}
+			
+			def*
+			
+		  page root() {
+				var name := ""
+				
+				main() {
+					horizontalForm() {
+						controlGroup("Name: ") { input(name) }
+						
+				    formActions() {
+				      submitlink start() [class="btn btn-primary"] { "Start questionaire" } " "
+				    }
+					}
+				}
+				
+			  action start() {
+			    x_init;
+			    return page1();
+			  }
+			}
+			
+			page finish() {
+				main() {
+					"Thank you for filling in the form"
+				}
+			}
 		]|
 		where
 			fref* := <mapconcat(qls-page-forms); make-set> page*;
-			x     := <map(compile-qls-entity)> fref*
-			// create globals for referenced forms
-			// compile each page
-			// create a root page that navigates to the first page
-  	
+			def1  := <map(compile-qls-entity)> fref*;
+			ent   := <compile-qls-session-entity> fref*;
+			x_init := <compile-qls-session-init> fref*;
+			def*  := <zip(compile-qls-page(|<length> page*))> (page*, <length; upto; Tl> page*)
+
+rules // QLS pages to WebDSL entities
+	  	
   compile-qls-entity:
   	FormRef(x_formID) -> |[ entity x_formID { ebd* } ]|
   	where
 	  	ebd* := <qls-get-questions; collect-all(compile-ql-entity-part)> x_formID
+	  	
+rules // QLS pages to WebDSL session Entity
 	
-	compile-qls-page:
-		|[ page str1 for fref* { pp* } ]| -> 
-		webdsl |[ 
-			page page1() {
-				
+	compile-qls-session-entity:
+		fref* -> 
+		|[
+			entity User {
+				name :: String (name)
+					
+			  ebd*
 			}
 		]|
+		where
+			ebd* := <map(compile-qls-session-entity-part)> fref*
+	
+	compile-qls-session-entity-part:
+		FormRef(x_formID) -> |[ x_formID -> x_formID ]|
+		
+	compile-qls-session-init:
+		fref* -> |[ sess.user := User { name := name, x_inits } ]|
+		where
+			x_inits := <map(compile-qls-session-init-part)> fref*
+			
+	compile-qls-session-init-part:
+		FormRef(x_formID) -> |[ x_formID := x_formID {} ]|
+	  	
+rules // QLS page to WebDSL template and page	
+	
+	compile-qls-page(|length):
+		(Page(x_heading, fref*, pp*), n) -> 
+		def |[
+	    page x_pageName() {
+	    	main() {
+		    	horizontalForm(x_heading) {
+		  		  elem_group*
+		  		  
+				    formActions() {
+				      submitlink submit() [class="btn btn-primary"] { "Submit" } " "
+				      elem_nextSubmit
+				    }
+				  }
+				  
+				  action submit() {
+				    form.save();
+				  }
+				  
+				  elem_nextAction
+		  	}
+	  	}
+		]|
 	  where
-	  	id
-	  	// create page name
+	  	x_pageName  := <conc-strings> ("page", <int-to-string> n);
 	  	// for each part
 	  	//   if it is a question reference, compile it
 	  	//   if it is a section/subsection, compile it to a webdsl section/subsection and nest question references inside it
+	  	elem_group* := [];
+	  	if <eq> (n, length) then
+	  		elem_nextSubmit := elem* |[ submitlink finish() [class="btn btn-primary"] { "Finish" } " " ]|;
+	  		elem_nextAction := elem  |[ action finish() { form.save(); return finish(); } ]|
+	  	else
+	  		elem_nextSubmit := elem* |[ submitlink next() [class="btn btn-primary"] { "Next" } " " ]|;
+	  		x_nextPageName  := <conc-strings> ("page", <int-to-string> <inc> n);
+	  		elem_nextAction := elem  |[ action next() { form.save(); return x_nextPageName(); } ]|
+	  	end
 	  	
 	compile-qls-part:
 		|[ qid { s* } ]| -> <id>
@@ -62,6 +139,7 @@ rules
 			// get label, type and condition from the index
 			// if there is a condition, compile that first
 			// compile question, nested into the condition if needed
+			// apply styles
 			
 rules // Projections
 	
@@ -73,5 +151,3 @@ rules // Index
 	qls-get-questions =
 		index-get-data-all(|Questions());
 		map(index-get-data(|AST()))
-
-		

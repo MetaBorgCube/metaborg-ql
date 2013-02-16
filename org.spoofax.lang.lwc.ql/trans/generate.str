@@ -37,7 +37,7 @@ rules // QL to WebDSL compilation
 	  		user -> User
 			}
 		  	
-	  	tdef
+	  	def
 	  	
 		  page root() {
 				var name := ""
@@ -58,12 +58,6 @@ rules // QL to WebDSL compilation
 			  }
 			}
 			
-			page page1() {
-				main() {
-					call
-				}
-			}
-			
 			page finish() {
 				main() {
 					"Thank you for filling in the form"
@@ -74,8 +68,7 @@ rules // QL to WebDSL compilation
 	  	x_formID    := fid;
 	  	x_templName := <conc-strings> ("show", fid);
 	  	ent         := <compile-ql-entity> form;
-	  	tdef        := <compile-ql-template> form;
-	  	call        := call |[ x_templName(sess.user.x_formID) ]|
+	  	def         := <compile-ql-page> form
 	  	
 rules // QL questions to WebDSL entity
 	  
@@ -99,38 +92,38 @@ rules // QL questions to WebDSL entity
 
 rules // QL questions to WebDSL template
 	
-  compile-ql-template: 
+  compile-ql-page: 
   	|[ form fid { question* } ]| -> 
-	  tdef |[
-	    define x_templName(form : x_formID) {
-	    	horizontalForm() {
-	  		  elem_group*
-	  		  
-			    formActions() {
-			      submitlink submit() [class="btn btn-primary"] { "Submit" } " "
-			      submitlink finish() [class="btn btn-primary"] { "Finish" } " "
-			    }
-			  }
-			  
-			  action submit() {
-			    form.save();
-			  }
-			  
-		  	action finish() {
-			    form.save();
-			    return finish();
-			  }
+	  def |[
+	    page page1() {
+	    	main() {
+		    	horizontalForm() {
+		  		  elem_group*
+		  		  
+				    formActions() {
+				      submitlink submit() [class="btn btn-primary"] { "Submit" } " "
+				      submitlink finish() [class="btn btn-primary"] { "Finish" } " "
+				    }
+				  }
+				  
+				  action submit() {
+				    form.save();
+				  }
+				  
+			  	action finish() {
+				    form.save();
+				    return finish();
+				  }
+		  	}
 	  	}
 	  ]|
     where
-    	x_formID    := fid;
-    	x_templName := <conc-strings> ("show", fid);
     	elem_group* := <map(compile-ql-template-part)> question*
   
   compile-ql-template-part: 
-  	|[ qid : label t ]| -> elem |[ controlGroup(e_label) { input(form.x_id) } ]|
+  	|[ qid : label t ]| -> elem |[ controlGroup(e_label) { input(x_id) } ]|
   	where
-  		x_id    := qid;
+  		x_id    := <compile-ql-question-name> qid;
   		e_label := <compile-ql-exp> label
   		
   compile-ql-template-part: 
@@ -159,7 +152,7 @@ rules // QL expressions to WebDSL expressions
   compile-ql-exp = bottomup(try(compile-ql-exp-part))
   
   compile-ql-exp-part: Label(s) -> String(<try(un-double-quote)> s)
-  compile-ql-exp-part: Ref(qid) -> |[ form.x ]| where x := qid
+  compile-ql-exp-part: Ref(qid) -> <compile-ql-question-name> qid
   
   compile-ql-exp-part: ql |[    !e    ]| -> webdsl:e |[    !e    ]|
   compile-ql-exp-part: ql |[ e1 && e2 ]| -> webdsl:e |[ e1 && e2 ]|
@@ -173,3 +166,14 @@ rules // QL expressions to WebDSL expressions
   compile-ql-exp-part: ql |[ e1 -  e2 ]| -> webdsl:e |[ e1 -  e2 ]|
   compile-ql-exp-part: ql |[ e1 *  e2 ]| -> webdsl:e |[ e1 *  e2 ]|
   compile-ql-exp-part: ql |[ e1 /  e2 ]| -> webdsl:e |[ e1 /  e2 ]|
+
+rules
+	
+  compile-ql-question-name:
+  	qid -> |[ sess.user.x_formID.x_questionID ]| 
+	  where 
+	  	x_formID     := <ql-question-form-name> qid;
+	  	x_questionID := qid
+	
+	ql-question-form-name:
+		qid{uri} -> <last> uri
