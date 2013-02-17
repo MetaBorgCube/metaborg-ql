@@ -38,7 +38,7 @@ rules
 		c'     := <innermost(normalize); innermost(sort-literals); innermost(normalize)> c;
 		cdata  := DefData(uri, Condition(), c') ; 
 		ddata  := DefData(uri, Deps(), <collect-questions> (c, texpr));
-		cddata := DefData(uri, CoreDeps(), <collect-questions> (c', texpr)) 
+		cddata := DefData(uri, CoreDeps(), <collect-questions> (c', texpr))
 			
 	collect-questions = collect-all(?Ref(<id>), union)
 	
@@ -85,15 +85,6 @@ rules
 		where
 			<question-name> q1 => qid1;
 			<question-name> q2 => qid2
-			
-	sort-questions:
-		q* -> <sort-list(LSort(depends-on))> q*
-		
-	sort-form: 
-		|[form fid { question1* } ]| -> |[form fid { question2* } ]|
-		where
-			question2* := <sort-questions> question1*
-		
 rules
 	
 	get-defined-types = 

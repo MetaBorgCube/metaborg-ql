@@ -1,0 +1,23 @@
+module sorting
+
+imports
+	index-library.generated
+	analysis-library.generated
+	include/QL
+	dependencies
+	
+rules
+	
+	sort-qids: [] -> []
+	
+	sort-qids: 
+		[qid|qid*] -> result
+		where
+			dep*  := <get-dependencies> qid;
+			qid2* := <diff> (qid*, dep*);
+			if <eq> (qid*, qid2*) then
+				result := [qid|<sort-qids> qid*]
+			else
+				qid3*  := <diff> (dep*, qid2*);
+				result := <sort-qids> [qid3*, qid, qid2*] 
+			end

@@ -25,7 +25,7 @@ define style C {
 }
 
 
-page "PAGE HEADING" for Box1HouseOwning {
+page "PAGE HEADING" for Box1HouseOwning Box2HouseOwning {
 		hasBoughtHouse
 		hasLivedAbroad { style = A }
 
@@ -42,8 +42,6 @@ page "PAGE HEADING" for Box1HouseOwning {
 				font   = "Comic Sans"
 				color  = #000000
 				style  = C
-				widget = datepicker
-				widget = text
 				widget = dropdown
 			}	
 			sellingPrice

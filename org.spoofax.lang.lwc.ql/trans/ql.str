@@ -18,6 +18,7 @@ imports
   refactor
 	types
 	dependencies
+	sorting
 	
   qls/names-qls
   qls/styles
@@ -51,11 +52,13 @@ rules // Analysis
 	      if (QLS(_,_) := ast'') then
 	      	ast''' := <qls-normalize-top> ast''
 	      else
-	      	ast''' := ast''
+	      	ast''' := ast'';
+	      	collect-all(question-name); debug(!"ids ");
+	      	sort-qids; debug(!"sorted ")
 	      end
       );
       if <?[]> errors then
-      	ast'''' := <sort-form> ast'''
+      	ast'''' := ast'''
       else
       	ast'''' := ast'''
       end;

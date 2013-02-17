@@ -3,26 +3,31 @@
 */  
 
 form Box1HouseOwning {
+	
 	hasSoldHouse: "Did you sell a house in 2010?" boolean
+	
 	hasLivedAbroad: "Have you lived abroad in 2010?" boolean
+	
 	hasBoughtHouse: "Did you buy a house in 2010?" boolean
+	
 	hasMaintLoan: "Did you enter a loan for maintenance/reconstruction?" boolean
 	
 	if(hasSoldHouse){
+	
 		sellingPrice: "Price the house was sold for:" money
+	
 		privateDebt: "Private debts for the sold house:" money
+	
 		valueResidue: "Value residue:" money(sellingPrice - privateDebt)
 	}
 	
-	if (hasMoreHouses || hasSoldHouse || !hasMoreHouses ) {
-		hasMoreHouses: "Do you own more than one house?" boolean
-	}
+	hasMoreHouses: "Do you own more than one house?" boolean
 	
 	if(hasMoreHouses){
+	
 		netHousesWorth: "Value of secondary houses?" money
+	
 		netWorth: "Your net worth is:" money(valueResidue + netHousesWorth)
 	}
-	if(!hasMoreHouses || foo || hasMoreHouses){ 
-		netWorth: "Your net worth is:" money(valueResidue)	
-	} 
+	 
 }
