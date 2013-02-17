@@ -222,7 +222,7 @@ section horizontal forms
   	}
   }  
   template controlGroup(s: String){
-    div[class="control-group"]{
+    div[class="control-group", all attributes]{
     	label(s)[class="control-label"]{ 
     		div[class="controls"]{
     		  elements

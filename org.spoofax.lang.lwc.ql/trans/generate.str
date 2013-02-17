@@ -89,7 +89,7 @@ rules // QL questions to WebDSL entity
   	  x_formID := qid;
   	  srt_type := <compile-ql-type> t
 
-rules // QL questions to WebDSL template
+rules // QL form to WebDSL page
 	
   compile-ql-page: 
   	|[ form fid { question* } ]| -> 

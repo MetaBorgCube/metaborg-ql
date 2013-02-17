@@ -19,7 +19,7 @@ rules // QLS to WebDSL compilation
 	compile-qls: 
 		QLS(_, page*) ->
 		|[
-			module forms
+			module form
 			
 			def1*
 			
@@ -93,7 +93,7 @@ rules // QLS pages to WebDSL session Entity
 	compile-qls-session-init-part:
 		FormRef(x_formID) -> |[ x_formID := x_formID {} ]|
 	  	
-rules // QLS page to WebDSL template and page	
+rules // QLS page to WebDSL page	
 	
 	compile-qls-page(|length):
 		(Page(x_heading, fref*, part*), n) -> // TODO: Concrete syntax match? meta variable for STRING does not work..
@@ -127,10 +127,9 @@ rules // QLS page to WebDSL template and page
 	  	end
 	  	
 	compile-qls-part:
-		|[ qid { s* } ]| -> <compile-ql-group> question
+		|[ qid { s* } ]| -> <compile-qls-group(|s*)> question
 		where
 			question := <qls-get-question> qid
-			// TODO: apply styles
 			
 	compile-qls-part:
 		Section(elem_heading, part*) -> elem* |[ pageHeader() { elem_heading } elem_group* ]| // TODO: Concrete syntax match? meta variable for STRING does not work..
@@ -141,6 +140,42 @@ rules // QLS page to WebDSL template and page
 		SubSection(elem_heading, part*) -> elem* |[ pageHeader2() { elem_heading } elem_group* ]| // TODO: Concrete syntax match? meta variable for STRING does not work..
 		where
 			elem_group* := <map(compile-qls-part)> part*
+			
+rules // QL group to WebDSL page elements
+	
+  compile-qls-group(|styles): 
+  	|[ qid : label t ]| -> elem |[ controlGroup(e_label) [passign_style*] { input(x_id) [passign_style*] } ]|
+  	where
+  		x_id           := <compile-ql-question-name> qid;
+  		e_label        := <compile-ql-exp> label;
+  		passign_style* := <compile-qls-simple-styles> styles
+  		// TODO: apply input widget style
+  		
+  compile-qls-group(|styles): 
+  	|[ qid : label t ( exp ) ]| -> elem |[ controlGroup(e_label) [passign_style*] { output(e_typeExp) [passign_style*] } ]|
+  	where
+  		e_label        := <compile-ql-exp> label;
+  		e_typeExp      := <compile-ql-exp> exp;
+  		passign_style* := <compile-qls-simple-styles> styles
+  		
+  compile-qls-group(|styles): 
+  	|[ if ( cond ) { q* } ]| -> elem |[ if (e_cond) { elem_group* } ]|
+  	where
+  		e_cond      := <compile-ql-exp> cond;
+  		elem_group* := <map(compile-qls-group(|styles))> q*
+			
+rules // QLS simple styles to WebDSL property assignments
+	
+	compile-qls-simple-styles:
+		style* -> passign |[ style = x_style ]|
+		where
+			x_style := <filter(compile-qls-simple-style); concat-strings; double-quote> style*
+	
+  compile-qls-simple-style:
+  	Font(name) -> $[font-family: '[<try(un-double-quote)> name]';]
+  	
+  compile-qls-simple-style:
+  	Color(color) -> $[color: [<try(un-double-quote)> color];]
 			
 rules // Projections
 	
@@ -155,3 +190,6 @@ rules // Index
 		
 	qls-get-question =
 		index-get-data(|AST())
+		
+	qls-get-question-type =
+		index-get-data(|Type())
