@@ -38,7 +38,7 @@ rules // Analysis
     	ast1 := <ql-or-qls(desugar-all, qls-desugar-all)> ast;
       (ast2, filesToAnalyze) := <analyze-top(|<language>)> (ast1, path, project-path);
       index-transaction(
-      	<ql-or-qls(analyze-dependencies, where(qls-analyze-dependencies); where(qls-store-styles))> ast2;
+      	<ql-or-qls(analyze-dependencies, where(qls-analyze-dependencies); where(qls-store-styles); where(qls-store-pages))> ast2;
 	      errors   := <collect-all(constraint-error, conc)> ast2;
 	      warnings := <collect-all(constraint-warning, conc)> ast2;
 	      notes    := <collect-all(constraint-note, conc)> ast2;

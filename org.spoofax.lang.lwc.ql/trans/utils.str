@@ -23,6 +23,8 @@ rules // index helpers
 	
 	index-add = index-add(|<index-get-current-file>)
 	
+	index-remove = index-remove(|<index-get-current-file>)
+	
 rules // lists & sets
 	
 	// make-set with custom equality checker

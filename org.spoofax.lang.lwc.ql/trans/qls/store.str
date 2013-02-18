@@ -7,12 +7,16 @@ imports
 	utils
 	qls/types
 	qls/defaults
-
+	dependencies
+	store
+	names
+	
 signature
 	constructors
 		Dependencies: DefDataKind
 		StyleDefinitions: DefDataKind
-
+		ReferredQuestions: DefDataKind
+		
 signature
 	constructors
 		Page: Namespace
@@ -46,21 +50,29 @@ rules
 			
 rules
 	/*
-	* Store Page -> Form, Page -> Question and Question -> Page relationships
+	* Store a mapping for every form F to a list of all referred questions
+	*		F -> [QuestionID]
 	*/
 	
-	// qls-store-pages:
-	// 	QLS(_, pages) -> <map(qls-store-page)> pages
-	// 
-	// qls-store-page:
-	// 	Page(_, _, _) -> <index
-	// 
-	// qls-store-pages:
-	// 	QLS(_, pages) -> <map(qls-add-page-name;qls-store-page)> pages
-	// 
-	// qls-add-page-name:
-	// 	Page(t1, t2, t3)
+	qls-store-pages = alltd(qls-store-question)
 	
+	qls-store-question = 
+		(?SimpleRef(qid) + ?|[ qid { style* } ]|);
+		!qid;
+		qls-form-of-question;
+		index-uri => frm-uri;
+		(index-get-data(|ReferredQuestions()) <+ ![]) => data*;
+		<index-remove> DefData(frm-uri, ReferredQuestions(), ());
+		!DefData(frm-uri, ReferredQuestions(), [data*,qid]);
+		index-add
+	
+	qls-form-of-question =
+		index-lookup;
+		index-uri;
+		last;
+		!<id>{[Frm(), <id>]};
+		index-lookup			
+
 
 
 
