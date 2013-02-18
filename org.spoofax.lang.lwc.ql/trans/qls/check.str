@@ -28,10 +28,10 @@ rules // styles
 			<qls-has-circular-dependency-style> sid
 	
 	constraint-error:
-		|[ define style sid { stydef* }]| -> <concat> [dup-imports, dup-defs]
+		|[ define style sid { stydef* }]| -> [dup-imports*, dup-defs*]
 		where <not(qls-has-circular-dependency-style)> sid
-		where <dup-imports-errors> stydef* => dup-imports
-		where <dup-defs-errors> stydef* => dup-defs
+		where <dup-imports-errors <+ ![]> stydef* => dup-imports*
+		where <dup-defs-errors <+ ![]> stydef* => dup-defs*
 
 	constraint-error:
 		|[ qid { style* }]| -> [type-errors*, dup-imports*, dup-defs*, dup-ref]
@@ -41,11 +41,11 @@ rules // styles
 			map(!(q-type, <id>));
 			filter(qls-type-error(elem)) => type-errors*
 		where
-			<dup-imports-errors> style* => dup-imports*
+			<dup-imports-errors <+ ![]> style* => dup-imports*
 		where
-			<dup-defs-errors> style* => dup-defs*
+			<dup-defs-errors <+ ![]> style* => dup-defs*
 		where
-			dup-ref-error => dup-ref
+			(dup-ref-error <+ ![]) => dup-ref
 
 	dup-imports-errors =
 		filter(?StyleRef(<id>));

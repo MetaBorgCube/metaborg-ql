@@ -9,11 +9,11 @@
 => 9. error report if multiple styles are defined in the same style declaration
 => 10. change the semantics of style overriding such that local style declaration always override the imported style.
 =>	this can be done by reordering the list of styling options to have the style references at the top of the import
-11. phase 1: add constraint check that questions are in order. uses the strategy 'ql-are-questions-in-order'.
-12. phase 2: all questions that are depended upon that are not already displayed in pre-position should be added as late as possible
+=> 11. phase 1: add constraint check that questions are in order. uses the strategy 'ql-are-questions-in-order'.
+=> 12. phase 2: all questions that are depended upon that are not already displayed in pre-position should be added as late as possible
 13. phase 3: all questions that are not yet presented should be added on the last page that imports the respective form
 14. extra: refactoring to repair question ordering when broken.
-15. error if you mention a question twice but not if the question is a computation
-16. multi-form pages
+=> 15. error if you mention a question twice but not if the question is a computation
+=> 16. multi-form pages
 => 17. contain only Widget and no TypedWidget
 => 18. repair qls style normalization

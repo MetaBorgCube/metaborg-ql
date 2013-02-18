@@ -8,6 +8,7 @@ imports
 	qls/types
 	qls/defaults
 	qls/store
+	dependencies
 	
 rules
 	/*
@@ -59,16 +60,17 @@ rules
 		(
 			?(Font(_),Font(_)) +
 			?(Color(_), Color(_)) +
-			?(Widget(_), Widget(_)) +
-			?(TypedWidget(ty, _), TypedWidget(ty, _))
+			?(|[ widget = widge0 ]|, |[ widget = widge1 ]|) +
+			?(|[ t widget = widge0 ]|, |[ t widget = widge1 ]|)
 		)
 	
 	is-same-style-use = ?(StyleRef(a), StyleRef(a))
 
+strategies
+	/* Normalization entry point */
+	qls-normalize = qls-normalize-styles-top;qls-normalize-pages-top
+
 rules
-	
-	qls-normalize = qls-normalize-styles-top
-	
 	/* Normalize all SimpleRef and StyleRef.
 	* - all StyleRefs are made concrete and simplified
 	* - all SimpleRefs become StyleRef
@@ -87,9 +89,10 @@ rules
 			foldr(![], qls-add-style) => style1*			
 	
 	qls-normalize-styles:
-		SimpleRef(qid) -> StyledRef(qid, Styles(<qls-default-style(|q-ty)>))
+		SimpleRef(qid) -> |[qid { style* }]|
 		where
-			qls-type-of => q-ty
+			qls-type-of => q-ty;
+			qls-default-style(|q-ty) => style*
 
 
 	is-typed-widget = ?TypedWidget(_, _)
@@ -103,6 +106,46 @@ rules
 		(sty, styles) -> styles
 		where elem(is-same-style)
 
-		
+rules
+	/* Normalize pages:
+	* - add dependent questions where needed
+	* - add all unneeded questions on last page of form
+	*/
+	qls-normalize-pages-top = alltd(qls-normalize-page)
 	
+	qls-normalize-page:
+		|[ page str for fref { pagepart* } ]| -> |[ page str for fref { pagepart1* } ]|
+		where
+			<map(qls-normalize-page);flatten-list> pagepart* => pagepart1* 
+	
+	qls-normalize-page:
+		|[ section str { secpart* }]| -> |[ section str { secpart1* }]|
+		where
+			<map(qls-normalize-page);flatten-list> secpart* => secpart1*
+			
+	qls-normalize-page:
+		|[ subsection str { ssecpart* }]| -> |[ subsection str { ssecpart1* }]|
+		where
+			<map(qls-normalize-page);flatten-list> ssecpart* => ssecpart1*
+			
+	qls-normalize-page:
+		|[ qid { styles* } ]| -> [dep-refs*, <id>]
+		where
+			<get-all-dependencies> qid => raw-deps*;
+			<qls-form-of-question> qid => form;
+			<qls-questions-of-form> form => q-refs*; 
+			<diff> (raw-deps*, q-refs*) => deps*;
+			<map(qls-qid-to-ref)> deps* => dep-refs*;
+			<map(qls-store-question-ref)> dep-refs*
+
+	qls-qid-to-ref:
+		qid -> <qls-normalize-styles> SimpleRef(qid)
+
+
+
+
+
+
+
+
 	
