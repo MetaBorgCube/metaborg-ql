@@ -15,45 +15,44 @@ rules // generic
 
 rules // style dependencies
 	
+	// typed widget declaration in style definition
+	constraint-error: 
+		|[type widget = widge ]| -> <qls-type-error(elem)> (type, widge)
+	
 	constraint-error:
 		|[ define style sid { stydef* }]| -> (sid, $[Style [sid] has cyclic dependencies])
 		where
 			<qls-has-circular-dependency-style> sid
-
-rules // styling general
 	
-	// typed widget declaration in style definition
-	constraint-error =
-		?|[type widget = widge ]|;
-		<qls-type-error(elem)> (type, widge)
+	constraint-error:
+		|[ define style sid { stydef* }]| -> <concat> [dup-imports, dup-defs]
+		where <not(qls-has-circular-dependency-style)> sid
+		where <dup-imports-errors> stydef* => dup-imports
+		where <dup-defs-errors> stydef* => dup-defs
 
-	// untyped widget in question styling
-	constraint-error =
-		?|[ qid { style* }]|;
-		qls-type-of => q-type;
-		<filter(?Widget(<id>))> style*;
-		map(!(q-type, <id>));
-		filter(qls-type-error(elem))
+	constraint-error:
+		|[ qid { style* }]| -> <concat> [type-errors, dup-imports, dup-defs]
+		where
+			qls-type-of => q-type;
+			<filter(?Widget(<id>))> style*;
+			map(!(q-type, <id>));
+			filter(qls-type-error(elem)) => type-errors
+		where <dup-imports-errors> style* => dup-imports
+		where <dup-defs-errors> style* => dup-defs
 
-	// duplicate style imports
-	constraint-warning = 
-		(?Styles(<id>) + ?StyleDef(_,<id>));
+	dup-imports-errors =
 		filter(?StyleRef(<id>));
 		reverse;
 		duplicates(eq, string-lt);
 		map(!(<id>, $[Duplicate style use]))
-
-	// duplicate style customization (local)
-	constraint-error =
-		(?Styles(<id>) + ?StyleDef(_,<id>));
+	
+	dup-defs-errors = 
 		filter(not(?StyleRef(_))) => ss;
 		reverse;
 		make-set(is-same-style);
 		<diff> (ss, <id>);
 		map(!(<id>, $[Duplicate styling]))
-		
-		
-		
+
 rules // type error reporter helper
 	
 	qls-type-error(s): 
