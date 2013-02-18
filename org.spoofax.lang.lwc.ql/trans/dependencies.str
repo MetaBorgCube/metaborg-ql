@@ -103,7 +103,7 @@ rules
 	*		- [A,D,C,B] -> [(D,C), (C,B)] (C preceed D, B preceed C)
 	*/
 	// TODO
-	sort-question-ids = warn-msg(|"Strategy sort-question-ids is NOT IMPLEMENTED");?[a,b|_];![(b,a)]
+	sort-question-ids = warn-msg(|"Strategy sort-question-ids is NOT IMPLEMENTED");fail
 
 		
 	sort-form: 

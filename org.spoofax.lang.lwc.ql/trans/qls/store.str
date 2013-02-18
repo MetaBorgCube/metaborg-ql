@@ -13,7 +13,9 @@ signature
 		Dependencies: DefDataKind
 		StyleDefinitions: DefDataKind
 		ReferredQuestions: DefDataKind
-		ReferenceAST: DefDataKind		
+		ReferenceAST: DefDataKind
+		AST: DefDataKind
+		
 signature
 	constructors
 		Frm: Namespace

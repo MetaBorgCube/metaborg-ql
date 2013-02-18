@@ -34,14 +34,18 @@ rules // styles
 		where <dup-defs-errors> stydef* => dup-defs
 
 	constraint-error:
-		|[ qid { style* }]| -> <concat> [type-errors, dup-imports, dup-defs]
+		|[ qid { style* }]| -> [type-errors*, dup-imports*, dup-defs*, dup-ref]
 		where
 			qls-type-of => q-type;
 			<filter(?Widget(<id>))> style*;
 			map(!(q-type, <id>));
-			filter(qls-type-error(elem)) => type-errors
-		where <dup-imports-errors> style* => dup-imports
-		where <dup-defs-errors> style* => dup-defs
+			filter(qls-type-error(elem)) => type-errors*
+		where
+			<dup-imports-errors> style* => dup-imports*
+		where
+			<dup-defs-errors> style* => dup-defs*
+		where
+			dup-ref-error => dup-ref
 
 	dup-imports-errors =
 		filter(?StyleRef(<id>));
@@ -56,7 +60,7 @@ rules // styles
 		<diff> (ss, <id>);
 		map(!(<id>, $[Duplicate styling]))
 
-rules // question ordering
+rules // question ordering & duplicates
 	
 	constraint-error:
 		QLS(_,_) -> <map(qls-ref-precedence-error)> swap-pairs
@@ -64,6 +68,30 @@ rules // question ordering
 				collect-all(?FormRef(<id>)); make-set;
 				mapconcat(qls-questions-of-form;make-set;sort-question-ids) => swap-pairs
 	
+	constraint-error:
+		SimpleRef(qid) -> <dup-ref-error> 
+	
+	dup-ref-error:
+		ref -> (ref, $[Duplicate reference to question [qid]])
+		where
+			ref-to-quest-id => qid;
+			not(is-computed-question)
+		where
+			<qls-form-of-question> qid;
+			qls-questions-of-form;
+			split-at(?qid) => (_, rest);
+			<elem> (qid, rest)
+	
+	ref-to-quest-id:
+		SimpleRef(qid) -> qid
+	
+	ref-to-quest-id:
+		|[ qid { style* } ]| -> qid 
+
+	is-computed-question =
+		index-lookup;
+		index-get-data(|AST());
+		?Conditional(_, [Computed(_, _, _)])
 
 rules // error reporter helpers
 	
