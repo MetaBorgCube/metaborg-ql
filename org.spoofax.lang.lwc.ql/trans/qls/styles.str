@@ -84,12 +84,6 @@ rules
 		flatten-list
 	
 rules
-	/*
-	* Style simplification
-	* The last provided styling is the one that wins
-	*/
-	qls-simplify-style =
-		make-set(is-same-style)
 	
 	is-same-style =
 		not(is-same-style-use);
@@ -101,17 +95,6 @@ rules
 		)
 	
 	is-same-style-use = ?(StyleRef(a), StyleRef(a))
-		
-rules
-	/*
-	* Add attached type to the non-typed widget stylings
-	*/
-	entype-widgets(|ty) =
-		is-list;
-		map(try(entype-widget(|ty)))
-		
-	entype-widget(|ty):
-		Widget(w) -> TypedWidget(ty, w)
 
 rules
 	
@@ -130,9 +113,9 @@ rules
 			qls-default-style(|q-ty) => def-style
 		where
 			<qls-make-all-concrete-style> style0*;
-			entype-widgets(|q-ty);
 			<conc> (def-style, <id>);
-			qls-simplify-style => style1*
+			filter(is-typed-widget;untype-widget(|q-ty) <+ not(is-typed-widget));
+			foldr(![], qls-add-style) => style1*			
 	
 	qls-normalize-styles:
 		SimpleRef(qid) -> StyledRef(qid, Styles(<qls-default-style(|q-ty)>))
@@ -140,7 +123,16 @@ rules
 			qls-type-of => q-ty
 
 
+	is-typed-widget = ?TypedWidget(_, _)
+	untype-widget(|ty): TypedWidget(ty, w) -> w 
 
+	qls-add-style:
+		(sty, styles) -> [sty|styles]
+		where not(elem(is-same-style))
+	
+	qls-add-style:
+		(sty, styles) -> styles
+		where elem(is-same-style)
 
 		
 	
