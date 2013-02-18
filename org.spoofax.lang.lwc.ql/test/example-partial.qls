@@ -9,22 +9,21 @@ define style A {
 
 define style C {
 	boolean widget = dropdown
-	integer widget = text
 	use A
 }
 
-page "PAGE HEADING" for Box1HouseOwning Form15 {
-		hasBoughtHouse
-		ten
-		five
+page "PAGE HEADING" for Form15 {
+		// hasBoughtHouse
 		// hasLivedAbroad { use A }
 
-	section "SECTION HEADING" {
-// 		subsection "SUBSECTION HEADING" {
-// 			sellingPrice
-			// privateDebt
+	// section "SECTION HEADING" {
+		five
+		ten
+		// subsection "SUBSECTION HEADING" {
+			// sellingPrice
+			// privateDebt 
 			// valueResidue
-// 		}
+		// }
 // 
 // 		subsection "SUBSECTION HEADING" {
 // 			hasSoldHouse
@@ -51,9 +50,12 @@ page "PAGE HEADING" for Box1HouseOwning Form15 {
 // 			sellingPrice
 // 			privateDebt
 // 		}
-	}
+
+	// }
 }
 
-page "PAGE TWO" for Box1HouseOwning {
-	hasLivedAbroad { use A }
+page "PAGE TWO" for Form15 {
+	// hasLivedAbroad { use A }
+	// valueResidue
+	// fifteen
 }

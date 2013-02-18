@@ -15,6 +15,7 @@ signature
 		ReferredQuestions: DefDataKind
 		ReferenceAST: DefDataKind
 		AST: DefDataKind
+		Questions: DefDataKind
 		
 signature
 	constructors

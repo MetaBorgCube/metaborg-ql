@@ -9,6 +9,7 @@ imports
 	qls/defaults
 	qls/store
 	dependencies
+	lib/editor-common.generated
 	
 rules
 	/*
@@ -68,7 +69,11 @@ rules
 
 strategies
 	/* Normalization entry point */
-	qls-normalize = qls-normalize-styles-top;qls-normalize-pages-top
+	qls-normalize =
+		qls-normalize-styles-top;
+		qls-normalize-pages-top
+		// TODO why does this not work?
+		// ;qls-add-one-rest-ref;debug(!"OUT...")
 
 rules
 	/* Normalize all SimpleRef and StyleRef.
@@ -111,24 +116,24 @@ rules
 	* - add dependent questions where needed
 	* - add all unneeded questions on last page of form
 	*/
-	qls-normalize-pages-top = alltd(qls-normalize-page)
+	qls-normalize-pages-top = alltd(qls-add-ref-deps)
 	
-	qls-normalize-page:
-		|[ page str for fref { pagepart* } ]| -> |[ page str for fref { pagepart1* } ]|
+	qls-add-ref-deps:
+		|[ page str for fref* { pagepart* } ]| -> |[ page str for fref* { pagepart1* } ]|
 		where
-			<map(qls-normalize-page);flatten-list> pagepart* => pagepart1* 
+			<map(qls-add-ref-deps);flatten-list> pagepart* => pagepart1* 
 	
-	qls-normalize-page:
+	qls-add-ref-deps:
 		|[ section str { secpart* }]| -> |[ section str { secpart1* }]|
 		where
-			<map(qls-normalize-page);flatten-list> secpart* => secpart1*
+			<map(qls-add-ref-deps);flatten-list> secpart* => secpart1*
 			
-	qls-normalize-page:
+	qls-add-ref-deps:
 		|[ subsection str { ssecpart* }]| -> |[ subsection str { ssecpart1* }]|
 		where
-			<map(qls-normalize-page);flatten-list> ssecpart* => ssecpart1*
+			<map(qls-add-ref-deps);flatten-list> ssecpart* => ssecpart1*
 			
-	qls-normalize-page:
+	qls-add-ref-deps:
 		|[ qid { styles* } ]| -> [dep-refs*, <id>]
 		where
 			<get-all-dependencies> qid => raw-deps*;
@@ -141,11 +146,42 @@ rules
 	qls-qid-to-ref:
 		qid -> <qls-normalize-styles> SimpleRef(qid)
 
-
-
-
-
-
+rules // add missing references to questions one at a time
+	
+	// add one question to a form which is missing from pages
+	qls-add-one-rest-ref:
+		QLS(sdefs, pages*) -> QLS(sdefs, pages')
+		where
+			<collect-all(?FormRef(<id>));make-set> pages* => forms*;
+			<fetch-elem(qls-form-has-unreffed-questions)> forms* => form;
+			<reverse;one(qls-page-add-one-rest-ref(|form));reverse> pages* => pages'
+	
+	qls-page-add-one-rest-ref(|frm):
+		|[ page str for fref* { pagepart* } ]| -> |[ page str for fref* { pagepart* pagepart1 } ]|
+		where
+			<qls-get-form-unreffed-questions> frm => [unref|_];
+			<index-get-data(|AST());get-question-id;qls-qid-to-ref> Def(unref) => pagepart1;
+			<qls-store-question-ref> pagepart1
+			
+	qls-form-has-unreffed-questions:
+		frm -> frm
+		where
+			qls-get-form-unreffed-questions;
+			not(?[])
+	
+	
+	qls-get-form-unreffed-questions =
+		?frm;
+		<index-get-data-all(|Questions())> frm => q-defs*;
+		<index-get-data-all(|ReferredQuestions())> frm => q-refs*;
+		<diff> (q-defs*, q-refs*)
+	
+	get-question-id:
+		Conditional(_, [Computed(qid, _, _)]) -> qid
+		
+	get-question-id:
+		Conditional(_, [Question(qid, _, _)]) -> qid
+	
 
 
 	
