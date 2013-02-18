@@ -1,0 +1,41 @@
+module qls/store
+
+imports
+	lib/index-library
+	lib/analysis-library
+	include/QL
+	utils
+	qls/types
+	qls/defaults
+
+signature
+	constructors
+		Dependencies: DefDataKind
+		StyleDefinitions: DefDataKind
+		
+rules
+	/*
+	* Analyze and store dependencies of styles
+	*/
+
+	qls-analyze-dependencies:
+		QLS(sdefs, _) -> <map(qls-analyze-dependencies)> sdefs
+	
+	qls-analyze-dependencies:
+		|[ define style sid { stydef* } ]| -> <index-add-all> [ DefData(uri, Dependencies(), deps) ]
+		with
+			deps := <filter(?StyleRef(_))> stydef*;
+			uri := <index-uri> sid
+
+rules
+	/*
+	* Store styling attributes in index, easier for lookups
+	*/
+	
+	qls-store-styles:
+		QLS(sdefs, _) -> <map(qls-store-styles)> sdefs
+		
+	qls-store-styles:
+		|[ define style sid { stydef* } ]| -> <index-add-all> [ DefData(uri, StyleDefinitions(), stydef*) ]
+		with
+			uri := <index-uri> sid
