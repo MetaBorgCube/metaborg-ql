@@ -25,3 +25,11 @@ define main() {
     elements
   }
 }
+
+entity BoolWrap {
+	name  :: String (name, id)
+	value :: Bool
+}
+
+var bw_true  := BoolWrap { name := "Yes", value := true  }
+var bw_false := BoolWrap { name := "No",  value := false }

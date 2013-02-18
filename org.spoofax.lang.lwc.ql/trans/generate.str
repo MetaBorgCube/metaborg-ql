@@ -162,10 +162,14 @@ rules // QL expressions to WebDSL expressions
 
 rules
 	
+	compile-ql-form-name:
+		x_formID -> |[ sess.user.x_formID ]|
+		
   compile-ql-question-name:
-  	qid -> |[ sess.user.x_formID.x_questionID ]| 
+  	qid -> |[ x_formID.x_questionID ]| 
 	  where 
-	  	x_formID     := <ql-question-form-name> qid;
+	  	fid          := <ql-question-form-name> qid;
+	  	x_formID     := <compile-ql-form-name> fid;
 	  	x_questionID := qid
 	
 	ql-question-form-name:

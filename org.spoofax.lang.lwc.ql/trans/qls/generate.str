@@ -99,7 +99,13 @@ rules // QLS page to WebDSL page
 		(Page(x_heading, fref*, part*), n) -> // TODO: Concrete syntax match? meta variable for STRING does not work..
 		def |[
 	    page x_pageName() {
-	    	main() {
+    		elem_var*
+    		
+    		init {
+    			stat_init*
+    		}
+	    		
+	    	main() {	    		
 		    	horizontalForm(x_heading) {
 		  		  elem_group*
 		  		  
@@ -110,21 +116,37 @@ rules // QLS page to WebDSL page
 				  }
 		  	}
 				  
-			  action submit() {}
+			  action submit() {
+			  	stat_action*
+			  	stat_saveall*
+			  }
 			  elem_nextAction
 	  	}
 		]|
 	  where
-	  	x_pageName  := <conc-strings> ("page", <int-to-string> n);
-	  	elem_group* := <map(compile-qls-part)> part*;
+	  	x_pageName     := <conc-strings> ("page", <int-to-string> n);
+	  	stat_saveall*  := <map(compile-qls-page-save)> fref*;
+	  	{| Var, Init, Action: 
+	  		elem_group*  := <map(compile-qls-part)> part*;
+		  	elem_var*    := <bagof-Var <+ ![]>;
+		  	stat_init*   := <bagof-Init <+ ![]>;
+		  	stat_action* := <bagof-Action <+ ![]>
+  		|};
 	  	if <eq> (n, length) then
 	  		elem_nextSubmit := elem* |[ submitlink finish() [class="btn btn-primary"] { "Finish" } " " ]|;
-	  		elem_nextAction := elem  |[ action finish() { return finish(); } ]|
+	  		elem_nextAction := elem  |[ action finish() { stat_action* stat_saveall* return finish(); } ]|
 	  	else
 	  		elem_nextSubmit := elem* |[ submitlink next() [class="btn btn-primary"] { "Next" } " " ]|;
 	  		x_nextPageName  := <conc-strings> ("page", <int-to-string> <inc> n);
-	  		elem_nextAction := elem  |[ action next() { return x_nextPageName(); } ]|
+	  		elem_nextAction := elem  |[ action next() { stat_action* stat_saveall* return x_nextPageName(); } ]|
 	  	end
+	  	
+  compile-qls-page-save:
+  	FormRef(fref) -> |[ x_formID.save(); ]|
+  	where
+  		x_formID := <compile-ql-form-name> fref
+
+rules // QLS part to WebDSL elements
 	  	
 	compile-qls-part:
 		|[ qid { s* } ]| -> <compile-qls-group(|s*)> question
@@ -144,12 +166,12 @@ rules // QLS page to WebDSL page
 rules // QL group to WebDSL page elements
 	
   compile-qls-group(|styles): 
-  	|[ qid : label t ]| -> elem |[ controlGroup(e_label) [passign_style*] { input(x_id) [passign_style*] } ]|
+  	q@|[ qid : label t ]| -> elem |[ controlGroup(e_label) [passign_style*] { elem_input } ]|
   	where
-  		x_id           := <compile-ql-question-name> qid;
   		e_label        := <compile-ql-exp> label;
-  		passign_style* := <compile-qls-simple-styles> styles
-  		// TODO: apply input widget style
+  		passign_style* := <compile-qls-simple-styles> styles;
+  		widget         := <fetch-elem(?TypedWidget(_, _)) <+ !()> styles;
+  		elem_input     := <compile-qls-group-input(|passign_style*)> (widget, q)
   		
   compile-qls-group(|styles): 
   	|[ qid : label t ( exp ) ]| -> elem |[ controlGroup(e_label) [passign_style*] { output(e_typeExp) [passign_style*] } ]|
@@ -163,6 +185,38 @@ rules // QL group to WebDSL page elements
   	where
   		e_cond      := <compile-ql-exp> cond;
   		elem_group* := <map(compile-qls-group(|styles))> q*
+
+rules // QLS widget styles to WebDSL input
+	
+	compile-qls-group-input(|passign_style*) =
+		compile-qls-group-input-special(|passign_style*) <+ compile-qls-group-input-default(|passign_style*)
+	
+	compile-qls-group-input-default(|passign_style*):
+		(_, |[ qid : label t ]|) -> call |[ input(x_id) [passign_style*] ]|
+		where
+			x_id := <compile-ql-question-name> qid
+			
+	compile-qls-group-input-special(|passign_style*):
+		(TypedWidget(BoolTy(), widget), |[ qid : label t ]|) -> call |[ x_call [passign_style*] ]|
+		where
+			<?Radio() <+ ?Dropdown()> widget;
+			x_oid  := <compile-ql-question-name> qid;
+			x_id   := <conc-strings> (qid, "_wrap");
+			x_call := <compile-qls-group-input-call(|x_id)> widget;
+			rules(
+				Var    :+ _ -> |[ var x_id : BoolWrap; ]|
+				Init   :+ _ -> |[ if(x_oid) { x_id := bw_true; } else { x_id := bw_false; } ]|
+				Action :+ _ -> |[ x_oid := x_id.value; ]|
+			)
+			
+	compile-qls-group-input-call(|x_id):
+		Radio() -> call |[ radio(x_id) ]|
+		
+	compile-qls-group-input-call(|x_id):
+		Dropdown() -> call |[ select(x_id)[not null] ]|
+		
+	// TODO: add slider for int, float.
+	// TODO: add other dropdown types, but requires a list of values.
 			
 rules // QLS simple styles to WebDSL property assignments
 	
