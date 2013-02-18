@@ -80,7 +80,7 @@ rules
 		index-get-data(|StyleDefinitions())
 	
 	qls-make-all-concrete-style =
-		map(try(not(qls-has-circular-dependency-style);qls-make-concrete-style;qls-make-all-concrete-style));
+		map(try(not(?StyleRef(<id>);qls-has-circular-dependency-style);qls-make-concrete-style;qls-make-all-concrete-style));
 		flatten-list
 	
 rules
@@ -98,7 +98,7 @@ rules
 		<eq> (<length> ll, <length> rl)
 	
 	is-same-style-use = ?(StyleRef(a), StyleRef(a))
-	
+		
 rules
 	/*
 	* Add attached type to the non-typed widget stylings
