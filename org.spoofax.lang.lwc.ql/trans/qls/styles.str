@@ -92,10 +92,13 @@ rules
 		make-set(is-same-style)
 	
 	is-same-style =
+		not(is-same-style-use);
 		?(lc#(ll), rc#(rl));
 		<?lc> rc;
 		<eq> (<length> ll, <length> rl)
-		
+	
+	is-same-style-use = ?(StyleRef(a), StyleRef(a))
+	
 rules
 	/*
 	* Add attached type to the non-typed widget stylings
@@ -108,13 +111,16 @@ rules
 		Widget(w) -> TypedWidget(ty, w)
 
 rules
+	
+	qls-normalize = qls-normalize-styles-top
+	
 	/* Normalize all SimpleRef and StyleRef.
 	* - all StyleRefs are made concrete and simplified
 	* - all SimpleRefs become StyleRef
 	*/
-	qls-normalize-top = alltd(qls-normalize)
+	qls-normalize-styles-top = alltd(qls-normalize-styles)
 	
-	qls-normalize:
+	qls-normalize-styles:
 		|[ qid { style0* }]| -> |[ qid { style1* }]|
 		where
 			qls-type-of => q-ty;
@@ -125,7 +131,7 @@ rules
 			<conc> (def-style, <id>);
 			qls-simplify-style => style1*
 	
-	qls-normalize:
+	qls-normalize-styles:
 		SimpleRef(qid) -> StyledRef(qid, Styles(<qls-default-style(|q-ty)>))
 		where
 			qls-type-of => q-ty

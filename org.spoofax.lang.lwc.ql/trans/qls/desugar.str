@@ -11,13 +11,12 @@ rules
 	qls-desugar:
 		StyleDef(s, ss) -> StyleDef(s, <qls-desugar-style-uses> ss)
 
-	qls-desguar:
+	qls-desugar:
 		StyledRef(q, Styles(ss)) -> StyledRef(q, Styles(<qls-desugar-style-uses> ss))
 
 	qls-desugar-style-uses =
 		partition(?StyleRef(<id>)) => (uses, decls);
 		<not(?[])> uses;
 		flatten-list;
-		qsort(string-lt);
 		map(!StyleRef(<id>));
 		<conc> (<id>, decls)

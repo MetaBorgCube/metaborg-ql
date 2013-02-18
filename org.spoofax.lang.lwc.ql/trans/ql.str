@@ -41,7 +41,7 @@ rules // Analysis
 	      errors   := <collect-all(constraint-error, conc)> ast2;
 	      warnings := <collect-all(constraint-warning, conc)> ast2;
 	      notes    := <collect-all(constraint-note, conc)> ast2;
-	      ast3     := <ql-or-qls(where(store-all), qls-normalize-top)> ast2
+	      ast3     := <ql-or-qls(where(store-all), qls-normalize)> ast2
       );
       ast4            := <ql-or-qls(if [] := errors then sort-form else id end, id)> ast3;
       filesToAnalyze' := <index-filepairs-to-files> filesToAnalyze

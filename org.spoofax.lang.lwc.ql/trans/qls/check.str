@@ -35,10 +35,20 @@ rules // styling general
 		map(!(q-type, <id>));
 		filter(qls-type-error(elem))
 
-	// duplicate style customization
+	// duplicate style imports
+	constraint-warning = 
+		(?Styles(<id>) + ?StyleDef(_,<id>));
+		filter(?StyleRef(<id>));
+		reverse;
+		duplicates(eq, string-lt);
+		map(!(<id>, $[Duplicate style use]))
+
+	// duplicate style customization (local)
 	constraint-error =
-		(?Styles(ss) + ?StyleDef(_,ss));
-		<reverse;make-set(is-same-style)> ss;
+		(?Styles(<id>) + ?StyleDef(_,<id>));
+		filter(not(?StyleRef(_))) => ss;
+		reverse;
+		make-set(is-same-style);
 		<diff> (ss, <id>);
 		map(!(<id>, $[Duplicate styling]))
 		
