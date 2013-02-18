@@ -9,8 +9,15 @@ strategies
 rules
 	
 	qls-desugar:
-		StyleDef(s, ss) -> StyleDef(s, <map(try(qls-desugar)); flatten-list> ss) 
-		
-	qls-desugar:
-		StyleRef(ss) -> <map(!StyleRef(<id>))> ss   
-		
+		StyleDef(s, ss) -> StyleDef(s, <qls-desugar-style-uses> ss)
+
+	qls-desguar:
+		StyledRef(q, Styles(ss)) -> StyledRef(q, Styles(<qls-desugar-style-uses> ss))
+
+	qls-desugar-style-uses =
+		partition(?StyleRef(<id>)) => (uses, decls);
+		<not(?[])> uses;
+		flatten-list;
+		qsort(string-lt);
+		map(!StyleRef(<id>));
+		<conc> (<id>, decls)
