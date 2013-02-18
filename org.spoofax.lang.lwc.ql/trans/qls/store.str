@@ -63,8 +63,8 @@ rules
 		index-uri => frm-uri;
 		(index-get-data(|ReferredQuestions()) <+ ![]) => data*;
 		<index-remove> DefData(frm-uri, ReferredQuestions(), ());
-		!DefData(frm-uri, ReferredQuestions(), [data*,qid]);
-		index-add
+		<index-add> DefData(frm-uri, ReferredQuestions(), [data*,qid])
+		
 	
 	qls-form-of-question =
 		index-lookup;
@@ -72,6 +72,24 @@ rules
 		last;
 		!<id>{[Frm(), <id>]};
 		index-lookup			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

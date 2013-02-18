@@ -90,13 +90,17 @@ rules
 		q* -> <sort-list(LSort(depends-on))> q*
 
 	/*
-	* Evaluates whether questions given are in the correct order, dependency-wise.
+	* Calculate all the question inversion-pairs present in the given list of question ids.
+	* The list of questions need not contain all dependencies. Inversion are not given for missing questions. 
+	* 
 	* @type List(ID) -> List(ID)
-	* @return
-	*				- List() if all referenced questions are in order.
-	*				- List((ID,List(ID))) contains:
-	*							-- LHS of tuple is the question-ids that is out of place
-	*							-- RHS of tuple is the list of question-ids that the LHS has as broken dependencies. 
+	* @example
+	*		Say that question C depends on B and A, and that question D depends on C.
+	*		- [A,B,C,D] -> [] (everything in order)
+	*		- [B,A,C,D] -> []
+	*		- [A,C,D] -> [].
+	*		- [A,C,B,D] -> [ (C,B) ] (B should preceed C)
+	*		- [A,D,C,B] -> [(D,C), (C,B)] (C preceed D, B preceed C)
 	*/
 	// TODO
 	sort-question-ids = with(fail|"Not implemented")
