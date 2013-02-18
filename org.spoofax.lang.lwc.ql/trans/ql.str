@@ -24,6 +24,7 @@ imports
   qls/check
 	qls/desugar
 	qls/generate
+	qls/store
 	
 rules // Analysis
 

@@ -2,16 +2,20 @@ module qls/desugar
 
 imports
 	include/QL
-	
+
+signature
+	constructors
+		Page: String * String * List(FormRef) * List(Ref) -> Term
+
 strategies
-	qls-desugar-all = alltd(qls-desugar)
+	qls-desugar-all = alltd(qls-desugar-styles)
 	
 rules
 	
-	qls-desugar:
+	qls-desugar-styles:
 		StyleDef(s, ss) -> StyleDef(s, <qls-desugar-style-uses> ss)
 
-	qls-desugar:
+	qls-desugar-styles:
 		StyledRef(q, Styles(ss)) -> StyledRef(q, Styles(<qls-desugar-style-uses> ss))
 
 	qls-desugar-style-uses =

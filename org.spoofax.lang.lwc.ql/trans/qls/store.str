@@ -12,6 +12,10 @@ signature
 	constructors
 		Dependencies: DefDataKind
 		StyleDefinitions: DefDataKind
+
+signature
+	constructors
+		Page: Namespace
 		
 rules
 	/*
@@ -39,3 +43,24 @@ rules
 		|[ define style sid { stydef* } ]| -> <index-add-all> [ DefData(uri, StyleDefinitions(), stydef*) ]
 		with
 			uri := <index-uri> sid
+			
+rules
+	/*
+	* Store Page -> Form, Page -> Question and Question -> Page relationships
+	*/
+	
+	// qls-store-pages:
+	// 	QLS(_, pages) -> <map(qls-store-page)> pages
+	// 
+	// qls-store-page:
+	// 	Page(_, _, _) -> <index
+	// 
+	// qls-store-pages:
+	// 	QLS(_, pages) -> <map(qls-add-page-name;qls-store-page)> pages
+	// 
+	// qls-add-page-name:
+	// 	Page(t1, t2, t3)
+	
+
+
+

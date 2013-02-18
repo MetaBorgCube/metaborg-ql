@@ -53,6 +53,13 @@ rules // style dependencies
 		<diff> (ss, <id>);
 		map(!(<id>, $[Duplicate styling]))
 
+rules // temporaries
+	constraint-note:
+		|[ qid { style* }]| -> (qid, <qls-normalize-styles;pp-ql-string>)
+	
+	constraint-note:
+		SimpleRef(qid) -> (qid, <qls-normalize-styles;pp-ql-string>)
+
 rules // type error reporter helper
 	
 	qls-type-error(s): 
