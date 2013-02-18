@@ -93,9 +93,12 @@ rules
 	
 	is-same-style =
 		not(is-same-style-use);
-		?(lc#(ll), rc#(rl));
-		<?lc> rc;
-		<eq> (<length> ll, <length> rl)
+		(
+			?(Font(_),Font(_)) +
+			?(Color(_), Color(_)) +
+			?(Widget(_), Widget(_)) +
+			?(TypedWidget(ty, _), TypedWidget(ty, _))
+		)
 	
 	is-same-style-use = ?(StyleRef(a), StyleRef(a))
 		
