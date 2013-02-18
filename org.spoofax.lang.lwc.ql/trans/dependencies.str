@@ -90,8 +90,8 @@ rules
 		q* -> <sort-list(LSort(depends-on))> q*
 
 	/*
-	* Calculate all the question inversion-pairs present in the given list of question ids.
-	* The list of questions need not contain all dependencies. Inversion are not given for missing questions. 
+	* Calculate all the question inversion-pairs present in the given set of question ids.
+	* The set of questions need not contain all dependencies. Inversion are not given for missing questions. 
 	* 
 	* @type List(ID) -> List(ID)
 	* @example
@@ -103,7 +103,7 @@ rules
 	*		- [A,D,C,B] -> [(D,C), (C,B)] (C preceed D, B preceed C)
 	*/
 	// TODO
-	sort-question-ids = with(fail|"Not implemented")
+	sort-question-ids = warn-msg(|"Strategy sort-question-ids is NOT IMPLEMENTED");?[a,b|_];![(b,a)]
 
 		
 	sort-form: 

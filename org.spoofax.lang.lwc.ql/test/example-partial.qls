@@ -16,13 +16,14 @@ define style C {
 page "PAGE HEADING" for Box1HouseOwning Form15 {
 		hasBoughtHouse
 		ten
-		hasLivedAbroad { use A }
+		five
+		// hasLivedAbroad { use A }
 
 	section "SECTION HEADING" {
 // 		subsection "SUBSECTION HEADING" {
 // 			sellingPrice
-			privateDebt
-			valueResidue
+			// privateDebt
+			// valueResidue
 // 		}
 // 
 // 		subsection "SUBSECTION HEADING" {
@@ -34,8 +35,8 @@ page "PAGE HEADING" for Box1HouseOwning Form15 {
 // 				widget = radio
 // 			}	
 // 			sellingPrice
-			privateDebt 
-			valueResidue
+			// privateDebt
+			// valueResidue
 		// }
 
 // 		subsection "SUBSECTION HEADING" {
@@ -51,4 +52,8 @@ page "PAGE HEADING" for Box1HouseOwning Form15 {
 // 			privateDebt
 // 		}
 	}
+}
+
+page "PAGE TWO" for Box1HouseOwning {
+	hasLivedAbroad { use A }
 }
