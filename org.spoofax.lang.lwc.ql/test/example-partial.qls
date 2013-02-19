@@ -3,27 +3,56 @@
 // }
 
 define style A {
-	font = "Helvetica6"
-	font = "Helvetica5"
-	font = "Helvetica4"
-	font = "Helvetica3"
-	font = "Helvetica2"
-	font = "Helvetica1"
-}
-
-define style B {
-	style = A
-	color = #333333	
-	font = "Font in B"
+	font = "Helvetica A"
+	color = #123456
 }
 
 define style C {
-	style = B
-	font = "Cucu"
-	style = A
-	boolean widget = radio
+	boolean widget = dropdown
+	use A
 }
 
+page "PAGE HEADING" for Form15 {
+		// hasBoughtHouse
+		// hasLivedAbroad { use A }
+
+	// section "SECTION HEADING" {
+		five
+		ten
+		// subsection "SUBSECTION HEADING" {
+			// sellingPrice
+			// privateDebt 
+			// valueResidue
+		// }
+// 
+// 		subsection "SUBSECTION HEADING" {
+// 			hasSoldHouse
+// 			 {
+// 			 	use C
+// 				font   = "Comic Sans"
+// 				color  = #000000
+// 				widget = radio
+// 			}	
+// 			sellingPrice
+			// privateDebt
+			// valueResidue
+		// }
+
+// 		subsection "SUBSECTION HEADING" {
+// 			hasSoldHouse
+// 			valueResidue
+// 			sellingPrice
+// 			privateDebt
+// 		}
+// 
+// 		subsection "SUBSECTION HEADING" {
+// 			hasSoldHouse
+// 			sellingPrice
+// 			privateDebt
+// 		}
+
+	// }
+}
 
 page "PAGE HEADING" for Box1HouseOwning Box2HouseOwning {
 		hasBoughtHouse

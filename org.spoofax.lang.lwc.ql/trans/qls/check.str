@@ -5,6 +5,10 @@ imports
 	qls/styles
 	qls/types
 	lib/editor-common.generated
+	utils
+	qls/store
+	lib/analysis-library
+	dependencies
 	
 rules // generic
 	
@@ -12,29 +16,84 @@ rules // generic
 	
 	constraint-note = fail
 
-rules // style dependencies
+rules // styles
+	
+	// typed widget declaration in style definition
+	constraint-error: 
+		|[type widget = widge ]| -> <qls-type-error(elem)> (type, widge)
 	
 	constraint-error:
 		|[ define style sid { stydef* }]| -> (sid, $[Style [sid] has cyclic dependencies])
 		where
 			<qls-has-circular-dependency-style> sid
-
-rules // widget types
 	
-	// typed widget declaration in style definition
-	constraint-error =
-		?|[type widget = widge ]|;
-		<qls-type-error(elem)> (type, widge)
+	constraint-error:
+		|[ define style sid { stydef* }]| -> [dup-imports*, dup-defs*]
+		where <not(qls-has-circular-dependency-style)> sid
+		where <dup-imports-errors <+ ![]> stydef* => dup-imports*
+		where <dup-defs-errors <+ ![]> stydef* => dup-defs*
 
-	// untyped widget in question styling
-	constraint-error =
-		?|[ qid { style* }]|;
-		qls-type-of => q-type;
-		<filter(?Widget(<id>))> style*;
-		map(!(q-type, <id>));
-		filter(qls-type-error(elem))
+	constraint-error:
+		|[ qid { style* }]| -> [type-errors*, dup-imports*, dup-defs*, dup-ref]
+		where
+			qls-type-of => q-type;
+			<filter(?Widget(<id>))> style*;
+			map(!(q-type, <id>));
+			filter(qls-type-error(elem)) => type-errors*
+		where
+			<dup-imports-errors <+ ![]> style* => dup-imports*
+		where
+			<dup-defs-errors <+ ![]> style* => dup-defs*
+		where
+			(dup-ref-error <+ ![]) => dup-ref
 
-rules // type error reporter helper
+	dup-imports-errors =
+		filter(?StyleRef(<id>));
+		reverse;
+		duplicates(eq, string-lt);
+		map(!(<id>, $[Duplicate style use]))
+	
+	dup-defs-errors = 
+		filter(not(?StyleRef(_))) => ss;
+		reverse;
+		make-set(is-same-style);
+		<diff> (ss, <id>);
+		map(!(<id>, $[Duplicate styling]))
+
+rules // question ordering & duplicates
+	
+	constraint-error:
+		QLS(_,_) -> <map(qls-ref-precedence-error)> swap-pairs
+			where
+				collect-all(?FormRef(<id>)); make-set;
+				mapconcat(qls-questions-of-form;make-set;sort-question-ids) => swap-pairs
+	
+	constraint-error:
+		SimpleRef(qid) -> <dup-ref-error> 
+	
+	dup-ref-error:
+		ref -> (ref, $[Duplicate reference to question [qid]])
+		where
+			ref-to-quest-id => qid;
+			not(is-computed-question)
+		where
+			<qls-form-of-question> qid;
+			qls-questions-of-form;
+			split-at(?qid) => (_, rest);
+			<elem> (qid, rest)
+	
+	ref-to-quest-id:
+		SimpleRef(qid) -> qid
+	
+	ref-to-quest-id:
+		|[ qid { style* } ]| -> qid 
+
+	is-computed-question =
+		index-lookup;
+		index-get-data(|AST());
+		?Conditional(_, [Computed(_, _, _)])
+
+rules // error reporter helpers
 	
 	qls-type-error(s): 
 		(type, widget) -> (widget, $[Widget ([pp-widget]) cannot be used for type [pp-type]])
@@ -44,3 +103,8 @@ rules // type error reporter helper
 			<pp-ql-string> widget => pp-widget;
 			<pp-ql-string> type => pp-type
 
+	qls-ref-precedence-error:
+		(qid, dep) -> (quest, $[Question [qid] must be preceeded by question [dep]])
+		where
+			<index-get-data(|ReferenceAST())> qid => quest
+			

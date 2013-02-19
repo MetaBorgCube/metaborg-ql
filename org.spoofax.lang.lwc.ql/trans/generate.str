@@ -6,7 +6,7 @@ imports
 	libstratego-gpp
 	libstratego-aterm
 	lib/editor-common.generated
-	lib/compilation-library.generated
+	lib/compilation-library
 
 	include/QL
 	lib/webdsl/WebDSL
@@ -27,14 +27,47 @@ rules // QL to WebDSL compilation
 	  	
 	  	ent 
 	  	
-	  	var globalForm := x {}
+	  	entity User {
+				name :: String (name)
+				
+			  x_formID -> x_formID
+			}
+			
+			session sess {
+	  		user -> User
+			}
+		  	
+	  	def
 	  	
-	  	tdef 
+		  page root() {
+				var name := ""
+				
+				main() {
+					horizontalForm() {
+						controlGroup("Name: ") { input(name) }
+						
+				    formActions() {
+				      submitlink start() [class="btn btn-primary"] { "Start questionaire" } " "
+				    }
+					}
+				}
+				
+			  action start() {
+			    sess.user := User { name := name, x_formID := x_formID {} };
+			    return page1();
+			  }
+			}
+			
+			page finish() {
+				main() {
+					"Thank you for filling in the form"
+				}
+			}
 	  ]|
 	  where
-	  	x    := fid;
-	  	ent  := <compile-ql-entity> form;
-	  	tdef := <compile-ql-template> form
+	  	x_formID    := fid;
+	  	ent         := <compile-ql-entity> form;
+	  	def         := <compile-ql-page> form
 	  	
 rules // QL questions to WebDSL entity
 	  
@@ -49,47 +82,54 @@ rules // QL questions to WebDSL entity
     where
   	  x_formID := qid;
   	  srt_type := <compile-ql-type> t
+  	  
+  compile-ql-entity-part: 
+  	|[ qid : label t (expr) ]| -> |[ x_formID :: srt_type ]|
+    where
+  	  x_formID := qid;
+  	  srt_type := <compile-ql-type> t
 
-rules // QL questions to WebDSL template
+rules // QL form to WebDSL page
 	
-  compile-ql-template: 
+  compile-ql-page: 
   	|[ form fid { question* } ]| -> 
-	  tdef |[
-	    define showForm(form : x_formID, name : String) {
-	    	horizontalForm(name) {
-	  		  elem_group*
-	  		  
-			    formActions {
-			      submitlink submit() [class="btn btn-primary"] { "Submit" } " "
-			    }
-			  }
-			  
-			  action submit() {
-			    form.save();
-			  }
+	  def |[
+	    page page1() {
+	    	main() {
+		    	horizontalForm() {
+		  		  elem_group*
+		  		  
+				    formActions() {
+				      submitlink submit() [class="btn btn-primary"] { "Submit" } " "
+				      submitlink finish() [class="btn btn-primary"] { "Finish" } " "
+				    }
+				  }
+				  
+				  action submit() {}
+			  	action finish() { return finish(); }
+		  	}
 	  	}
 	  ]|
     where
-    	x_formID    := fid;
-    	elem_group* := <map(compile-ql-template-part)> question*
+    	elem_group* := <map(compile-ql-group)> question*
   
-  compile-ql-template-part: 
-  	|[ qid : label t ]| -> elem |[ controlGroup(e_label) { input(form.x_id) } ]|
+  compile-ql-group: 
+  	|[ qid : label t ]| -> elem |[ controlGroup(e_label) { input(x_id) } ]|
   	where
-  		x_id    := qid;
+  		x_id    := <compile-ql-question-name> qid;
   		e_label := <compile-ql-exp> label
   		
-  compile-ql-template-part: 
+  compile-ql-group: 
   	|[ qid : label t ( exp ) ]| -> elem |[ controlGroup(e_label) { output(e_typeExp) } ]|
   	where
   		e_label   := <compile-ql-exp> label;
   		e_typeExp := <compile-ql-exp> exp
   		
-  compile-ql-template-part: 
-  	|[ if ( cond ) { q* } ]| -> elem |[ if (e_cond) { elem_question* } ]|
+  compile-ql-group: 
+  	|[ if ( cond ) { q* } ]| -> elem |[ if (e_cond) { elem_group* } ]|
   	where
-  		e_cond         := <compile-ql-exp> cond;
-  		elem_question* := <map(compile-ql-template-part)> q*
+  		e_cond      := <compile-ql-exp> cond;
+  		elem_group* := <map(compile-ql-group)> q*
 
 rules // QL types to WebDSL types
   
@@ -105,7 +145,7 @@ rules // QL expressions to WebDSL expressions
   compile-ql-exp = bottomup(try(compile-ql-exp-part))
   
   compile-ql-exp-part: Label(s) -> String(<try(un-double-quote)> s)
-  compile-ql-exp-part: Ref(qid) -> |[ form.x ]| where x := qid
+  compile-ql-exp-part: Ref(qid) -> <compile-ql-question-name> qid
   
   compile-ql-exp-part: ql |[    !e    ]| -> webdsl:e |[    !e    ]|
   compile-ql-exp-part: ql |[ e1 && e2 ]| -> webdsl:e |[ e1 && e2 ]|
@@ -119,3 +159,18 @@ rules // QL expressions to WebDSL expressions
   compile-ql-exp-part: ql |[ e1 -  e2 ]| -> webdsl:e |[ e1 -  e2 ]|
   compile-ql-exp-part: ql |[ e1 *  e2 ]| -> webdsl:e |[ e1 *  e2 ]|
   compile-ql-exp-part: ql |[ e1 /  e2 ]| -> webdsl:e |[ e1 /  e2 ]|
+
+rules
+	
+	compile-ql-form-name:
+		x_formID -> |[ sess.user.x_formID ]|
+		
+  compile-ql-question-name:
+  	qid -> |[ x_formID.x_questionID ]| 
+	  where 
+	  	fid          := <ql-question-form-name> qid;
+	  	x_formID     := <compile-ql-form-name> fid;
+	  	x_questionID := qid
+	
+	ql-question-form-name:
+		qid{uri} -> <last> uri

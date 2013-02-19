@@ -6,56 +6,244 @@ imports
 	libstratego-gpp
 	libstratego-aterm
 	lib/editor-common.generated
-	lib/compilation-library.generated
+	lib/analysis-library
 
 	include/QL
 	lib/webdsl/WebDSL
+
+  generate
+  store
 	
-rules
+rules // QLS to WebDSL compilation
 	
 	compile-qls: 
-		QLS(_, page*) -> <id>
-		/*webdsl |[
-			//form entities
+		QLS(_, page*) ->
+		|[
+			module form
 			
-			//globals
+			def1*
 			
-			//p1
-			//p2
-			//...
+			ent
 			
-			//root page
-		]|*/
-		where
-			fref* := <mapconcat(qls-page-forms); make-set> page*
-			// use ql compiler to create referenced forms
-			// create globals for referenced forms
-			// compile each page
-			// create a root page that navigates to the first page
-
-  qls-page-forms:
-  	|[ page str1 for fref* { pp* } ]| -> fref*			
-	
-	compile-qls-page:
-		|[ page str1 for fref* { pp* } ]| -> 
-		webdsl |[ 
-			page page1() {
+			session sess { user -> User	}
+			
+			def2*
+			
+		  page root() {
+				var name := ""
 				
+				main() {
+					horizontalForm() {
+						controlGroup("Name: ") { input(name) }
+						
+				    formActions() {
+				      submitlink start() [class="btn btn-primary"] { "Start questionaire" } " "
+				    }
+					}
+				}
+				
+			  action start() {
+			    x_init;
+			    return page1();
+			  }
+			}
+			
+			page finish() {
+				main() {
+					"Thank you for filling in the form"
+				}
 			}
 		]|
+		where
+			fref*  := <mapconcat(qls-page-forms); make-set> page*;
+			def1*  := <map(compile-qls-entity)> fref*;
+			ent    := <compile-qls-session-entity> fref*;
+			x_init := <compile-qls-session-init> fref*;
+			def2*  := <zip(compile-qls-page(|<length> page*))> (page*, <length; upto; Tl> page*)
+
+rules // QLS pages to WebDSL entities
+	  	
+  compile-qls-entity:
+  	FormRef(x_formID) -> |[ entity x_formID { ebd* } ]|
+  	where
+	  	ebd* := <qls-get-questions; collect-all(compile-ql-entity-part)> x_formID
+	  	
+rules // QLS pages to WebDSL session Entity
+	
+	compile-qls-session-entity:
+		fref* -> 
+		|[
+			entity User {
+				name :: String (name)
+					
+			  ebd*
+			}
+		]|
+		where
+			ebd* := <map(compile-qls-session-entity-part)> fref*
+	
+	compile-qls-session-entity-part:
+		FormRef(x_formID) -> |[ x_formID -> x_formID ]|
+		
+	compile-qls-session-init:
+		fref* -> |[ sess.user := User { name := name, x_inits } ]|
+		where
+			x_inits := <map(compile-qls-session-init-part)> fref*
+			
+	compile-qls-session-init-part:
+		FormRef(x_formID) -> |[ x_formID := x_formID {} ]|
+	  	
+rules // QLS page to WebDSL page	
+	
+	compile-qls-page(|length):
+		(Page(x_heading, fref*, part*), n) -> // TODO: Concrete syntax match? meta variable for STRING does not work..
+		def |[
+	    page x_pageName() {
+    		elem_var*
+    		
+    		init {
+    			stat_init*
+    		}
+	    		
+	    	main() {	    		
+		    	horizontalForm(x_heading) {
+		  		  elem_group*
+		  		  
+				    formActions() {
+				      submitlink submit() [class="btn btn-primary"] { "Submit" } " "
+				      elem_nextSubmit
+				    }
+				  }
+		  	}
+				  
+			  action submit() {
+			  	stat_action*
+			  	stat_saveall*
+			  }
+			  elem_nextAction
+	  	}
+		]|
 	  where
-	  	id
-	  	// create page name
-	  	// for each part
-	  	//   if it is a question reference, compile it
-	  	//   if it is a section/subsection, compile it to a webdsl section/subsection and nest question references inside it
+	  	x_pageName     := <conc-strings> ("page", <int-to-string> n);
+	  	stat_saveall*  := <map(compile-qls-page-save)> fref*;
+	  	{| Var, Init, Action: 
+	  		elem_group*  := <map(compile-qls-part)> part*;
+		  	elem_var*    := <bagof-Var <+ ![]>;
+		  	stat_init*   := <bagof-Init <+ ![]>;
+		  	stat_action* := <bagof-Action <+ ![]>
+  		|};
+	  	if <eq> (n, length) then
+	  		elem_nextSubmit := elem* |[ submitlink finish() [class="btn btn-primary"] { "Finish" } " " ]|;
+	  		elem_nextAction := elem  |[ action finish() { stat_action* stat_saveall* return finish(); } ]|
+	  	else
+	  		elem_nextSubmit := elem* |[ submitlink next() [class="btn btn-primary"] { "Next" } " " ]|;
+	  		x_nextPageName  := <conc-strings> ("page", <int-to-string> <inc> n);
+	  		elem_nextAction := elem  |[ action next() { stat_action* stat_saveall* return x_nextPageName(); } ]|
+	  	end
+	  	
+  compile-qls-page-save:
+  	FormRef(fref) -> |[ x_formID.save(); ]|
+  	where
+  		x_formID := <compile-ql-form-name> fref
+
+rules // QLS part to WebDSL elements
 	  	
 	compile-qls-part:
-		|[ qid { s* } ]| -> <id>
+		|[ qid { s* } ]| -> <compile-qls-group(|s*)> question
 		where
-			id
-			// get label, type and condition from the index
-			// if there is a condition, compile that first
-			// compile question, nested into the condition if needed
+			question := <qls-get-question> qid
 			
+	compile-qls-part:
+		Section(elem_heading, part*) -> elem* |[ pageHeader() { elem_heading } elem_group* ]| // TODO: Concrete syntax match? meta variable for STRING does not work..
+		where
+			elem_group* := <map(compile-qls-part)> part*
 			
+	compile-qls-part:
+		SubSection(elem_heading, part*) -> elem* |[ pageHeader2() { elem_heading } elem_group* ]| // TODO: Concrete syntax match? meta variable for STRING does not work..
+		where
+			elem_group* := <map(compile-qls-part)> part*
+			
+rules // QL group to WebDSL page elements
+	
+  compile-qls-group(|styles): 
+  	q@|[ qid : label t ]| -> elem |[ controlGroup(e_label) [passign_style*] { elem_input } ]|
+  	where
+  		e_label        := <compile-ql-exp> label;
+  		passign_style* := <compile-qls-simple-styles> styles;
+  		widget         := <fetch-elem(?TypedWidget(_, _)) <+ !()> styles;
+  		elem_input     := <compile-qls-group-input(|passign_style*)> (widget, q)
+  		
+  compile-qls-group(|styles): 
+  	|[ qid : label t ( exp ) ]| -> elem |[ controlGroup(e_label) [passign_style*] { output(e_typeExp) [passign_style*] } ]|
+  	where
+  		e_label        := <compile-ql-exp> label;
+  		e_typeExp      := <compile-ql-exp> exp;
+  		passign_style* := <compile-qls-simple-styles> styles
+  		
+  compile-qls-group(|styles): 
+  	|[ if ( cond ) { q* } ]| -> elem |[ if (e_cond) { elem_group* } ]|
+  	where
+  		e_cond      := <compile-ql-exp> cond;
+  		elem_group* := <map(compile-qls-group(|styles))> q*
+
+rules // QLS widget styles to WebDSL input
+	
+	compile-qls-group-input(|passign_style*) =
+		compile-qls-group-input-special(|passign_style*) <+ compile-qls-group-input-default(|passign_style*)
+	
+	compile-qls-group-input-default(|passign_style*):
+		(_, |[ qid : label t ]|) -> call |[ input(x_id) [passign_style*] ]|
+		where
+			x_id := <compile-ql-question-name> qid
+			
+	compile-qls-group-input-special(|passign_style*):
+		(TypedWidget(BoolTy(), widget), |[ qid : label t ]|) -> call |[ x_call [passign_style*] ]|
+		where
+			<?Radio() <+ ?Dropdown()> widget;
+			x_oid  := <compile-ql-question-name> qid;
+			x_id   := <conc-strings> (qid, "_wrap");
+			x_call := <compile-qls-group-input-call(|x_id)> widget;
+			rules(
+				Var    :+ _ -> |[ var x_id : BoolWrap; ]|
+				Init   :+ _ -> |[ if(x_oid) { x_id := bw_true; } else { x_id := bw_false; } ]|
+				Action :+ _ -> |[ x_oid := x_id.value; ]|
+			)
+			
+	compile-qls-group-input-call(|x_id):
+		Radio() -> call |[ radio(x_id) ]|
+		
+	compile-qls-group-input-call(|x_id):
+		Dropdown() -> call |[ select(x_id)[not null] ]|
+		
+	// TODO: add slider for int, float.
+	// TODO: add other dropdown types, but requires a list of values.
+			
+rules // QLS simple styles to WebDSL property assignments
+	
+	compile-qls-simple-styles:
+		style* -> passign |[ style = x_style ]|
+		where
+			x_style := <filter(compile-qls-simple-style); concat-strings; double-quote> style*
+	
+  compile-qls-simple-style:
+  	Font(name) -> $[font-family: '[<try(un-double-quote)> name]';]
+  	
+  compile-qls-simple-style:
+  	Color(color) -> $[color: [<try(un-double-quote)> color];]
+			
+rules // Projections
+	
+  qls-page-forms:
+  	Page(_, fref*, _) -> fref* // TODO: Concrete syntax match? meta variable for STRING does not work..
+	
+rules // Index
+	
+	qls-get-questions =
+		index-get-data-all(|Questions());
+		map(qls-get-question)
+		
+	qls-get-question =
+		index-get-data(|AST())
+		
+	qls-get-question-type =
+		index-get-data(|Type())

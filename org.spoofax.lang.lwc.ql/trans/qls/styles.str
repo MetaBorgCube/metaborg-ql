@@ -1,31 +1,15 @@
 module qls/styles
 
 imports
-	index-library.generated
-	analysis-library.generated
+	lib/index-library
+	lib/analysis-library
 	include/QL
 	utils
 	qls/types
 	qls/defaults
-	
-signature
-	constructors
-		Dependencies: DefDataKind
-		StyleDefinitions: DefDataKind
-		
-rules
-	/*
-	* Analyze and store dependencies of styles
-	*/
-
-	qls-analyze-dependencies:
-		QLS(sdefs, _) -> <map(qls-analyze-dependencies)> sdefs
-	
-	qls-analyze-dependencies:
-		|[ define style sid { stydef* } ]| -> <index-add-all> [ DefData(uri, Dependencies(), deps) ]
-		with
-			deps := <filter(?StyleRef(_))> stydef*;
-			uri := <index-uri> sid
+	qls/store
+	dependencies
+	lib/editor-common.generated
 	
 rules
 	/*
@@ -57,19 +41,6 @@ rules
 
 rules
 	/*
-	* Store styling attributes in index, easier for lookups
-	*/
-	
-	qls-store-styles:
-		QLS(sdefs, _) -> <map(qls-store-styles)> sdefs
-		
-	qls-store-styles:
-		|[ define style sid { stydef* } ]| -> <index-add-all> [ DefData(uri, StyleDefinitions(), stydef*) ]
-		with
-			uri := <index-uri> sid
-		
-rules
-	/*
 	* Style linearization and concretization.
 	* Basically recursively expand StyleRefs
 	*/
@@ -80,58 +51,137 @@ rules
 		index-get-data(|StyleDefinitions())
 	
 	qls-make-all-concrete-style =
-		map(try(not(qls-has-circular-dependency-style);qls-make-concrete-style;qls-make-all-concrete-style));
+		map(try(not(?StyleRef(<id>);qls-has-circular-dependency-style);qls-make-concrete-style;qls-make-all-concrete-style));
 		flatten-list
 	
-	qls-make-all-concrete-style = not(is-list)
-
 rules
-	/*
-	* Style simplification
-	* The last provided styling is the one that wins
-	*/
-	qls-simplify-style =
-		make-set(is-same-style)
 	
 	is-same-style =
-		?(lc#(ll), rc#(rl));
-		<?lc> rc;
-		<eq> (<length> ll, <length> rl)
-		
-rules
-	/*
-	* Add attached type to the non-typed widget stylings
-	*/
-	entype-widgets(|ty) =
-		is-list;
-		map(try(entype-widget(|ty)))
-		
-	entype-widget(|ty):
-		Widget(w) -> TypedWidget(ty, w)
+		not(is-same-style-use);
+		(
+			?(Font(_),Font(_)) +
+			?(Color(_), Color(_)) +
+			?(|[ widget = widge0 ]|, |[ widget = widge1 ]|) +
+			?(|[ t widget = widge0 ]|, |[ t widget = widge1 ]|)
+		)
+	
+	is-same-style-use = ?(StyleRef(a), StyleRef(a))
+
+strategies
+    
+	/* Normalization entry point */
+	qls-normalize =
+		qls-normalize-styles-top;
+		qls-normalize-pages-top;
+		force-origins(qls-add-one-rest-ref)
 
 rules
 	/* Normalize all SimpleRef and StyleRef.
 	* - all StyleRefs are made concrete and simplified
 	* - all SimpleRefs become StyleRef
 	*/
-	qls-normalize-top = alltd(qls-normalize)
+	qls-normalize-styles-top = alltd(qls-normalize-styles)
 	
-	qls-normalize:
+	qls-normalize-styles:
 		|[ qid { style0* }]| -> |[ qid { style1* }]|
 		where
-			qls-type-of => q-type;
-			<qls-make-all-concrete-style> style0*;
-			entype-widgets(|q-type);
-			qls-simplify-style => style1*
-	
-	qls-normalize:
-		SimpleRef(qid) -> StyledRef(qid, <qls-default-style(|q-ty)>)
+			qls-type-of => q-ty;
+			qls-default-style(|q-ty) => def-style
 		where
-			qls-type-of => q-ty
-
-
-
-
-		
+			<qls-make-all-concrete-style> style0*;
+			<conc> (def-style, <id>);
+			filter(is-typed-widget;untype-widget(|q-ty) <+ not(is-typed-widget));
+			foldr(![], qls-add-style) => style1*			
 	
+	qls-normalize-styles:
+		SimpleRef(qid) -> |[qid { style* }]|
+		where
+			qls-type-of => q-ty;
+			qls-default-style(|q-ty) => style*
+
+
+	is-typed-widget = ?TypedWidget(_, _)
+	untype-widget(|ty): TypedWidget(ty, w) -> w 
+
+	qls-add-style:
+		(sty, styles) -> [sty|styles]
+		where not(elem(is-same-style))
+	
+	qls-add-style:
+		(sty, styles) -> styles
+		where elem(is-same-style)
+
+rules
+	/* Normalize pages:
+	* - add dependent questions where needed
+	* - add all unneeded questions on last page of form
+	*/
+	qls-normalize-pages-top = alltd(qls-add-ref-deps)
+	
+	qls-add-ref-deps:
+		|[ page str for fref* { pagepart* } ]| -> |[ page str for fref* { pagepart1* } ]|
+		where
+			<map(qls-add-ref-deps);flatten-list> pagepart* => pagepart1* 
+	
+	qls-add-ref-deps:
+		|[ section str { secpart* }]| -> |[ section str { secpart1* }]|
+		where
+			<map(qls-add-ref-deps);flatten-list> secpart* => secpart1*
+			
+	qls-add-ref-deps:
+		|[ subsection str { ssecpart* }]| -> |[ subsection str { ssecpart1* }]|
+		where
+			<map(qls-add-ref-deps);flatten-list> ssecpart* => ssecpart1*
+			
+	qls-add-ref-deps:
+		|[ qid { styles* } ]| -> [dep-refs*, <id>]
+		where
+			<get-all-dependencies> qid => raw-deps*;
+			<qls-form-of-question> qid => form;
+			<qls-questions-of-form> form => q-refs*; 
+			<diff> (raw-deps*, q-refs*) => deps*;
+			<map(qls-qid-to-ref)> deps* => dep-refs*;
+			<map(qls-store-question-ref)> dep-refs*
+
+	qls-qid-to-ref:
+		qid -> <qls-normalize-styles> SimpleRef(qid)
+
+rules // add missing references to questions one at a time
+	
+	// add one question to a form which is missing from pages
+	qls-add-one-rest-ref:
+		QLS(sdefs, pages*) -> QLS(sdefs, pages')
+		with
+			<collect-all(?FormRef(<id>));make-set> pages* => forms*;
+			<fetch-elem(qls-form-has-unreffed-questions)> forms* => form;
+			<reverse;one(qls-page-add-one-rest-ref(|form));reverse> pages* => pages'
+	
+	qls-page-add-one-rest-ref(|frm):
+		|[ page str for fref* { pagepart* } ]| -> |[ page str for fref* { pagepart* pagepart1 } ]|
+		where
+			<qls-get-form-unreffed-questions> frm => [unref|_];
+			<index-get-data(|AST());get-question-id;qls-qid-to-ref> Def(unref) => pagepart1;
+			<qls-store-question-ref> pagepart1
+			
+	qls-form-has-unreffed-questions:
+		frm -> frm
+		where
+			qls-get-form-unreffed-questions;
+			not(?[])
+	
+	
+	qls-get-form-unreffed-questions =
+		?frm;
+		<index-get-data-all(|Questions())> frm => q-defs*;
+		<index-get-data-all(|ReferredQuestions())> frm => q-refs*;
+		<diff> (q-defs*, q-refs*)
+	
+	get-question-id:
+		Conditional(_, [Computed(qid, _, _)]) -> qid
+		
+	get-question-id:
+		Conditional(_, [Question(qid, _, _)]) -> qid
+	
+
+
 	

@@ -3,9 +3,9 @@ module types
 imports
 	
 	include/QL
-	nbl-library.generated
-	index-library.generated
-	analysis-library.generated
+	lib/nbl-library
+	lib/index-library
+	lib/analysis-library
 	
 rules
 	

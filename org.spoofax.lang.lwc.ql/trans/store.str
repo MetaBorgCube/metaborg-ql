@@ -1,0 +1,36 @@
+module store
+
+imports
+	
+	lib/index-library
+	lib/analysis-library
+	include/QL
+	utils
+	
+signature constructors
+	
+	AST				: DefDataKind
+	Questions	: DefDataKind
+
+strategies
+	
+	store-all = topdown(try(store))
+	
+rules
+	
+	store:
+		|[ form fid { q* } ]| -> <id>
+		where
+			<topdown(try(store(|fid)))> q*
+	
+	store(|fid):
+		|[ if ( cond ) { qid : label t } ]| -> <id>
+		where
+			<index-add> DefData(<index-uri> qid, AST(), <id>);
+			<index-add> DefData(<index-uri> fid, Questions(), <index-uri> qid)
+			
+	store(|fid):
+		|[ if ( cond ) { qid : label t ( exp ) } ]| -> <id>
+		where
+			<index-add> DefData(<index-uri> qid, AST(), <id>);
+			<index-add> DefData(<index-uri> fid, Questions(), <index-uri> qid)

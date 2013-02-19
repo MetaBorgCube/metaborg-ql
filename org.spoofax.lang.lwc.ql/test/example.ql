@@ -29,5 +29,7 @@ form Box1HouseOwning {
 	
 		netWorth: "Your net worth is:" money(valueResidue + netHousesWorth)
 	}
-	 
+	if(!hasMoreHouses || hasMoreHouses){ 
+		netWorth: "Your net worth is:" money(valueResidue)	
+	}
 }

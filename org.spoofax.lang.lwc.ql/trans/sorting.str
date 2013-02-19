@@ -13,11 +13,27 @@ rules
 	sort-qids: 
 		[qid|qid*] -> result
 		where
-			dep*  := <get-dependencies> qid;
-			qid2* := <diff> (qid*, dep*);
-			if <eq> (qid*, qid2*) then
+			dep*     := <get-dependencies> qid;
+			correct* := <diff> (qid*, dep*);
+			if <eq> (qid*, correct*) then
 				result := [qid|<sort-qids> qid*]
 			else
-				qid3*  := <diff> (dep*, qid2*);
-				result := <sort-qids> [qid3*, qid, qid2*] 
+				qid3*  := <diff> (dep*, correct*);
+				result := <sort-qids> [qid3*, qid, correct*] 
 			end
+			
+	/*
+	* Calculate all the question inversion-pairs present in the given set of question ids.
+	* The set of questions need not contain all dependencies. Inversion are not given for missing questions. 
+	* 
+	* @type List(ID) -> List(ID)
+	* @example
+	*		Say that question C depends on B and A, and that question D depends on C.
+	*		- [A,B,C,D] -> [] (everything in order)
+	*		- [B,A,C,D] -> []
+	*		- [A,C,D] -> [].
+	*		- [A,C,B,D] -> [ (C,B) ] (B should preceed C)
+	*		- [A,D,C,B] -> [(D,C), (C,B)] (C preceed D, B preceed C)
+	*/
+	// TODO
+	sort-question-ids = warn-msg(|"Strategy sort-question-ids is NOT IMPLEMENTED");fail

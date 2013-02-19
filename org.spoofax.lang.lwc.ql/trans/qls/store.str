@@ -1,0 +1,101 @@
+module qls/store
+
+imports
+	lib/index-library
+	lib/analysis-library
+	include/QL
+	utils
+	qls/types
+	qls/defaults
+	
+signature
+	constructors
+		Dependencies: DefDataKind
+		StyleDefinitions: DefDataKind
+		ReferredQuestions: DefDataKind
+		ReferenceAST: DefDataKind
+		AST: DefDataKind
+		Questions: DefDataKind
+		
+signature
+	constructors
+		Frm: Namespace
+		
+rules
+	/*
+	* Analyze and store dependencies of styles
+	*/
+
+	qls-analyze-dependencies:
+		QLS(sdefs, _) -> <map(qls-analyze-dependencies)> sdefs
+	
+	qls-analyze-dependencies:
+		|[ define style sid { stydef* } ]| -> <index-add-all> [ DefData(uri, Dependencies(), deps) ]
+		with
+			deps := <filter(?StyleRef(_))> stydef*;
+			uri := <index-uri> sid
+
+rules
+	/*
+	* Store styling attributes in index, easier for lookups
+	*/
+	
+	qls-store-styles:
+		QLS(sdefs, _) -> <map(qls-store-styles)> sdefs
+		
+	qls-store-styles:
+		|[ define style sid { stydef* } ]| -> <index-add-all> [ DefData(uri, StyleDefinitions(), stydef*) ]
+		with
+			uri := <index-uri> sid
+			
+rules
+	/*
+	* Store a mapping for every form F to a list of all referred questions
+	*		F -> [QuestionID]
+	*/
+	
+	qls-store-pages = alltd(where(qls-store-question);where(qls-store-question-ref))
+	
+	qls-store-question =
+		(?SimpleRef(qid) + ?|[ qid { style* } ]|);
+		<index-add> DefData(<index-uri> qid, ReferenceAST(), <id>)
+	
+	qls-store-question-ref = 
+		(?SimpleRef(qid) + ?|[ qid { style* } ]|);
+		!qid;
+		qls-form-of-question;
+		index-uri => frm-uri;
+		(index-get-data(|ReferredQuestions()) <+ ![]) => data*;
+		<index-remove> DefData(frm-uri, ReferredQuestions(), ());
+		<index-add> DefData(frm-uri, ReferredQuestions(), [data*,qid])
+	
+	qls-form-of-question =
+		index-lookup;
+		index-uri;
+		last;
+		!<id>{[Frm(), <id>]};
+		index-lookup
+	
+	qls-questions-of-form = index-get-data(|ReferredQuestions())		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

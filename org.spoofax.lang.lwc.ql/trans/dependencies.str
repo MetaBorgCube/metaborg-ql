@@ -1,8 +1,8 @@
 module dependencies
 
 imports
-	index-library.generated
-	analysis-library.generated
+	lib/index-library
+	lib/analysis-library
 	include/QL
 	names
 	desugar
@@ -85,6 +85,8 @@ rules
 		where
 			<question-name> q1 => qid1;
 			<question-name> q2 => qid2
+			
+		
 rules
 	
 	get-defined-types = 
