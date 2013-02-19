@@ -45,7 +45,7 @@ rules // Analysis
 	      notes    := <collect-all(constraint-note, conc)> ast2;
 	      ast3     := <ql-or-qls(where(store-all), qls-normalize)> ast2
       );
-      ast4            := <ql-or-qls(if [] := errors then sort-form else id end, id)> ast3;
+      ast4            := ast3;
       filesToAnalyze' := <index-filepairs-to-files> filesToAnalyze
 
   // Main entry point for analyzes, called when a single file is opened in the editor.
