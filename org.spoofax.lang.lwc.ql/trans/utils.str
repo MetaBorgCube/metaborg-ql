@@ -52,4 +52,7 @@ rules // lists & sets
 	*/
 	duplicates(eq) = ?[_];![] <+ <zip> (<id>, <hd-to-tl>); filter(eq)
 	
-
+rules
+	
+  force-origins(s) =
+    ![<id>]; all(s); ?[<id>]

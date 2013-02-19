@@ -68,12 +68,12 @@ rules
 	is-same-style-use = ?(StyleRef(a), StyleRef(a))
 
 strategies
+    
 	/* Normalization entry point */
 	qls-normalize =
 		qls-normalize-styles-top;
-		qls-normalize-pages-top
-		// TODO why does this not work?
-		// ;qls-add-one-rest-ref;debug(!"OUT...")
+		qls-normalize-pages-top;
+		force-origins(qls-add-one-rest-ref)
 
 rules
 	/* Normalize all SimpleRef and StyleRef.
@@ -151,7 +151,7 @@ rules // add missing references to questions one at a time
 	// add one question to a form which is missing from pages
 	qls-add-one-rest-ref:
 		QLS(sdefs, pages*) -> QLS(sdefs, pages')
-		where
+		with
 			<collect-all(?FormRef(<id>));make-set> pages* => forms*;
 			<fetch-elem(qls-form-has-unreffed-questions)> forms* => form;
 			<reverse;one(qls-page-add-one-rest-ref(|form));reverse> pages* => pages'
