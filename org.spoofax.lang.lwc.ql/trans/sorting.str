@@ -18,9 +18,19 @@ rules
 			if <eq> (qid*, correct*) then
 				result := [qid|<sort-qids> qid*]
 			else
-				qid3*  := <diff> (dep*, correct*);
-				result := <sort-qids> [qid3*, qid, correct*] 
+				errors* := <diff> (dep*, correct*);
+				result  := <sort-qids> [errors*, qid, correct*] 
 			end
+	
+	sort-issues: [] -> []
+	
+	sort-issues: 
+		[qid|qid*] -> [errors1*, errors2*]
+		where
+			dep*     := <get-dependencies> qid;
+			errors1* := <isect; !(qid, <id>)> (qid*, dep*);
+			errors2* := <sort-issues> qid*
+			
 			
 	/*
 	* Calculate all the question inversion-pairs present in the given set of question ids.
