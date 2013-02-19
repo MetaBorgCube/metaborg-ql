@@ -1,8 +1,8 @@
 module sorting
 
 imports
-	index-library.generated
-	analysis-library.generated
+	lib/index-library
+	lib/analysis-library
 	include/QL
 	dependencies
 	
@@ -28,22 +28,6 @@ rules
 		[qid|qid*] -> [errors1*, errors2*]
 		where
 			dep*     := <get-dependencies> qid;
-			errors1* := <isect; !(qid, <id>)> (qid*, dep*);
+			errors1* := <isect; map(!(qid, <id>))> (qid*, dep*);
 			errors2* := <sort-issues> qid*
-			
-			
-	/*
-	* Calculate all the question inversion-pairs present in the given set of question ids.
-	* The set of questions need not contain all dependencies. Inversion are not given for missing questions. 
-	* 
-	* @type List(ID) -> List(ID)
-	* @example
-	*		Say that question C depends on B and A, and that question D depends on C.
-	*		- [A,B,C,D] -> [] (everything in order)
-	*		- [B,A,C,D] -> []
-	*		- [A,C,D] -> [].
-	*		- [A,C,B,D] -> [ (C,B) ] (B should preceed C)
-	*		- [A,D,C,B] -> [(D,C), (C,B)] (C preceed D, B preceed C)
-	*/
-	// TODO
-	sort-question-ids = warn-msg(|"Strategy sort-question-ids is NOT IMPLEMENTED");fail
+

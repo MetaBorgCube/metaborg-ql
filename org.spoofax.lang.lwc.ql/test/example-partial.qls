@@ -14,30 +14,32 @@ define style C {
 
 page "PAGE HEADING" for Form15 {
 		// hasBoughtHouse
-		// hasLivedAbroad { use A }
+		// hasLivedAbroad { use  A }
+		
+		// five
+		// ten 
+		// fifteen 
 
-	// section "SECTION HEADING" {
-		five
-		ten
-		// subsection "SUBSECTION HEADING" {
-			// sellingPrice
-			// privateDebt 
-			// valueResidue
-		// }
+// 	section "SECTION HEADING" {
+// 		subsection "SUBSECTION HEADING" {
+// 			sellingPrice
+// 			privateDebt
+// 			valueResidue
+// 		}
 // 
 // 		subsection "SUBSECTION HEADING" {
 // 			hasSoldHouse
 // 			 {
-// 			 	use C
 // 				font   = "Comic Sans"
 // 				color  = #000000
-// 				widget = radio
+// 				use C
+// 				widget = dropdown
 // 			}	
 // 			sellingPrice
-			// privateDebt
-			// valueResidue
-		// }
-
+// 			privateDebt 
+// 			valueResidue
+// 		}
+// 
 // 		subsection "SUBSECTION HEADING" {
 // 			hasSoldHouse
 // 			valueResidue
@@ -50,45 +52,10 @@ page "PAGE HEADING" for Form15 {
 // 			sellingPrice
 // 			privateDebt
 // 		}
-
-	// }
+// 	}
 }
 
-page "PAGE HEADING" for Box1HouseOwning Box2HouseOwning {
-		hasBoughtHouse
-		hasLivedAbroad { style = A }
-
-	section "SECTION HEADING" {
-		subsection "SUBSECTION HEADING" {
-			sellingPrice
-			privateDebt
-			valueResidue
-		}
-
-		subsection "SUBSECTION HEADING" {
-			hasSoldHouse
-			 {
-				font   = "Comic Sans"
-				color  = #000000
-				style  = C
-				widget = dropdown
-			}	
-			sellingPrice
-			privateDebt 
-			valueResidue
-		}
-
-		subsection "SUBSECTION HEADING" {
-			hasSoldHouse
-			valueResidue
-			sellingPrice
-			privateDebt
-		}
-
-		subsection "SUBSECTION HEADING" {
-			hasSoldHouse
-			sellingPrice
-			privateDebt
-		}
-	}
+page "TWO" for Form15 Box1HouseOwning {
+	
 }
+

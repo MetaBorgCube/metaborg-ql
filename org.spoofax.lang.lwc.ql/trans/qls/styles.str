@@ -1,15 +1,16 @@
 module qls/styles
 
 imports
+	include/QL
 	lib/index-library
 	lib/analysis-library
-	include/QL
-	utils
+	lib/editor-common.generated
 	qls/types
 	qls/defaults
 	qls/store
+	utils
 	dependencies
-	lib/editor-common.generated
+	sorting
 	
 rules
 	/*
@@ -73,7 +74,8 @@ strategies
 	qls-normalize =
 		qls-normalize-styles-top;
 		qls-normalize-pages-top;
-		force-origins(qls-add-one-rest-ref)
+		repeat(force-origins(qls-add-one-rest-ref);qls-normalize-pages-top)
+	
 
 rules
 	/* Normalize all SimpleRef and StyleRef.
@@ -139,7 +141,7 @@ rules
 			<get-all-dependencies> qid => raw-deps*;
 			<qls-form-of-question> qid => form;
 			<qls-questions-of-form> form => q-refs*; 
-			<diff> (raw-deps*, q-refs*) => deps*;
+			<diff;sort-qids> (raw-deps*, q-refs*) => deps*;
 			<map(qls-qid-to-ref)> deps* => dep-refs*;
 			<map(qls-store-question-ref)> dep-refs*
 
@@ -151,36 +153,31 @@ rules // add missing references to questions one at a time
 	// add one question to a form which is missing from pages
 	qls-add-one-rest-ref:
 		QLS(sdefs, pages*) -> QLS(sdefs, pages')
-		with
-			<collect-all(?FormRef(<id>));make-set> pages* => forms*;
+		where
+			<collect-all(?FormRef(<id>))> pages* => forms*;
 			<fetch-elem(qls-form-has-unreffed-questions)> forms* => form;
-			<reverse;one(qls-page-add-one-rest-ref(|form));reverse> pages* => pages'
+			<reverse;one(qls-page-add-one-rest-ref(|form)); reverse> pages* => pages'
 	
 	qls-page-add-one-rest-ref(|frm):
 		|[ page str for fref* { pagepart* } ]| -> |[ page str for fref* { pagepart* pagepart1 } ]|
 		where
+			<fetch-elem(?FormRef(frm))> fref*
+		where
 			<qls-get-form-unreffed-questions> frm => [unref|_];
-			<index-get-data(|AST());get-question-id;qls-qid-to-ref> Def(unref) => pagepart1;
+			<index-get-data(|AST()); get-question-id; qls-qid-to-ref> Def(unref) => pagepart1;
 			<qls-store-question-ref> pagepart1
 			
 	qls-form-has-unreffed-questions:
 		frm -> frm
 		where
-			qls-get-form-unreffed-questions;
-			not(?[])
+			qls-get-form-unreffed-questions;not(?[])
 	
-	
-	qls-get-form-unreffed-questions =
-		?frm;
-		<index-get-data-all(|Questions())> frm => q-defs*;
-		<index-get-data-all(|ReferredQuestions())> frm => q-refs*;
-		<diff> (q-defs*, q-refs*)
-	
-	get-question-id:
-		Conditional(_, [Computed(qid, _, _)]) -> qid
+	qls-get-form-unreffed-questions:
+		frm -> <diff> (q-defs*, q-refs*)
+		where
+			<index-get-data-all(|Questions())> frm => q-defs*;
+			<index-get-data(|ReferredQuestions()) <+ ![]> frm => q-refs*
 		
-	get-question-id:
-		Conditional(_, [Question(qid, _, _)]) -> qid
 	
 
 

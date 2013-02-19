@@ -8,7 +8,7 @@ imports
 	utils
 	qls/store
 	lib/analysis-library
-	dependencies
+	sorting
 	
 rules // generic
 	
@@ -65,8 +65,8 @@ rules // question ordering & duplicates
 	constraint-error:
 		QLS(_,_) -> <map(qls-ref-precedence-error)> swap-pairs
 			where
-				collect-all(?FormRef(<id>)); make-set;
-				mapconcat(qls-questions-of-form;make-set;sort-question-ids) => swap-pairs
+				collect-all(?FormRef(<id>));
+				mapconcat(qls-questions-of-form; make-set; sort-issues) => swap-pairs
 	
 	constraint-error:
 		SimpleRef(qid) -> <dup-ref-error> 
