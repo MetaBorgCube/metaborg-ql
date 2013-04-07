@@ -7,7 +7,6 @@ imports elib/accesscontrol
 imports elib/datetime
 imports elib/markup 
 imports elib/editable
-imports elib/coordinates
 imports elib/modal-dialog
 imports elib/rss
 imports elib/wikitext
