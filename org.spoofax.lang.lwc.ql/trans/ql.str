@@ -106,6 +106,13 @@ rules // Editor services
       proposals' := <map(index-uri; index-uri-name)> proposals
       
 rules // Compilation
+
+  compile-to-webdsl-ast:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+    	index-setup(|<language>, [project-path], $[[project-path]/[path]]);
+    	filename := <guarantee-extension(|"app")> path;
+    	result   := <ql-or-qls(compile-ql, compile-qls)> selected
 	
   compile-to-webdsl:
     (selected, position, ast, path, project-path) -> (filename, result)

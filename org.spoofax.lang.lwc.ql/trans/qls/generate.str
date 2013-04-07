@@ -134,10 +134,10 @@ rules // QLS page to WebDSL page
 	  with
 	  	x_pageName     := <conc-strings> ("page", <int-to-string> n);
 	  	stat_saveall*  := <map(compile-qls-page-save)> fref*;
-	  	parts_length   := <length; debug(!"Length: ")> part*;
-	    parts_numbers  := <upto; Tl; debug(!"Numbers: ")> parts_length;
+	  	parts_length   := <length> part*;
+	    parts_numbers  := <upto; Tl> parts_length;
 	  	{| Var, Init, Action:
-	  		elem_group*  := <debug(!"ZIP: "); zip(debug(!"Zipit: "); compile-qls-part(|parts_length); debug(!"Zipped: ")); concat; debug(!"Concatted: ")> (part*, parts_numbers);
+	  		elem_group*  := <zip(compile-qls-part(|parts_length)); concat> (part*, parts_numbers);
 		  	elem_var*    := <bagof-Var <+ ![]>;
 		  	stat_init*   := <bagof-Init <+ ![]>;
 		  	stat_action* := <bagof-Action <+ ![]>
@@ -162,8 +162,8 @@ rules // QLS part to WebDSL elements
 		(|[ qid { s* } ]|, nr) -> elem* |[placeholder x_p { x_q }]|
 		where
 			body := <qls-get-question> qid;
-			x_p  := <compile-placeholder-name; debug(!"Placeholder: ")> nr;
-			x_q  := <compile-qls-group(|s*, length, nr); debug(!"Question: ")> body
+			x_p  := <compile-placeholder-name> nr;
+			x_q  := <compile-qls-group(|s*, length, nr)> body
 			
 	compile-qls-part(|length):
 	 (Section(elem_heading, part*), nr) -> elem* |[ pageHeader() { elem_heading } elem_group* ]| // TODO: Concrete syntax match? meta variable for STRING does not work..
