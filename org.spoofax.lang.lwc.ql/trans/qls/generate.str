@@ -137,7 +137,7 @@ rules // QLS page to WebDSL page
 	  	parts_length   := <length> part*;
 	    parts_numbers  := <upto; Tl> parts_length;
 	  	{| Var, Init, Action:
-	  		elem_group*  := <zip(compile-qls-part(|parts_length)); concat> (part*, parts_numbers);
+	  		elem_group*  := <debug(!"Zipit: "); zip(debug(!"One: "); compile-qls-part(|parts_length); debug(!"Done: ")); debug(!"Zipped"); concat; debug(!"Concatted")> (part*, parts_numbers);
 		  	elem_var*    := <bagof-Var <+ ![]>;
 		  	stat_init*   := <bagof-Init <+ ![]>;
 		  	stat_action* := <bagof-Action <+ ![]>
@@ -168,12 +168,12 @@ rules // QLS part to WebDSL elements
 	compile-qls-part(|length):
 	 (Section(elem_heading, part*), nr) -> elem* |[ pageHeader() { elem_heading } elem_group* ]| // TODO: Concrete syntax match? meta variable for STRING does not work..
 		where
-			elem_group* := <map(compile-qls-part)> part*
+			elem_group* := <map(\part -> (part, nr)\; compile-qls-part(|length))> part*
 			
 	compile-qls-part(|length):
 		(SubSection(elem_heading, part*), nr) -> elem* |[ pageHeader2() { elem_heading } elem_group* ]| // TODO: Concrete syntax match? meta variable for STRING does not work..
 		where
-			elem_group* := <map(compile-qls-part)> part*
+			elem_group* := <map(\part -> (part, nr)\; compile-qls-part(|length))> part*
 			
 rules // QL group to WebDSL page elements
 	
