@@ -111,25 +111,39 @@ rules // QL form to WebDSL page
 	  	}
 	  ]|
     where
-    	elem_group* := <map(compile-ql-group)> question*
+    	groups_length  := <length> question*;
+	    groups_numbers := <upto; Tl> groups_length;
+    	elem_group*    := <zip(compile-ql-group(|groups_length))> (question*, groups_numbers)
   
-  compile-ql-group: 
-  	|[ qid : label t ]| -> elem |[ controlGroup(e_label) { input(x_id) } ]|
+  compile-ql-group(|length): 
+  	(|[ qid : label t ]|, nr) -> elem |[ controlGroup(e_label) { inputajax(x_id) [passign_all*] } ]|
   	where
+  		<?BoolTy()> t;
   		x_id    := <compile-ql-question-name> qid;
-  		e_label := <compile-ql-exp> label
+  		e_label := <compile-ql-exp> label;
+			x_updates    := <compile-update-list(|length, nr)>;
+			passign_all* := passign |[oninput=update(x_updates)]|
+
+  compile-ql-group(|length): 
+  	(|[ qid : label t ]|, nr) -> elem |[ controlGroup(e_label) { inputajax(x_id) [passign_all*] } ]|
+  	where
+  		not(<?BoolTy()> t);
+  		x_id    := <compile-ql-question-name> qid;
+  		e_label := <compile-ql-exp> label;
+			x_updates    := <compile-update-list(|length, nr)>;
+			passign_all* := passign |[onchange=update(x_updates)]|
   		
-  compile-ql-group: 
-  	|[ qid : label t ( exp ) ]| -> elem |[ controlGroup(e_label) { output(e_typeExp) } ]|
+  compile-ql-group(|length): 
+  	(|[ qid : label t ( exp ) ]|, nr) -> elem |[ controlGroup(e_label) { output(e_typeExp) } ]|
   	where
   		e_label   := <compile-ql-exp> label;
   		e_typeExp := <compile-ql-exp> exp
   		
-  compile-ql-group: 
-  	|[ if ( cond ) { q* } ]| -> elem |[ if (e_cond) { elem_group* } ]|
+  compile-ql-group(|length): 
+  	(|[ if ( cond ) { q* } ]|, nr) -> elem |[ if (e_cond) { elem_group* } ]|
   	where
   		e_cond      := <compile-ql-exp> cond;
-  		elem_group* := <map(compile-ql-group)> q*
+  		elem_group* := <map(\q -> (q, nr)\; compile-ql-group(|length))> q*
 
 rules // QL types to WebDSL types
   
@@ -159,6 +173,17 @@ rules // QL expressions to WebDSL expressions
   compile-ql-exp-part: ql |[ e1 -  e2 ]| -> webdsl:e |[ e1 -  e2 ]|
   compile-ql-exp-part: ql |[ e1 *  e2 ]| -> webdsl:e |[ e1 *  e2 ]|
   compile-ql-exp-part: ql |[ e1 /  e2 ]| -> webdsl:e |[ e1 /  e2 ]|
+
+rules // Utility
+	
+	compile-placeholder-name:
+		num -> String(<conc-strings> ("q", <int-to-string> num))
+	
+	compile-update-list(|part_length, part_number):
+		_ -> ListCreation(part_names)
+		with
+			part_numbers := <upto; Tl; remove-all(?part_number)> part_length;
+			part_names   := <map(compile-placeholder-name)> part_numbers
 
 rules
 	
