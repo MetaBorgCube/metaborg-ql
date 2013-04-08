@@ -177,6 +177,7 @@ rules // QLS part to WebDSL elements
 			
 rules // QL group to WebDSL page elements
 	
+	// Question
   compile-qls-group(|styles, part_length, nr): 
   	q@|[ qid : label t ]| -> elem |[ controlGroup(e_label) [passign_style*] { elem_input } ]|
   	where
@@ -185,6 +186,7 @@ rules // QL group to WebDSL page elements
   		widget         := <fetch-elem(?TypedWidget(_, _)) <+ !()> styles;
   		elem_input     := <compile-qls-group-input(|passign_style*, part_length, nr)> (widget, q)
   		
+	// Value
   compile-qls-group(|styles, part_length, nr): 
   	|[ qid : label t ( exp ) ]| -> elem |[ controlGroup(e_label) [passign_style*] { output(e_typeExp) [passign_style*] } ]|
   	where
@@ -192,6 +194,7 @@ rules // QL group to WebDSL page elements
   		e_typeExp      := <compile-ql-exp> exp;
   		passign_style* := <compile-qls-simple-styles> styles
   		
+	// Condition
   compile-qls-group(|styles, part_length, nr): 
   	|[ if ( cond ) { q* } ]| -> elem |[ if (e_cond) { elem_group* } ]|
   	where
@@ -204,14 +207,18 @@ rules // QLS widget styles to WebDSL input
 		compile-qls-group-input-special(|passign_style*, part_length, nr) 
 		<+ compile-qls-group-input-default(|passign_style*, part_length, nr)
 	
+	
+	// TODO: Use switch?
+	// Integer, float, string
 	compile-qls-group-input-default(|passign_styles, part_length, nr):
 		(_, |[ qid : label t ]|) -> call |[ inputajax(x_id) [passign_all*] ]|
 		where
-			<not(?BoolTy())> t;
+			<not(?BoolTy() <+ ?DateTy())> t;
 			x_id         := <compile-ql-question-name> qid;
 			x_updates    := <compile-update-list(|part_length, nr)>;
 			passign_all* := [passign |[oninput=update(x_updates)]|, passign_styles]
 
+	// Boolean
 	compile-qls-group-input-default(|passign_styles, part_length, nr):
 		(_, |[ qid : label t ]|) -> call |[ inputajax(x_id) [passign_all*] ]|
 		where
@@ -219,7 +226,18 @@ rules // QLS widget styles to WebDSL input
 			x_id         := <compile-ql-question-name> qid;
 			x_updates    := <compile-update-list(|part_length, nr)>;
 			passign_all* := [passign |[onchange=update(x_updates)]|, passign_styles]
-			
+
+	// Date (inputajax does not support Date)
+	compile-qls-group-input-default(|passign_styles, part_length, nr):
+		(_, |[ qid : label t ]|) -> call |[ input(x_id) [passign_all*] ]|
+		where
+			<?DateTy()> t;
+			x_id         := <compile-ql-question-name> qid;
+			x_updates    := <compile-update-list(|part_length, nr)>;
+			passign_all* := [passign |[onchange=update(x_updates)]|, passign_styles]
+	
+	
+	// Special styling for boolean widgets with radio or dropdown style.		
 	compile-qls-group-input-special(|passign_styles, part_length, nr):
 		(TypedWidget(BoolTy(), widget), |[ qid : label t ]|) -> call |[ x_call [passign_all*] ]|
 		where
@@ -240,9 +258,6 @@ rules // QLS widget styles to WebDSL input
 		
 	compile-qls-group-input-call(|x_id):
 		Dropdown() -> call |[ select(x_id)[not null] ]|
-		
-	// TODO: add slider for int, float.
-	// TODO: add other dropdown types, but requires a list of values.
 			
 rules // QLS simple styles to WebDSL property assignments
 	
