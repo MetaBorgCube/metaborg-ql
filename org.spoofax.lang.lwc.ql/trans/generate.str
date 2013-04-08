@@ -105,15 +105,18 @@ rules // QL form to WebDSL page
 				    }
 				  }
 				  
-				  action submit() {}
-			  	action finish() { return finish(); }
+				  action submit() { stat_action* }
+			  	action finish() { stat_action* return finish(); }
 		  	}
 	  	}
 	  ]|
     where
     	groups_length  := <length> question*;
 	    groups_numbers := <upto; Tl> groups_length;
-    	elem_group*    := <zip(compile-ql-group(|groups_length))> (question*, groups_numbers)
+	    {| Action:
+	    	elem_group*  := <zip(compile-ql-group(|groups_length))> (question*, groups_numbers);
+	    	stat_action* := <bagof-Action <+ ![]>	
+	    |}
   
   
   // TODO: Use switch?
@@ -152,8 +155,12 @@ rules // QL form to WebDSL page
   compile-ql-group(|length): 
   	(|[ qid : label t ( exp ) ]|, nr) -> elem |[ controlGroup(e_label) { output(e_typeExp) } ]|
   	where
+  		x_id      := <compile-ql-question-name> qid;
   		e_label   := <compile-ql-exp> label;
-  		e_typeExp := <compile-ql-exp> exp
+  		e_typeExp := <compile-ql-exp> exp;
+  		rules(
+  			Action :+ _ -> |[ x_id := e_typeExp; ]|
+  		)
   		
 	// Condition
   compile-ql-group(|length): 
