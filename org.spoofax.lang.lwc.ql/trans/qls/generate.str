@@ -137,7 +137,7 @@ rules // QLS page to WebDSL page
 	  	parts_length   := <length> part*;
 	    parts_numbers  := <upto; Tl> parts_length;
 	  	{| Var, Init, Action:
-	  		elem_group*  := <debug(!"Zipit: "); zip(debug(!"One: "); compile-qls-part(|parts_length); debug(!"Done: ")); debug(!"Zipped"); concat; debug(!"Concatted")> (part*, parts_numbers);
+	  		elem_group*  := <zip(compile-qls-part(|parts_length)); concat> (part*, parts_numbers);
 		  	elem_var*    := <bagof-Var <+ ![]>;
 		  	stat_init*   := <bagof-Init <+ ![]>;
 		  	stat_action* := <bagof-Action <+ ![]>
