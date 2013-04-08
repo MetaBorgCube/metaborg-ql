@@ -1,0 +1,25 @@
+page "General" for VehicleCheckin {
+	date
+	section "Car data" {
+		kms
+		kmslast
+		travel
+	}
+}
+
+page "Problems" for Problems {
+	probs
+	sinceP
+	section "Engine" {
+		desEngP
+	}
+	
+	section "Drivetrain" {
+		desDrvP
+	}
+	
+	section "Body" {
+		desBdyP
+	}
+}
+
