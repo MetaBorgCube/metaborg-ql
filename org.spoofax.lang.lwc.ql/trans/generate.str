@@ -115,30 +115,47 @@ rules // QL form to WebDSL page
 	    groups_numbers := <upto; Tl> groups_length;
     	elem_group*    := <zip(compile-ql-group(|groups_length))> (question*, groups_numbers)
   
+  
+  // TODO: Use switch?
+  // Integer, float, string question
+  compile-ql-group(|length): 
+  	(|[ qid : label t ]|, nr) -> elem |[ controlGroup(e_label) { inputajax(x_id) [passign_all*] } ]|
+  	where
+  		not(<?BoolTy() <+ ?DateTy()> t);
+  		x_id         := <compile-ql-question-name> qid;
+  		e_label      := <compile-ql-exp> label;
+			x_updates    := <compile-update-list(|length, nr)>;
+			passign_all* := passign |[onchange=update(x_updates)]|
+
+	// Boolean question
   compile-ql-group(|length): 
   	(|[ qid : label t ]|, nr) -> elem |[ controlGroup(e_label) { inputajax(x_id) [passign_all*] } ]|
   	where
   		<?BoolTy()> t;
-  		x_id    := <compile-ql-question-name> qid;
-  		e_label := <compile-ql-exp> label;
+  		x_id         := <compile-ql-question-name> qid;
+  		e_label      := <compile-ql-exp> label;
 			x_updates    := <compile-update-list(|length, nr)>;
 			passign_all* := passign |[oninput=update(x_updates)]|
 
+	// Date question (inputajax does not support Date)
   compile-ql-group(|length): 
-  	(|[ qid : label t ]|, nr) -> elem |[ controlGroup(e_label) { inputajax(x_id) [passign_all*] } ]|
+  	(|[ qid : label t ]|, nr) -> elem |[ controlGroup(e_label) { input(x_id) [passign_all*] } ]|
   	where
-  		not(<?BoolTy()> t);
-  		x_id    := <compile-ql-question-name> qid;
-  		e_label := <compile-ql-exp> label;
+  		<?DateTy()> t;
+  		x_id         := <compile-ql-question-name> qid;
+  		e_label      := <compile-ql-exp> label;
 			x_updates    := <compile-update-list(|length, nr)>;
-			passign_all* := passign |[onchange=update(x_updates)]|
+			passign_all* := passign |[oninput=update(x_updates)]|
+ 
   		
+	// Value
   compile-ql-group(|length): 
   	(|[ qid : label t ( exp ) ]|, nr) -> elem |[ controlGroup(e_label) { output(e_typeExp) } ]|
   	where
   		e_label   := <compile-ql-exp> label;
   		e_typeExp := <compile-ql-exp> exp
   		
+	// Condition
   compile-ql-group(|length): 
   	(|[ if ( cond ) { q* } ]|, nr) -> elem |[ if (e_cond) { elem_group* } ]|
   	where
