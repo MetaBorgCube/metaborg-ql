@@ -159,13 +159,13 @@ rules // add missing references to questions one at a time
 			<reverse;one(qls-page-add-one-rest-ref(|form)); reverse> pages* => pages'
 	
 	qls-page-add-one-rest-ref(|frm):
-		|[ page str for fref* { pagepart* } ]| -> |[ page str for fref* { pagepart* pagepart1 } ]|
+		|[ page str for fref* { pagepart* } ]| -> |[ page str for fref* { pagepart* pagepart1* } ]|
 		where
 			<fetch-elem(?FormRef(frm))> fref*
 		where
 			<qls-get-form-unreffed-questions> frm => [unref|_];
-			<index-get-data(|AST()); get-question-id; qls-qid-to-ref> Def(unref) => pagepart1;
-			<qls-store-question-ref> pagepart1
+			<index-get-data(|AST()); get-question-id; qls-qid-to-ref; flatten-list> Def(unref) => pagepart1*;
+			<qls-store-question-ref> pagepart1*
 			
 	qls-form-has-unreffed-questions:
 		frm -> frm

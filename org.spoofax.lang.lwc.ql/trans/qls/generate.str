@@ -164,6 +164,20 @@ rules // QLS part to WebDSL elements
 			body := <qls-get-question> qid;
 			x_p  := <compile-placeholder-name> nr;
 			x_q  := <compile-qls-group(|s*, length, nr)> body
+
+	compile-qls-part(|length):
+		([|[ qid { s* } ]|], nr) -> elem* |[placeholder x_p { x_q }]|
+		where
+			body := <qls-get-question> qid;
+			x_p  := <compile-placeholder-name> nr;
+			x_q  := <compile-qls-group(|s*, length, nr)> body
+
+	compile-qls-part(|length):
+		(SimpleRef(qid), nr) -> elem* |[placeholder x_p { x_q }]|
+		where
+			body := <qls-get-question> qid;
+			x_p  := <compile-placeholder-name> nr;
+			x_q  := <compile-qls-group(|[], length, nr)> body
 			
 	compile-qls-part(|length):
 	 (Section(elem_heading, part*), nr) -> elem* |[ pageHeader() { elem_heading } elem_group* ]| // TODO: Concrete syntax match? meta variable for STRING does not work..
