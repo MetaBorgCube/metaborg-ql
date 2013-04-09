@@ -1,7 +1,6 @@
 module QL-Completions
 
-imports QL-Completions.tmpl
-imports QLS-Completions.tmpl
+imports QL-Completions.tmpl QLS-Completions.tmpl
 
 completions
                                                                    
