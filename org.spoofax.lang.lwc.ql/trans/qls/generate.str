@@ -190,13 +190,9 @@ rules // QL group to WebDSL page elements
   compile-qls-group(|styles, part_length, nr): 
   	|[ qid : label t ( exp ) ]| -> elem |[ controlGroup(e_label) [passign_style*] { output(e_typeExp) [passign_style*] } ]|
   	where
-  		x_id           := <compile-ql-question-name> qid;
   		e_label        := <compile-ql-exp> label;
   		e_typeExp      := <compile-ql-exp> exp;
-  		passign_style* := <compile-qls-simple-styles> styles;
-  		rules(
-  			Action :+ _ -> |[ x_id := e_typeExp; ]|
-  		)
+  		passign_style* := <compile-qls-simple-styles> styles
   		
 	// Condition
   compile-qls-group(|styles, part_length, nr): 
