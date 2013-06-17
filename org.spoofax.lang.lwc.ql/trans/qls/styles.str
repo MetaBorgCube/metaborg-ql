@@ -13,10 +13,7 @@ imports
 	sorting
 	
 rules
-	/*
-	* Query dependencies of style (SHALLOW)
-	*/
-	
+
 	qls-get-dependent-styles =
 		index-lookup;
 		index-get-data-all(|Dependencies());
@@ -24,16 +21,12 @@ rules
 		filter(?StyleRef(<id>))
 	
 	
-	/*
-	* Query dependencies of style (DEEP)
-	*/
+
 	qls-get-all-dependent-styles =
 		(is-list <+ MkSingleton);
 		transitive-closure(qls-get-dependent-styles)
 	
-	/*
-	* Succeed if style has circular dependency (DEEP)
-	*/
+
 	qls-has-circular-dependency-style =
 		?sid;
 		qls-get-dependent-styles;
@@ -41,10 +34,7 @@ rules
 		fetch(?sid)
 
 rules
-	/*
-	* Style linearization and concretization.
-	* Basically recursively expand StyleRefs
-	*/
+
 
 	qls-make-concrete-style =
 		?StyleRef(<id>);
@@ -70,7 +60,7 @@ rules
 
 strategies
     
-	/* Normalization entry point */
+
 	qls-normalize =
 		qls-normalize-styles-top;
 		qls-normalize-pages-top;
@@ -78,10 +68,7 @@ strategies
 	
 
 rules
-	/* Normalize all SimpleRef and StyleRef.
-	* - all StyleRefs are made concrete and simplified
-	* - all SimpleRefs become StyleRef
-	*/
+
 	qls-normalize-styles-top = alltd(qls-normalize-styles)
 	
 	qls-normalize-styles:
@@ -114,10 +101,7 @@ rules
 		where elem(is-same-style)
 
 rules
-	/* Normalize pages:
-	* - add dependent questions where needed
-	* - add all unneeded questions on last page of form
-	*/
+
 	qls-normalize-pages-top = alltd(qls-add-ref-deps)
 	
 	qls-add-ref-deps:

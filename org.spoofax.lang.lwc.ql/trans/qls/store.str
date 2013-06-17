@@ -22,9 +22,6 @@ signature
 		Frm: Namespace
 		
 rules
-	/*
-	* Analyze and store dependencies of styles
-	*/
 
 	qls-analyze-dependencies:
 		QLS(sdefs, _) -> <map(qls-analyze-dependencies)> sdefs
@@ -36,10 +33,7 @@ rules
 			uri := <index-uri> sid
 
 rules
-	/*
-	* Store styling attributes in index, easier for lookups
-	*/
-	
+
 	qls-store-styles:
 		QLS(sdefs, _) -> <map(qls-store-styles)> sdefs
 		
@@ -49,10 +43,7 @@ rules
 			uri := <index-uri> sid
 			
 rules
-	/*
-	* Store a mapping for every form F to a list of all referred questions
-	*		F -> [QuestionID]
-	*/
+
 	
 	qls-store-pages = alltd(where(qls-store-question);where(qls-store-question-ref))
 	
