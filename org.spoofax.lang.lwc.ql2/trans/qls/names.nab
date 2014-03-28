@@ -1,0 +1,30 @@
+module qls/names
+
+imports
+ 
+  include/QL
+  ql/names
+  
+namespaces
+
+	Style
+  
+binding rules
+
+	QLS(_, _):
+		scopes Style, Form
+  		
+  FormRef(f):
+  	imports Question from Form f
+
+ 	StyleDef(s, _):
+ 		defines Style s
+
+	StyleRef(s):
+		refers to Style s
+	
+	StyledRef(q, _):
+		refers to Question q
+	
+	SimpleRef(q):
+		refers to Question q

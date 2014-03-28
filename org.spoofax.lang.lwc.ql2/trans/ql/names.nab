@@ -1,0 +1,27 @@
+module ql/names
+
+imports
+	
+	include/QL
+	
+namespaces
+
+	Form
+	Question
+
+binding rules
+
+	Form(n, _):
+		defines Form n
+		scopes Question
+	
+	Question(q, _, t):
+		defines non-unique Question q
+			of type t
+
+	Computed(q, _, TExpr(t, _)):
+		defines non-unique Question q
+			of type t
+	
+	Ref(q):
+		refers to Question q

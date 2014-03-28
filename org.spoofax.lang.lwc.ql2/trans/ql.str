@@ -16,8 +16,12 @@ imports
 	lib/runtime/task/-
 	lib/runtime/analysis/-
 	lib/runtime/editor/-
-	names
+	
 	pp
+	
+	ql/names
+	
+	qls/names
 
 rules // Analysis
 	
