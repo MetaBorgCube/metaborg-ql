@@ -18,21 +18,24 @@ imports
 	lib/runtime/editor/-
 	
 	pp
+	utils
 	
 	ql/names
 	ql/types.generated
+	ql/desugar
 	
 	qls/names
 	qls/types.generated
+	qls/desugar
 
 rules // Analysis
 	
 	editor-analyze = analysis-default-editor
 	
 	analysis-single-default-interface = 
-		analysis-single-default(id, id, id|<language>)
+		analysis-single-default(ql-or-qls(desugar-all, qls-desugar-all), id, id|<language>)
 	analysis-multiple-default-interface = 
-		analysis-multiple-default(parse-file <+ !(), id, id, id|<language>, <project-path>)
+		analysis-multiple-default(parse-file <+ !(), ql-or-qls(desugar-all, qls-desugar-all), id, id|<language>, <project-path>)
 	
 	editor-save = analysis-save-default(|<language>)
 

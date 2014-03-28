@@ -20,9 +20,6 @@ exports
 		     "|[" Type   "]|" -> E {cons("ToMetaExpr")}
 		"ql" "|[" Expr   "]|" -> E {cons("ToMetaExpr")}
 		     "|[" Expr   "]|" -> E {cons("ToMetaExpr")}
-
-		"true" 	-> Expr {"True"}
-		"false" -> Expr {"False"}
 		
 	variables
 

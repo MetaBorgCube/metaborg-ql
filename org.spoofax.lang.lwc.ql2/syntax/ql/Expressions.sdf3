@@ -33,3 +33,8 @@ context-free priorities
 	{left: Expr.Plus Expr.Minus } >
 	{left: Expr.And } >
 	{left: Expr.Or }
+
+templates
+
+	Expr.True  = <true>
+	Expr.False = <false>

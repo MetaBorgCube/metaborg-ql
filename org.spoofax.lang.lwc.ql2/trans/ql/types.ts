@@ -4,7 +4,7 @@ imports
 
 	include/QL
 
-type rules
+type rules // Logical expressions
 
 	Not(e) : BoolTy()
 	where e : e-ty
@@ -19,6 +19,8 @@ type rules
       else error "Expected boolean" on x
     and y-ty == BoolTy()
       else error "Expected boolean" on y
+
+type rules // Comparison expressions
 	  	
   t@Lt(x, y) 
 + t@Leq(x, y) 
@@ -34,6 +36,8 @@ type rules
     and y : y-ty
     and (x-ty == y-ty)
       else error $[Cannot compare [x-ty] and [y-ty]] on t 
+
+type rules // Arithmetic expressions
 
   t@Plus(x, y)
 + t@Minus(x, y) : ty
@@ -51,18 +55,25 @@ type rules
     	else error $[Cannot multiply or divide [x-ty] and [y-ty]] on t
     and <largest-type> (x-ty, y-ty) => ty
 
+type rules // Literals
+
+	True()  : BoolTy()
+	False() : BoolTy()
+
+type rules
+
 	Ref(x) : ty
 	where definition of x : ty
-	
-	t@TExpr(ty, e) : ty
-	where e : e-ty
-	  and ty == e-ty
-	    else error $[Type mismatch between [ty] and [e-ty]] on t 
 	
 	Conditional(e, _) :-
 	where e : e-ty
 	  and e-ty == BoolTy()
 	    else error "Expected boolean" on e
+	
+	t@TExpr(ty, e) : ty
+	where e : e-ty
+	  and ty == e-ty
+	    else error $[Type mismatch between [ty] and [e-ty]] on t 
 	
 relations
 
