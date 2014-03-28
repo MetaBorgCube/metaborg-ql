@@ -20,37 +20,50 @@ type rules
     and y-ty == BoolTy()
       else error "Expected boolean" on y
 	  	
-  term@Lt(x, y) 
-+ term@Leq(x, y) 
-+ term@Gt(x, y) 
-+ term@Geq(x, y) : BoolTy()
+  t@Lt(x, y) 
++ t@Leq(x, y) 
++ t@Gt(x, y) 
++ t@Geq(x, y) : BoolTy()
 	where x : x-ty
     and y : y-ty
     and x-ty <comparable: y-ty
-      else error $[Cannot compare [x-ty] and [y-ty]] on term 
+      else error $[Cannot compare [x-ty] and [y-ty]] on t 
        
-term@Eq(x, y) : BoolTy()
+	t@Eq(x, y) : BoolTy()
 	where x : x-ty
     and y : y-ty
     and (x-ty == y-ty)
-      else error $[Cannot compare [x-ty] and [y-ty]] on term 
+      else error $[Cannot compare [x-ty] and [y-ty]] on t 
 
-  term@Plus(x, y)
-+ term@Minus(x, y) : ty
+  t@Plus(x, y)
++ t@Minus(x, y) : ty
 	where x : x-ty
     and y : y-ty
     and x-ty <addable: y-ty
-    	else error $[Cannot add or subtract [x-ty] and [y-ty]] on term
+    	else error $[Cannot add or subtract [x-ty] and [y-ty]] on t
     and <largest-type> (x-ty, y-ty) => ty
 
-  term@Mul(x, y)
-+ term@Div(x, y) : ty
+  t@Mul(x, y)
++ t@Div(x, y) : ty
 	where x : x-ty
     and y : y-ty
     and x-ty <multiplicable: y-ty
-    	else error $[Cannot multiply or divide [x-ty] and [y-ty]] on term
+    	else error $[Cannot multiply or divide [x-ty] and [y-ty]] on t
     and <largest-type> (x-ty, y-ty) => ty
 
+	Ref(x) : ty
+	where definition of x : ty
+	
+	t@TExpr(ty, e) : ty
+	where e : e-ty
+	  and ty == e-ty
+	    else error $[Type mismatch between [ty] and [e-ty]] on t 
+	
+	Conditional(e, _) :-
+	where e : e-ty
+	  and e-ty == BoolTy()
+	    else error "Expected boolean" on e
+	
 relations
 
 	define symmetric <comparable:
@@ -76,6 +89,8 @@ relations
 	FloatTy() <multiplicable: FloatTy()
 	FloatTy() <multiplicable: MoneyTy()
 	MoneyTy() <multiplicable: MoneyTy()
+	
+	x <dummy: y where x <multiplicable: y // Dummy relation to prevent compile error, will fix soon.
 		
 type functions
 

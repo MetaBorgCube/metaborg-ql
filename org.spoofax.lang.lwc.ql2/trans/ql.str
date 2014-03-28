@@ -20,8 +20,10 @@ imports
 	pp
 	
 	ql/names
+	ql/types.generated
 	
 	qls/names
+	qls/types.generated
 
 rules // Analysis
 	

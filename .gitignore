@@ -31,3 +31,5 @@ org.spoofax.lang.lwc.ql2/syntax/qls/Styles.sdf
 org.spoofax.lang.lwc.ql2/trans/names.str
 org.spoofax.lang.lwc.ql2/trans/ql/names.str
 org.spoofax.lang.lwc.ql2/trans/qls/names.str
+org.spoofax.lang.lwc.ql2/trans/ql/types.generated.str
+org.spoofax.lang.lwc.ql2/trans/qls/types.generated.str
