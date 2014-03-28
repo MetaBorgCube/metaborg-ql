@@ -17,7 +17,7 @@ templates // top-level
   
 	Page.Page = <
 		page <STRING> for <FormRef+; separator=" "> {
-			<PagePart*; separator="\n">
+			<PagePart*; separator="\n\n">
 		}
 	>
 

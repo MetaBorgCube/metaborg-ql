@@ -38,3 +38,10 @@ templates
 
 	Expr.True  = <true>
 	Expr.False = <false>
+
+	ID = "true"  {reject}
+	ID = "false" {reject}
+
+template options
+
+	keyword -/- [a-zA-Z0-9\_]
