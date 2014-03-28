@@ -6,10 +6,10 @@ imports
 
 templates
 
-	Type.BoolTy = <boolean>
+	Type.BoolTy   = <boolean>
 	Type.StringTy = <string>
-	Type.IntTy = <integer>
-	Type.DateTy = <date>
-	Type.FloatTy = <decimal>
-	Type.MoneyTy = <money>
-	TyExpr.TExpr = <<Type> ( <Expr> )>
+	Type.IntTy    = <integer>
+	Type.DateTy   = <date>
+	Type.FloatTy  = <decimal>
+	Type.MoneyTy  = <money>
+	TyExpr.TExpr  = <<Type> ( <Expr> )>
