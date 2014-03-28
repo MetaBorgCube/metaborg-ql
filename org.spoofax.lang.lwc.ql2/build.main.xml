@@ -20,7 +20,7 @@
     <!-- Imports -->
     <property name="build.sdf.imports" value="
     	-Idef &quot;${basedir}/lib/webdsl/WebDslMix.def&quot;
-    	-I &quot;${basedir}/mix&quot;
+    	-I &quot;${basedir}/syntax/mix&quot;
   	"/>
 	
     <property name="build.stratego.args" value="

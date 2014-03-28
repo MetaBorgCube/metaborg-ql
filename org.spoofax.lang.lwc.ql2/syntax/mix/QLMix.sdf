@@ -1,4 +1,4 @@
-module QlMix[E]
+module QLMix[E]
 
 imports
 	

@@ -4,7 +4,7 @@ imports
 	StrategoMix[StrategoHost]
 	WebDslMix[ Term[[StrategoHost]] ]
 	QLSMix[ Term[[StrategoHost]] ]
-	QlMix[ Term[[StrategoHost]] ]
+	QLMix[ Term[[StrategoHost]] ]
 
 hiddens
 	context-free start-symbols Module[[StrategoHost]] 
