@@ -9,7 +9,7 @@ type rules
 	SimpleRef(x) + StyledRef(x, _) : ty
 	where definition of x : ty
 	
-	TypedWidget(ty, w) :-
+	TypedWidget(ty, Widget(w)) :-
 	where w : w-ty
 	  and ty == w-ty
 	    else error "Incompatible widget type" on w
