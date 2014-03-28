@@ -1,0 +1,218 @@
+module ql/generate
+
+imports
+	
+	libstratego-lib
+	libstratego-gpp
+	libstratego-aterm
+	lib/editor-common.generated
+
+	include/QL
+	lib/webdsl/WebDSL
+	
+signature
+
+	constructors
+		
+		String : STRING -> String
+		Text   : STRING -> Text
+
+rules // QL to WebDSL compilation
+	
+  compile-ql: 
+  	form@|[ form fid { question* } ]| -> 
+	  |[ 
+	  	module form 
+	  	
+	  	ent 
+	  	
+	  	entity User {
+				name :: String (name)
+				
+			  x_formID -> x_formID
+			}
+			
+			session sess {
+	  		user -> User
+			}
+		  	
+	  	def
+	  	
+		  page root() {
+				var name := ""
+				
+				main() {
+					horizontalForm() {
+						controlGroup("Name: ") { input(name) }
+						
+				    formActions() {
+				      submitlink start() [class="btn btn-primary"] { "Start questionaire" } " "
+				    }
+					}
+				}
+				
+			  action start() {
+			    sess.user := User { name := name, x_formID := x_formID {} };
+			    return page1();
+			  }
+			}
+			
+			page finish() {
+				main() {
+					"Thank you for filling in the form"
+				}
+			}
+	  ]|
+	  where
+	  	x_formID    := fid;
+	  	ent         := <compile-ql-entity> form;
+	  	def         := <compile-ql-page> form
+	  	
+rules // QL questions to WebDSL entity
+	  
+  compile-ql-entity: 
+  	|[ form fid { question* } ]| -> |[ entity x_formID { ebd* } ]|
+  	where
+  		x_formID := fid;
+	  	ebd*     := <collect-all(compile-ql-entity-part)> question*
+	  	
+  compile-ql-entity-part: 
+  	|[ qid : label t ]| -> |[ x_formID :: srt_type ]|
+    where
+  	  x_formID := qid;
+  	  srt_type := <compile-ql-type> t
+  	  
+  compile-ql-entity-part: 
+  	|[ qid : label t (expr) ]| -> |[ x_formID :: srt_type ]|
+    where
+  	  x_formID := qid;
+  	  srt_type := <compile-ql-type> t
+
+rules // QL form to WebDSL page
+	
+  compile-ql-page: 
+  	|[ form fid { question* } ]| -> 
+	  def |[
+	    page page1() {
+	    	main() {
+		    	horizontalForm() {
+		  		  elem_group*
+		  		  
+				    formActions() {
+				      submitlink submit() [class="btn btn-primary"] { "Submit" } " "
+				      submitlink finish() [class="btn btn-primary"] { "Finish" } " "
+				    }
+				  }
+				  
+				  action submit() {}
+			  	action finish() { return finish(); }
+		  	}
+	  	}
+	  ]|
+    where
+    	groups_length  := <length> question*;
+	    groups_numbers := <upto; Tl> groups_length;
+    	elem_group*    := <zip(compile-ql-group(|groups_length))> (question*, groups_numbers)
+  
+  
+  // TODO: Use switch?
+  // Integer, float, string question
+  compile-ql-group(|length): 
+  	(|[ qid : label t ]|, nr) -> elem |[ controlGroup(e_label) { inputajax(x_id) [passign_all*] } ]|
+  	where
+  		not(<?BoolTy() <+ ?DateTy()> t);
+  		x_id         := <compile-ql-question-name> qid;
+  		e_label      := <compile-ql-exp> label;
+			x_updates    := <compile-update-list(|length, nr)>;
+			passign_all* := passign |[onchange=update(x_updates)]|
+
+	// Boolean question
+  compile-ql-group(|length): 
+  	(|[ qid : label t ]|, nr) -> elem |[ controlGroup(e_label) { inputajax(x_id) [passign_all*] } ]|
+  	where
+  		<?BoolTy()> t;
+  		x_id         := <compile-ql-question-name> qid;
+  		e_label      := <compile-ql-exp> label;
+			x_updates    := <compile-update-list(|length, nr)>;
+			passign_all* := passign |[oninput=update(x_updates)]|
+
+	// Date question (inputajax does not support Date)
+  compile-ql-group(|length): 
+  	(|[ qid : label t ]|, nr) -> elem |[ controlGroup(e_label) { input(x_id) [passign_all*] } ]|
+  	where
+  		<?DateTy()> t;
+  		x_id         := <compile-ql-question-name> qid;
+  		e_label      := <compile-ql-exp> label;
+			x_updates    := <compile-update-list(|length, nr)>;
+			passign_all* := passign |[oninput=update(x_updates)]|
+ 
+  		
+	// Value
+  compile-ql-group(|length): 
+  	(|[ qid : label t ( exp ) ]|, nr) -> elem |[ controlGroup(e_label) { output(e_typeExp) } ]|
+  	where
+  		e_label   := <compile-ql-exp> label;
+  		e_typeExp := <compile-ql-exp> exp
+  		
+	// Condition
+  compile-ql-group(|length): 
+  	(|[ if ( cond ) { q* } ]|, nr) -> elem |[ if (e_cond) { elem_group* } ]|
+  	where
+  		e_cond      := <compile-ql-exp> cond;
+  		elem_group* := <map(\q -> (q, nr)\; compile-ql-group(|length))> q*
+
+rules // QL types to WebDSL types
+  
+  compile-ql-type: ql |[ boolean ]| -> webdsl |[ Bool   ]|
+  compile-ql-type: ql |[ string  ]| -> webdsl |[ String ]|
+  compile-ql-type: ql |[ integer ]| -> webdsl |[ Int    ]|
+  compile-ql-type: ql |[ date    ]| -> webdsl |[ Date   ]|
+  compile-ql-type: ql |[ decimal ]| -> webdsl |[ Float  ]|
+  compile-ql-type: ql |[ money   ]| -> webdsl |[ Float  ]|
+  
+rules // QL expressions to WebDSL expressions
+  
+  compile-ql-exp = bottomup(try(compile-ql-exp-part))
+  
+  compile-ql-exp-part: Label(s) -> String(<try(un-double-quote)> s)
+  compile-ql-exp-part: Ref(qid) -> <compile-ql-question-name> qid
+  
+  compile-ql-exp-part: ql |[    !e    ]| -> webdsl:e |[    !e    ]|
+  compile-ql-exp-part: ql |[ e1 && e2 ]| -> webdsl:e |[ e1 && e2 ]|
+  compile-ql-exp-part: ql |[ e1 || e2 ]| -> webdsl:e |[ e1 || e2 ]|
+  compile-ql-exp-part: ql |[ e1 <  e2 ]| -> webdsl:e |[ e1 <  e2 ]|
+  compile-ql-exp-part: ql |[ e1 <= e2 ]| -> webdsl:e |[ e1 <= e2 ]|
+  compile-ql-exp-part: ql |[ e1 >  e2 ]| -> webdsl:e |[ e1 >  e2 ]|
+  compile-ql-exp-part: ql |[ e1 >= e2 ]| -> webdsl:e |[ e1 >= e2 ]|
+  compile-ql-exp-part: ql |[ e1 == e2 ]| -> webdsl:e |[ e1 == e2 ]|
+  compile-ql-exp-part: ql |[ e1 +  e2 ]| -> webdsl:e |[ e1 +  e2 ]|
+  compile-ql-exp-part: ql |[ e1 -  e2 ]| -> webdsl:e |[ e1 -  e2 ]|
+  compile-ql-exp-part: ql |[ e1 *  e2 ]| -> webdsl:e |[ e1 *  e2 ]|
+  compile-ql-exp-part: ql |[ e1 /  e2 ]| -> webdsl:e |[ e1 /  e2 ]|
+
+rules // Utility
+	
+	compile-placeholder-name:
+		num -> String(<conc-strings> ("q", <int-to-string> num))
+	
+	compile-update-list(|part_length, part_number):
+		_ -> ListCreation(part_names)
+		with
+			part_numbers := <upto; Tl; remove-all(?part_number)> part_length;
+			part_names   := <map(compile-placeholder-name)> part_numbers
+
+rules
+	
+	compile-ql-form-name:
+		x_formID -> |[ sess.user.x_formID ]|
+		
+  compile-ql-question-name:
+  	qid -> |[ x_formID.x_questionID ]| 
+	  where 
+	  	fid          := <ql-question-form-name> qid;
+	  	x_formID     := <compile-ql-form-name> fid;
+	  	x_questionID := qid
+	
+	// TODO: adapt to new URIs
+	ql-question-form-name:
+		qid{uri} -> <last> uri
