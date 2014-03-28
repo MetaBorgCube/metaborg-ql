@@ -1,0 +1,15 @@
+module ql/Types
+
+imports
+
+	ql/Expressions
+
+templates
+
+	Type.BoolTy = <boolean>
+	Type.StringTy = <string>
+	Type.IntTy = <integer>
+	Type.DateTy = <date>
+	Type.FloatTy = <decimal>
+	Type.MoneyTy = <money>
+	TyExpr.TExpr = <<Type> ( <Expr> )>

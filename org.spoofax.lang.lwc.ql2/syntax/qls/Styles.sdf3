@@ -1,0 +1,46 @@
+module qls/Styles
+
+imports
+
+	lexical/Common
+	ql/Types
+
+lexical syntax
+
+  "#" [0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F] -> COLOR
+
+templates // Style definitions
+	
+	StyleDef.StyleDef = <
+		define style <ID> {
+			<DefStyle*;separator=" ">
+		}
+	>
+	
+	DefStyle = <<StyleComponent>>
+	DefStyle = <<TypedWidgetComponent>>
+		
+	TypedWidgetComponent.TypedWidget = <<Type> <WidgetComponent>>
+
+templates // Style application
+
+  Styles.Styles = < { 
+  		<Style*; separator=" ">
+		}
+	>
+	
+	Style = <<StyleComponent>>
+	Style = <<WidgetComponent>>
+	
+	StyleComponent.StyleRef = <use <ID+;separator=",">>
+  StyleComponent.Font   = <font = <STRING>>
+  StyleComponent.Color  = <color = <COLOR>>
+  
+  WidgetComponent.Widget = <widget = <Widget>>
+  
+  Widget.CheckBox = <checkbox>
+  Widget.Radio    = <radio>
+  Widget.Dropdown = <dropdown>
+  Widget.Text     = <text>
+  Widget.Slider   = <slider>
+  Widget.DatePicker = <datepicker>
