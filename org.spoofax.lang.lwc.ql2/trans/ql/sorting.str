@@ -1,0 +1,20 @@
+module ql/sorting
+
+imports
+  include/QL
+  lib/runtime/relations/-
+  lib/runtime/index/-
+  lib/runtime/task/-
+  
+rules
+  
+  question-name: |[ if (c) { qid: label type  } ]| -> qid
+  question-name: |[ if (c) { qid: label texpr } ]| -> qid
+  
+  depends-on(|q1) =
+	  qid2 := <question-name; debug(!1)> 
+  ; qid1 := <question-name; debug(!2)> q1
+	; dep* := <get-index-relations(|"<depends-on:"); debug(!3)> qid1
+	; <elem; debug(!4)> (qid2, dep*)
+	  
+  sort-by-dependencies = alltd(Form(id, quick-sort(depends-on))) 
