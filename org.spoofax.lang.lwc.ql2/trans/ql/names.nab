@@ -9,6 +9,10 @@ namespaces
 	Form
 	Question
 
+properties
+
+  dependency of Question: ID
+
 binding rules
 
 	Form(n, _):

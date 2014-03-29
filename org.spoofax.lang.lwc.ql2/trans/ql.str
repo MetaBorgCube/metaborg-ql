@@ -75,6 +75,10 @@ rules // Editor services
       filename := <guarantee-extension(|$[pp.[ext]])> path;
       result   := <pp-QL-string-debug> selected
 
+  editor-properties:
+    (target, position, ast, path, project-path) ->
+      <get-editor-properties(debug; pp-QL-string |<language>, project-path); debug> target
+      
 rules // Builders
 	
 	builder-generate-webdsl:

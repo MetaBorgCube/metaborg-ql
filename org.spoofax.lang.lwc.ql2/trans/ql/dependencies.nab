@@ -1,9 +1,0 @@
-module ql/dependencies
-
-imports
-  include/QL
-
-properties
-
-  dependency of Question: ID
-
