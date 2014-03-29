@@ -19,7 +19,7 @@ rules
       l' := <un-double-quote> l
       
   to-outline-label: 
-    Computed(_, Label(l), _) -> l{"icons/information.gif"}
+    Computed(_, Label(l), _) -> l'{"icons/information.gif"}
     with
       l' := <un-double-quote> l
     
