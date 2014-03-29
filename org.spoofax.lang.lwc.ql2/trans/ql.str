@@ -22,7 +22,8 @@ imports
 	
 	ql/names
 	ql/types.generated
-	ql/desugar
+  ql/dependencies.generated
+  ql/desugar
 	ql/generate
 	
 	qls/names

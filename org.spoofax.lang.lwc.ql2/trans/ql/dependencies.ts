@@ -8,8 +8,10 @@ relations
 
   define transitive <depends-on:
         
- type rules
- 
+type rules
+
+  True()   has dependency ()
+  False()  has dependency () 
   Ref(qid) has dependency qid
   
   Not(e) has dependency dep
@@ -33,3 +35,9 @@ relations
   Conditional(e, [Computed(qid, _, _)]):-
     where e has dependency dep
       and store qid <depends-on: dep
+      
+  Conditional(e, [Question(qid, _, _)]):-
+    where e has dependency dep
+      and not( dep <depends-on: qid )
+     else error "cyclic dependency" on qid
+      
