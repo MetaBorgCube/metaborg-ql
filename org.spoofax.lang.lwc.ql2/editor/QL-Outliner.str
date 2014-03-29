@@ -13,6 +13,13 @@ rules
   to-outline-label:
     Form(f, _) -> f{"icons/file_obj.gif"}
   
-  to-outline-label: Question(_, l, _) -> l{"icons/linkto_help.gif"}
-  
-  to-outline-label: Computed(_, l, _) -> l{"icons/information.gif"}
+  to-outline-label: 
+    Question(_, Label(l), _) -> l'{"icons/linkto_help.gif"}
+    with
+      l' := <un-double-quote> l
+      
+  to-outline-label: 
+    Computed(_, Label(l), _) -> l{"icons/information.gif"}
+    with
+      l' := <un-double-quote> l
+    
