@@ -4,7 +4,15 @@ imports
   include/QL
   lib/runtime/editor/outline-library
   lib/runtime/editor/origins
-  editor/QL-Outliner.generated
-
+  libstrategolib
+  
 rules
   
+ outline = simple-label-outline(to-outline-label)
+  
+  to-outline-label:
+    Form(f, _) -> f{"icons/file_obj.gif"}
+  
+  to-outline-label: Question(_, l, _) -> l{"icons/linkto_help.gif"}
+  
+  to-outline-label: Computed(_, l, _) -> l{"icons/information.gif"}
