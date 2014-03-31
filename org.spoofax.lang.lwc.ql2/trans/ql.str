@@ -31,6 +31,7 @@ imports
 	qls/types.generated
 	qls/desugar
 	qls/generate
+	qls/normalize
 
 rules // Analysis
 	
@@ -95,7 +96,7 @@ rules // Builders
     	filename   := <guarantee-extension(|"app")> path;
     	webdsl-ast := <ql-or-qls(compile-ql, compile-qls)> selected;
     	result     := <pp-webdsl-string> webdsl-ast
-			
+
 rules // Debugging
 	
 	// Prints the abstract syntax ATerm of a selection.
@@ -125,7 +126,7 @@ rules // Debugging
 		with
 			filename := <guarantee-extension(|"analyzed.aterm")> path;
 			result	 := ast
-			
+  
 	debug-index-project =
 		analysis-debug-index-project(|<language>)
 	debug-index-project-resolve = 

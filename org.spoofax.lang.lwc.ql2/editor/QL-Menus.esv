@@ -34,3 +34,4 @@ menus
   menu: "Semantics"
     
     action: "Generate WebDSL app" = builder-generate-webdsl (openeditor)
+    action: "Show normalized QLS" = builder-normalize-qls (openeditor)
