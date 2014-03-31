@@ -28,13 +28,17 @@ type rules // Comparison expressions
 + t@Geq(x, y) : BoolTy()
 	where x : x-ty
     and y : y-ty
-    and x-ty <comparable: y-ty
+    and (
+    	  (x-ty <is: Numeric() and y-ty <is: Numeric()) 
+     or (x-ty == DateTy()    and y-ty == DateTy()) 
+     or (x-ty == MoneyTy()   and y-ty == MoneyTy())
+    )
       else error $[Cannot compare [x-ty] and [y-ty]] on t 
        
 	t@Eq(x, y) : BoolTy()
 	where x : x-ty
     and y : y-ty
-    and (x-ty == y-ty)
+    and x-ty == y-ty
       else error $[Cannot compare [x-ty] and [y-ty]] on t 
 
 type rules // Arithmetic expressions
@@ -43,16 +47,32 @@ type rules // Arithmetic expressions
 + t@Minus(x, y) : ty
 	where x : x-ty
     and y : y-ty
-    and x-ty <addable: y-ty
+    and (
+    	  (x-ty <is: Numeric() and y-ty <is: Numeric())
+     or (x-ty == MoneyTy()   and y-ty == MoneyTy())
+    )
     	else error $[Cannot add or subtract [x-ty] and [y-ty]] on t
     and <largest-type> (x-ty, y-ty) => ty
 
-  t@Mul(x, y)
-+ t@Div(x, y) : ty
+  t@Mul(x, y) : ty
 	where x : x-ty
     and y : y-ty
-    and x-ty <multiplicable: y-ty
-    	else error $[Cannot multiply or divide [x-ty] and [y-ty]] on t
+    and (
+    	  (x-ty <is: Numeric() and y-ty <is: Numeric())
+     or (x-ty == MoneyTy()   and y-ty <is: Numeric())
+     or (x-ty <is: Numeric() and y-ty == MoneyTy())
+    )
+    	else error $[Cannot multiply expressions of type [x-ty] and [y-ty]] on t
+    and <largest-type> (x-ty, y-ty) => ty
+    
+  t@Div(x, y) : ty
+	where x : x-ty
+    and y : y-ty
+    and (
+    	  (x-ty <is: Numeric() and y-ty <is: Numeric())
+     or (x-ty == MoneyTy()   and y-ty <is: Numeric())
+    )
+      else error $[Cannot divide expressions of type [x-ty] and [y-ty]] on t
     and <largest-type> (x-ty, y-ty) => ty
 
 type rules // Literals
@@ -77,31 +97,10 @@ type rules
 	
 relations
 
-	define symmetric <comparable:
+	IntTy()   <is: Numeric()
+	FloatTy() <is: Numeric()
 
-	IntTy()    <comparable: IntTy()
-	IntTy()    <comparable: FloatTy()
-	FloatTy()  <comparable: FloatTy()
-	DateTy()   <comparable: DateTy()
-	MoneyTy()  <comparable: MoneyTy()
-
-	define symmetric <addable:
-		
-	IntTy()   <addable: IntTy()
-	IntTy()   <addable: FloatTy()
-	FloatTy() <addable: FloatTy()
-	MoneyTy() <addable: MoneyTy()
-	
-	define symmetric <multiplicable:
-
-	IntTy()   <multiplicable: IntTy()
-	IntTy()   <multiplicable: FloatTy()
-	IntTy()   <multiplicable: MoneyTy()
-	FloatTy() <multiplicable: FloatTy()
-	FloatTy() <multiplicable: MoneyTy()
-	MoneyTy() <multiplicable: MoneyTy()
-	
-	x <dummy: y where x <multiplicable: y // Dummy relation to prevent compile error, will fix soon.
+	x <dummy: y where x <is: y // Dummy relation to prevent compile error, will fix soon.
 		
 type functions
 
