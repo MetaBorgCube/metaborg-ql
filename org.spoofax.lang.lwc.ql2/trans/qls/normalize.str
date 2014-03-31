@@ -71,7 +71,7 @@ rules /* normalize question references */
       q-unused'* := <diff> (q-unused*, q-inject*)
 
   question-def-to-ref:
-    t@Def(_) -> StyledRef(q-name, Styles([]))
+    t@Def(_) -> StyledRef(q-name{Use(t)}, Styles([]))
     with
       q-name := <nabl-uri; nabl-uri-name> t  
 
