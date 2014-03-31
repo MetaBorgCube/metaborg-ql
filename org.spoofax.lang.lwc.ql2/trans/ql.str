@@ -26,6 +26,7 @@ imports
   ql/desugar
 	ql/generate
 	ql/sorting
+	ql/store
 	
 	qls/names
 	qls/types.generated
@@ -36,13 +37,13 @@ rules // Analysis
 	
 	editor-analyze = analysis-default-editor
 	
-	do-desugar = ql-or-qls(desugar-all, qls-desugar-all)
-	do-post-analysis-trans = ql-or-qls(sort-by-dependencies, id)
+	do-pre-analysis-trans        = ql-or-qls(desugar-all, qls-desugar-all)
+	do-post-analysis-trans(|ctx) = ql-or-qls(sort-by-dependencies; ql-store-all(|ctx), id)
 	
 	analysis-single-default-interface = 
-		analysis-single-default(do-desugar, do-post-analysis-trans, id|<language>)
+		analysis-single-default(do-pre-analysis-trans, do-post-analysis-trans, id|<language>)
 	analysis-multiple-default-interface = 
-		analysis-multiple-default(parse-file <+ !(), do-desugar, do-post-analysis-trans, id|<language>, <project-path>)
+		analysis-multiple-default(parse-file <+ !(), do-pre-analysis-trans, do-post-analysis-trans, id|<language>, <project-path>)
 	
 	editor-save = analysis-save-default(|<language>)
 

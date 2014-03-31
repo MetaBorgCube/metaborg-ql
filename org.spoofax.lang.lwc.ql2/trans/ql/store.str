@@ -1,0 +1,36 @@
+module ql/store
+
+imports
+	
+	include/QL
+
+	lib/runtime/index/-
+	lib/runtime/nabl/-
+	lib/runtime/properties/-
+	
+signature constructors
+	
+	AST : DefDataKind
+
+strategies
+	
+	ql-store-all(|ctx) = where(topdown(try(store-question-ast(|ctx))))
+	
+rules
+
+	store-question-ast(|ctx):
+		ast@|[ if ( cond ) { qid : label t } ]| -> <id>
+		with
+			uri := <nabl-uri> qid;
+			<new-prop(|ctx, uri, AST(), ast)> qid
+
+	store-question-ast(|ctx):
+		ast@|[ if ( cond ) { qid : label t ( exp ) } ]| -> <id>
+		with
+			uri := <nabl-uri> qid;
+			<new-prop(|ctx, uri, AST(), ast)> qid
+
+rules
+	
+	get-question-ast:
+		quest-ref -> <get-index-property(|AST())> quest-ref

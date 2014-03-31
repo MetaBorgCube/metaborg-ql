@@ -9,8 +9,12 @@ imports
 
 	include/QL
 	lib/webdsl/WebDSL
+	lib/runtime/nabl/-
+	lib/runtime/index/-
 
   ql/generate
+  ql/names
+	ql/store
 	
 rules // QLS to WebDSL compilation
 	
@@ -65,7 +69,7 @@ rules // QLS pages to WebDSL entities
   compile-qls-entity:
   	FormRef(x_formID) -> |[ entity x_formID { ebd* } ]|
   	where
-	  	ebd* := <qls-get-questions; collect-all(compile-ql-entity-part)> x_formID
+	  	ebd* := <qls-get-question-asts-in-form; collect-all(compile-ql-entity-part)> x_formID
 	  	
 rules // QLS pages to WebDSL session Entity
 	
@@ -159,21 +163,21 @@ rules // QLS part to WebDSL elements
 	compile-qls-part(|length):
 		(|[ qid { s* } ]|, nr) -> elem* |[placeholder x_p { x_q }]|
 		where
-			body := <qls-get-question> qid;
+			body := <get-question-ast> qid;
 			x_p  := <compile-placeholder-name> nr;
 			x_q  := <compile-qls-group(|s*, length, nr)> body
 
 	compile-qls-part(|length):
 		([|[ qid { s* } ]|], nr) -> elem* |[placeholder x_p { x_q }]|
 		where
-			body := <qls-get-question> qid;
+			body := <get-question-ast> qid;
 			x_p  := <compile-placeholder-name> nr;
 			x_q  := <compile-qls-group(|s*, length, nr)> body
 
 	compile-qls-part(|length):
 		(SimpleRef(qid), nr) -> elem* |[placeholder x_p { x_q }]|
 		where
-			body := <qls-get-question> qid;
+			body := <get-question-ast> qid;
 			x_p  := <compile-placeholder-name> nr;
 			x_q  := <compile-qls-group(|[], length, nr)> body
 			
@@ -290,20 +294,9 @@ rules // Projections
   	Page(_, fref*, _) -> fref* // TODO: Concrete syntax match? meta variable for STRING does not work..
 	
 rules // Index
-	
-	// TODO: adapt to new storage
-	/*
-	qls-get-questions =
-		index-get-data-all(|Questions());
-		map(qls-get-question)
-		
-	qls-get-question =
-		index-get-data(|AST())
-		
-	qls-get-question-type =
-		index-get-data(|Type())
-	*/
-	
-	qls-get-questions     = fail
-	qls-get-question      = fail
-	qls-get-question-type = fail
+
+	qls-get-question-asts-in-form:
+		form-ref -> question-ast*
+		with
+			question-def* := <nabl-get-child-definitions(|NablNsQuestion())> form-ref;
+			question-ast* := <map(get-question-ast)> question-def*
