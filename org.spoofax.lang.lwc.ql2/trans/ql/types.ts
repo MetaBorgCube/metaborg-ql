@@ -94,6 +94,10 @@ type rules
 	where e : e-ty
 	  and ty == e-ty
 	    else error $[Type mismatch between [ty] and [e-ty]] on t 
+
+signatures
+
+	Numeric : TypeKind
 	
 relations
 
@@ -109,4 +113,3 @@ type functions
 		where ((x-ty == MoneyTy() or y-ty == MoneyTy()) and MoneyTy() => ty)
 		   or ((x-ty == FloatTy() or y-ty == FloatTy()) and FloatTy() => ty)
 		   or y-ty => ty
-		   
