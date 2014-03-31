@@ -298,5 +298,6 @@ rules // Index
 	qls-get-question-asts-in-form:
 		form-ref -> question-ast*
 		with
-			question-def* := <nabl-get-child-definitions(|NablNsQuestion())> form-ref;
+			form-uri      := <nabl-uri> form-ref;
+			question-def* := <nabl-get-child-definitions(|NablNsQuestion())> form-uri;
 			question-ast* := <map(get-question-ast)> question-def*
