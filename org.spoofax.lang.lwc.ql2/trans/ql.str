@@ -127,7 +127,14 @@ rules // Debugging
 		with
 			filename := <guarantee-extension(|"analyzed.aterm")> path;
 			result	 := ast
-  
+	
+	// Prints the analyzed concrete syntax of a selection.
+  debug-show-analyzed:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+      filename := <guarantee-extension(|$[analyzed.[<ql-or-qls(!"ql", !"qls")>]])> path;
+      result   := <pp-QL-string-debug> selected
+  		
 	debug-index-project =
 		analysis-debug-index-project(|<language>)
 	debug-index-project-resolve = 
