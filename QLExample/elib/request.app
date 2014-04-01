@@ -12,7 +12,3 @@ section remote address
   native class javax.servlet.http.HttpServletRequest as HttpServletRequest{
     getRemoteAddr() : String
   }
-  
-  function remoteAddress(): String {
-    return ThreadLocalServlet.get().getRequest().getRemoteAddr();
-  }
