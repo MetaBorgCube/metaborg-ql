@@ -57,7 +57,7 @@ rules // QLS to WebDSL compilation
 				}
 			}
 		]|
-		where
+		with
 			fref*  := <mapconcat(qls-page-forms); make-set> page*;
 			def1*  := <map(compile-qls-entity)> fref*;
 			ent    := <compile-qls-session-entity> fref*;
@@ -82,7 +82,7 @@ rules // QLS pages to WebDSL session Entity
 			  ebd*
 			}
 		]|
-		where
+		with
 			ebd* := <map(compile-qls-session-entity-part)> fref*
 	
 	compile-qls-session-entity-part:
@@ -90,7 +90,7 @@ rules // QLS pages to WebDSL session Entity
 		
 	compile-qls-session-init:
 		fref* -> |[ sess.user := User { name := name, x_inits } ]|
-		where
+		with
 			x_inits := <map(compile-qls-session-init-part)> fref*
 			
 	compile-qls-session-init-part:
@@ -155,40 +155,40 @@ rules // QLS page to WebDSL page
 	  	
   compile-qls-page-save:
   	FormRef(fref) -> |[ x_formID.save(); ]|
-  	where
+  	with
   		x_formID := <compile-ql-form-name> fref
 
 rules // QLS part to WebDSL elements
 	  	
 	compile-qls-part(|length):
 		(|[ qid { s* } ]|, nr) -> elem* |[placeholder x_p { x_q }]|
-		where
+		with
 			body := <get-question-ast> qid;
 			x_p  := <compile-placeholder-name> nr;
 			x_q  := <compile-qls-group(|s*, length, nr)> body
 
-	compile-qls-part(|length):
-		([|[ qid { s* } ]|], nr) -> elem* |[placeholder x_p { x_q }]|
-		where
-			body := <get-question-ast> qid;
-			x_p  := <compile-placeholder-name> nr;
-			x_q  := <compile-qls-group(|s*, length, nr)> body
+	// compile-qls-part(|length):
+	// 	([|[ qid { s* } ]|], nr) -> elem* |[placeholder x_p { x_q }]|
+	// 	where
+	// 		body := <get-question-ast> qid;
+	// 		x_p  := <compile-placeholder-name> nr;
+	// 		x_q  := <compile-qls-group(|s*, length, nr)> body
 
 	compile-qls-part(|length):
 		(SimpleRef(qid), nr) -> elem* |[placeholder x_p { x_q }]|
-		where
+		with
 			body := <get-question-ast> qid;
 			x_p  := <compile-placeholder-name> nr;
 			x_q  := <compile-qls-group(|[], length, nr)> body
 			
 	compile-qls-part(|length):
 	 (Section(elem_heading, part*), nr) -> elem* |[ pageHeader() { elem_heading } elem_group* ]| // TODO: Concrete syntax match? meta variable for STRING does not work..
-		where
+		with
 			elem_group* := <map(\part -> (part, nr)\; compile-qls-part(|length))> part*
 			
 	compile-qls-part(|length):
 		(SubSection(elem_heading, part*), nr) -> elem* |[ pageHeader2() { elem_heading } elem_group* ]| // TODO: Concrete syntax match? meta variable for STRING does not work..
-		where
+		with
 			elem_group* := <map(\part -> (part, nr)\; compile-qls-part(|length))> part*
 			
 rules // QL group to WebDSL page elements
@@ -196,7 +196,7 @@ rules // QL group to WebDSL page elements
 	// Question
   compile-qls-group(|styles, part_length, nr): 
   	q@|[ qid : label t ]| -> elem |[ controlGroup(e_label) [passign_style*] { elem_input } ]|
-  	where
+  	with
   		e_label        := <compile-ql-exp> label;
   		passign_style* := <compile-qls-simple-styles> styles;
   		widget         := <fetch-elem(?TypedWidget(_, _)) <+ !()> styles;
@@ -205,7 +205,7 @@ rules // QL group to WebDSL page elements
 	// Value
   compile-qls-group(|styles, part_length, nr): 
   	|[ qid : label t ( exp ) ]| -> elem |[ controlGroup(e_label) [passign_style*] { output(e_typeExp) [passign_style*] } ]|
-  	where
+  	with
   		e_label        := <compile-ql-exp> label;
   		e_typeExp      := <compile-ql-exp> exp;
   		passign_style* := <compile-qls-simple-styles> styles
@@ -213,15 +213,15 @@ rules // QL group to WebDSL page elements
 	// Condition
   compile-qls-group(|styles, part_length, nr): 
   	|[ if ( cond ) { q* } ]| -> elem |[ if (e_cond) { elem_group* } ]|
-  	where
+  	with
   		e_cond      := <compile-ql-exp> cond;
   		elem_group* := <map(compile-qls-group(|styles, part_length, nr))> q*
 
 rules // QLS widget styles to WebDSL input
 	
 	compile-qls-group-input(|passign_style*, part_length, nr) =
-		compile-qls-group-input-special(|passign_style*, part_length, nr) 
-		<+ compile-qls-group-input-default(|passign_style*, part_length, nr)
+		(compile-qls-group-input-special(|passign_style*, part_length, nr)) 
+		<+ (compile-qls-group-input-default(|passign_style*, part_length, nr))
 	
 	
 	// TODO: Use switch?
@@ -229,7 +229,8 @@ rules // QLS widget styles to WebDSL input
 	compile-qls-group-input-default(|passign_styles, part_length, nr):
 		(_, |[ qid : label t ]|) -> call |[ inputajax(x_id) [passign_all*] ]|
 		where
-			<not(?BoolTy() <+ ?DateTy())> t;
+			<not(?BoolTy() <+ ?DateTy())> t
+		with
 			x_id         := <compile-ql-question-name> qid;
 			x_updates    := <compile-update-list(|part_length, nr)>;
 			passign_all* := [passign |[oninput=update(x_updates)]|, passign_styles]
@@ -238,7 +239,8 @@ rules // QLS widget styles to WebDSL input
 	compile-qls-group-input-default(|passign_styles, part_length, nr):
 		(_, |[ qid : label t ]|) -> call |[ inputajax(x_id) [passign_all*] ]|
 		where
-			<?BoolTy()> t;
+			<?BoolTy()> t
+		with
 			x_id         := <compile-ql-question-name> qid;
 			x_updates    := <compile-update-list(|part_length, nr)>;
 			passign_all* := [passign |[onchange=update(x_updates)]|, passign_styles]
@@ -247,7 +249,8 @@ rules // QLS widget styles to WebDSL input
 	compile-qls-group-input-default(|passign_styles, part_length, nr):
 		(_, |[ qid : label t ]|) -> call |[ input(x_id) [passign_all*] ]|
 		where
-			<?DateTy()> t;
+			<?DateTy()> t
+		with
 			x_id         := <compile-ql-question-name> qid;
 			x_updates    := <compile-update-list(|part_length, nr)>;
 			passign_all* := [passign |[onchange=update(x_updates)]|, passign_styles]
@@ -257,7 +260,8 @@ rules // QLS widget styles to WebDSL input
 	compile-qls-group-input-special(|passign_styles, part_length, nr):
 		(TypedWidget(BoolTy(), widget), |[ qid : label t ]|) -> call |[ x_call [passign_all*] ]|
 		where
-			<?Radio() <+ ?Dropdown()> widget;
+			<?Radio() <+ ?Dropdown()> widget
+		with
 			x_oid        := <compile-ql-question-name> qid;
 			x_id         := <conc-strings> (qid, "_wrap");
 			x_call       := <compile-qls-group-input-call(|x_id)> widget;
@@ -279,7 +283,7 @@ rules // QLS simple styles to WebDSL property assignments
 	
 	compile-qls-simple-styles:
 		style* -> passign |[ style = x_style ]|
-		where
+		with
 			x_style := <filter(compile-qls-simple-style); concat-strings; double-quote> style*
 	
   compile-qls-simple-style:

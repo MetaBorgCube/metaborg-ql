@@ -9,6 +9,8 @@ imports
 
 	include/QL
 	lib/webdsl/WebDSL
+	lib/runtime/nabl/-
+	ql/names
 	
 signature
 
@@ -208,11 +210,10 @@ rules
 		
   compile-ql-question-name:
   	qid -> |[ x_formID.x_questionID ]| 
-	  where 
+	  with 
 	  	fid          := <ql-question-form-name> qid;
 	  	x_formID     := <compile-ql-form-name> fid;
 	  	x_questionID := qid
 	
-	// TODO: adapt to new URIs
 	ql-question-form-name:
-		qid{uri} -> <last> uri
+		qid -> <nabl-uri; nabl-sub-uri(|NablNsForm()); nabl-uri-name> qid
