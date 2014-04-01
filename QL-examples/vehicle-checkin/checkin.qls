@@ -1,7 +1,16 @@
+define style a {
+	font = "Helvetica"
+}
+
+define style b {
+	font = "Arial"
+	use a
+}
+
 page "General" for VehicleCheckin {
 	date
 	section "Car data" {
-		kms
+		kms { use b }
 		kmslast
 		travel
 	}
@@ -22,4 +31,3 @@ page "Problems" for Problems {
 		desBdyP
 	}
 }
-

@@ -10,6 +10,7 @@ namespaces
 	Style
 
 properties
+
   sty-body of Style: Term
   
 binding rules

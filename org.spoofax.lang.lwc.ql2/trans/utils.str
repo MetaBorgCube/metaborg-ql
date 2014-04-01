@@ -52,3 +52,12 @@ rules
 	
   force-origins(s) =
     ![<id>]; all(s); ?[<id>]
+
+rules
+	
+	safe-thread-replacement(s) :
+    (c#(ts){a*}, x) -> (c#(ts'){a*}, y)
+    where <thread-map(s)> (ts, x) => (ts', y)
+
+  safe-thread-alltd(s) = 
+    rec x(s <+ safe-thread-replacement(x))

@@ -39,7 +39,7 @@ rules // Analysis
 	editor-analyze = analysis-default-editor
 	
 	analysis-pre-trans        = ql-or-qls(desugar-all, qls-desugar-all)
-	analysis-post-trans(|ctx) = ql-or-qls(sort-by-dependencies; ql-store-all(|ctx), id)
+	analysis-post-trans(|ctx) = ql-or-qls(sort-by-dependencies; ql-store-all(|ctx), normalize-qls)
 	
 	analysis-single-default-interface = 
 		analysis-single-default(id, id, id|<language>)

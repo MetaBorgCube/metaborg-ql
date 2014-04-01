@@ -10,6 +10,8 @@ imports
   lib/runtime/nabl/-
   lib/runtime/relations/-
   
+  utils
+  
 rules
   
   builder-normalize-qls:
@@ -49,13 +51,13 @@ rules /* style normalization */
 rules /* normalize question references */
 
   normalize-question-references-top:
-    ast@QLS(style*, page*) -> QLS(style*, [page'*, Page("\"Other questions\"", form-ref*, q-unused''*)])
+    ast@QLS(style*, page*) -> <force-origins(!QLS(style*, [page'*, Page("\"Other questions\"", form-ref*, q-unused''*)]))> ast
     with
-    	form-ref* := <collect-all(?FormRef(<id>))> ast;
-    	q-defed* := <mapconcat(nabl-get-child-definitions(|NablNsQuestion()))> form-ref*;
+    	form-ref* := <collect-all(?FormRef(_))> ast;
+    	q-defed* := <mapconcat(?FormRef(<id>); nabl-get-child-definitions(|NablNsQuestion()))> form-ref*;
     	q-used* := <collect-all(?StyledRef(<id>, _)); map(nabl-collect-one-resolved-def)> ast;
       q-unused* := <diff> (q-defed*, q-used*);
-      (page'*, q-unused'*) := <thread-alltd(normalize-question-references); bottomup(try(is-list; flatten-list))> (page*, q-unused*);
+      (page'*, q-unused'*) := <safe-thread-alltd(normalize-question-references); bottomup(try(is-list; flatten-list))> (page*, q-unused*);
       q-unused''* := <map(question-def-to-ref)> q-unused'*
   
   normalize-question-references:
@@ -74,4 +76,3 @@ rules /* normalize question references */
     t@Def(_) -> StyledRef(q-name{Use(t)}, Styles([]))
     with
       q-name := <nabl-uri; nabl-uri-name> t  
-
