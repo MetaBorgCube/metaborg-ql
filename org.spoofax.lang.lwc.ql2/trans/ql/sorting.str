@@ -5,6 +5,7 @@ imports
   lib/runtime/relations/-
   lib/runtime/index/-
   lib/runtime/task/-
+  lib/runtime/nabl/-
   
 rules
   
@@ -12,9 +13,9 @@ rules
   question-name: |[ if (c) { qid: label texpr } ]| -> qid
   
   depends-on(|q1) =
-	  qid2 := <question-name> 
-  ; qid1 := <question-name> q1
-	; dep* := <get-index-relations(|"<depends-on:")> qid1
-	; <elem> (qid2, dep*)
+	  qid2 := <question-name; nabl-uri; debug(!"q2 ")> 
+  ; qid1 := <question-name; nabl-uri> q1; debug(!"q1 ")
+	; dep* := <get-index-relations(|"<depends-on:"); debug(!"dep ")> qid1
+	; <fetch-elem(nabl-uri; ?qid2); debug(!"<: ")> dep*
 	  
-  sort-by-dependencies = Form(id, quick-sort(depends-on))
+  sort-by-dependencies = alltd(Form(id, quick-sort(depends-on)))
