@@ -16,8 +16,7 @@ rules
 	  qid2 := <question-name> 
   ; <question-name; relation-match(|"<depends-on:", qid2)> q1
 	  
-  sort-by-dependencies = alltd(Form(id, quick-sort(depends-on)))
-  
+  sort-by-dependencies = Form(id, quick-sort(depends-on))
 
 rules // fix for lib error
   

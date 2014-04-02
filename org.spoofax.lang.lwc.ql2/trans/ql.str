@@ -132,8 +132,11 @@ rules // Debugging
   debug-show-analyzed:
     (selected, position, ast, path, project-path) -> (filename, result)
     with
+      index-setup(|<language>, project-path);
+      task-setup(|project-path)
+    with
       filename := <guarantee-extension(|$[analyzed.[<ql-or-qls(!"ql", !"qls")>]])> path;
-      result   := <try(rename-form); strip-annos; pp-QL-string-debug> selected
+      result   := <try(sort-by-dependencies; rename-form); strip-annos; pp-QL-string-debug> selected
   		
   rename-form: Form(name, q*) -> Form($[[name]Sorted], q*)
   	
@@ -148,7 +151,7 @@ rules // Debugging
 		analysis-debug-task-project(|<language>)
 	debug-task-partition =
 		analysis-debug-task-partition(|<language>)
-	debug-task-selection =
+	debug-task-selection = 
 		analysis-debug-task-selection(|<language>)
 		
 	debug-project =
