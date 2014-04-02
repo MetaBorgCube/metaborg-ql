@@ -13,7 +13,7 @@ imports
 	lib/runtime/index/-
 
   ql/generate-webdsl
-  ql/names
+  ql/analysis/-
 	ql/store
 	
 rules // QLS to WebDSL compilation

@@ -3,7 +3,7 @@ module qls/names
 imports
  
   include/QL
-  ql/names
+  ql/analysis/names
   
 namespaces
 

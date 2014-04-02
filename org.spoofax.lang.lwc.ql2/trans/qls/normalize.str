@@ -2,7 +2,7 @@ module qls/normalize
 
 imports
   include/QL
-  ql/names
+  ql/analysis/names
   qls/names
   lib/runtime/index/-
   lib/runtime/task/-

@@ -1,4 +1,4 @@
-module ql/desugar
+module ql/analysis/desugar
 
 imports
 	

@@ -10,7 +10,7 @@ imports
 	include/QL
 	lib/webdsl/WebDSL
 	lib/runtime/nabl/-
-	ql/names
+	ql/analysis/-
 	
 signature
 

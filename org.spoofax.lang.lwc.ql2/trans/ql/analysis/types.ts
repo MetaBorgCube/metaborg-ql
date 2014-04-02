@@ -1,4 +1,4 @@
-module ql/types
+module ql/analysis/types
 
 imports
 

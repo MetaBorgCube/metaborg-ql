@@ -20,10 +20,7 @@ imports
 	pp
 	utils
 	
-	ql/names
-	ql/types.generated
-  ql/dependencies.generated
-  ql/desugar
+	ql/analysis/-
 	ql/generate-webdsl
 	ql/sorting
 	ql/store
@@ -138,7 +135,7 @@ rules // Debugging
       filename := <guarantee-extension(|$[analyzed.[<ql-or-qls(!"ql", !"qls")>]])> path;
       result   := <try(sort-by-dependencies; rename-form); strip-annos; pp-QL-string-debug> selected
   		
-  rename-form: Form(name, q*) -> Form($[[name]Sorted], q*)
+  rename-form = Form(!$[[<id>]Sorted], id)
   	
 	debug-index-project =
 		analysis-debug-index-project(|<language>)
