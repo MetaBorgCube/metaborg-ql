@@ -1,5 +1,7 @@
 bin
 .cache
+.settings/org.eclipse.jdt.core.prefs
+/include
 include/QL.def
 include/QL-parenthesize.str
 include/QL-Permissive.def
@@ -15,14 +17,12 @@ include/ql.ctree.dep
 include/ql.jar
 include/ql-java.jar
 editor/java/trans
-editor/*.generated.*
 syntax/QL*.generated.esv
 syntax/QL.generated.pp
 syntax/*.sdf
-trans/*.pp.generated.str
-.settings/org.eclipse.jdt.core.prefs
-utils
 lib/runtime
 lib/*.generated.str
 lib-refactoring/*.generated.str
-/include
+**.generated.*
+trans/ql/analysis/names.str
+utils
