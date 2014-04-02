@@ -39,5 +39,5 @@ type rules
   Conditional(e, [Question(qid, _, _)]):-
     where e has dependency dep
       and not( dep <depends-on: qid )
-     else error "cyclic dependency" on qid
+        else error "cyclic dependency" on qid
       

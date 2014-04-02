@@ -39,7 +39,7 @@ rules // Analysis
 	editor-analyze = analysis-default-editor
 	
 	analysis-pre-trans        = ql-or-qls(desugar-all, qls-desugar-all)
-	analysis-post-trans(|ctx) = ql-or-qls(sort-by-dependencies; ql-store-all(|ctx), id)
+	analysis-post-trans(|ctx) = ql-or-qls(ql-store-all(|ctx), id)
 	
 	analysis-single-default-interface = 
 		analysis-single-default(id, id, id|<language>)
@@ -95,7 +95,7 @@ rules // Builders
     	task-setup(|project-path)
     with
     	filename   := <guarantee-extension(|"app")> path;
-    	webdsl-ast := <ql-or-qls(compile-ql-webdsl, normalize-qls; compile-qls-webdsl)> selected;
+    	webdsl-ast := <ql-or-qls(sort-by-dependencies; compile-ql-webdsl, normalize-qls; compile-qls-webdsl)> selected;
     	result     := <pp-webdsl-string> webdsl-ast
 
 rules // Debugging
