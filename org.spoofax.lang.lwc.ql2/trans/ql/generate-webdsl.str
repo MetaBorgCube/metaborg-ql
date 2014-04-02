@@ -1,4 +1,4 @@
-module ql/generate
+module ql/generate-webdsl
 
 imports
 	
@@ -21,7 +21,7 @@ signature
 
 rules // QL to WebDSL compilation
 	
-  compile-ql: 
+  compile-ql-webdsl: 
   	form@|[ form fid { question* } ]| -> 
 	  |[ 
 	  	module form 
@@ -67,32 +67,32 @@ rules // QL to WebDSL compilation
 	  ]|
 	  where
 	  	x_formID    := fid;
-	  	ent         := <compile-ql-entity> form;
-	  	def         := <compile-ql-page> form
+	  	ent         := <compile-ql-webdsl-entity> form;
+	  	def         := <compile-ql-webdsl-page> form
 	  	
 rules // QL questions to WebDSL entity
 	  
-  compile-ql-entity: 
+  compile-ql-webdsl-entity: 
   	|[ form fid { question* } ]| -> |[ entity x_formID { ebd* } ]|
   	where
   		x_formID := fid;
-	  	ebd*     := <collect-all(compile-ql-entity-part)> question*
+	  	ebd*     := <collect-all(compile-ql-webdsl-entity-part)> question*
 	  	
-  compile-ql-entity-part: 
+  compile-ql-webdsl-entity-part: 
   	|[ qid : label t ]| -> |[ x_formID :: srt_type ]|
     where
   	  x_formID := qid;
-  	  srt_type := <compile-ql-type> t
+  	  srt_type := <compile-ql-webdsl-type> t
   	  
-  compile-ql-entity-part: 
+  compile-ql-webdsl-entity-part: 
   	|[ qid : label t (expr) ]| -> |[ x_formID :: srt_type ]|
     where
   	  x_formID := qid;
-  	  srt_type := <compile-ql-type> t
+  	  srt_type := <compile-ql-webdsl-type> t
 
 rules // QL form to WebDSL page
 	
-  compile-ql-page: 
+  compile-ql-webdsl-page: 
   	|[ form fid { question* } ]| -> 
 	  def |[
 	    page page1() {
@@ -114,14 +114,14 @@ rules // QL form to WebDSL page
     where
     	groups_length  := <length> question*;
 	    groups_numbers := <upto; Tl> groups_length;
-    	elem_group*    := <zip(compile-ql-group(|groups_length))> (question*, groups_numbers)
+    	elem_group*    := <zip(compile-ql-webdsl-group(|groups_length))> (question*, groups_numbers)
   
   // Regular question
-  compile-ql-group(|length): 
+  compile-ql-webdsl-group(|length): 
   	(|[ qid : label t ]|, nr) -> result
   	with
-  		x_id         := <compile-ql-question-name> qid;
-  		e_label      := <compile-ql-exp> label;
+  		x_id         := <compile-ql-webdsl-question-name> qid;
+  		e_label      := <compile-ql-webdsl-exp> label;
 			x_updates    := <compile-update-list(|length, nr)>;
 			passign_all* := passign |[oninput=update(x_updates)]|;
   		switch !t
@@ -130,47 +130,47 @@ rules // QL form to WebDSL page
   		end => result
   		
 	// Computed question
-  compile-ql-group(|length): 
+  compile-ql-webdsl-group(|length): 
   	(|[ qid : label t ( exp ) ]|, nr) -> elem |[ controlGroup(e_label) { output(e_typeExp) } ]|
   	where
-  		e_label   := <compile-ql-exp> label;
-  		e_typeExp := <compile-ql-exp> exp
+  		e_label   := <compile-ql-webdsl-exp> label;
+  		e_typeExp := <compile-ql-webdsl-exp> exp
   		
 	// Condition
-  compile-ql-group(|length): 
+  compile-ql-webdsl-group(|length): 
   	(|[ if ( cond ) { q* } ]|, nr) -> elem |[ if (e_cond) { elem_group* } ]|
   	where
-  		e_cond      := <compile-ql-exp> cond;
-  		elem_group* := <map(\q -> (q, nr)\; compile-ql-group(|length))> q*
+  		e_cond      := <compile-ql-webdsl-exp> cond;
+  		elem_group* := <map(\q -> (q, nr)\; compile-ql-webdsl-group(|length))> q*
 
 rules // QL types to WebDSL types
   
-  compile-ql-type: ql |[ boolean ]| -> webdsl |[ Bool   ]|
-  compile-ql-type: ql |[ string  ]| -> webdsl |[ String ]|
-  compile-ql-type: ql |[ integer ]| -> webdsl |[ Int    ]|
-  compile-ql-type: ql |[ date    ]| -> webdsl |[ Date   ]|
-  compile-ql-type: ql |[ decimal ]| -> webdsl |[ Float  ]|
-  compile-ql-type: ql |[ money   ]| -> webdsl |[ Float  ]|
+  compile-ql-webdsl-type: ql |[ boolean ]| -> webdsl |[ Bool   ]|
+  compile-ql-webdsl-type: ql |[ string  ]| -> webdsl |[ String ]|
+  compile-ql-webdsl-type: ql |[ integer ]| -> webdsl |[ Int    ]|
+  compile-ql-webdsl-type: ql |[ date    ]| -> webdsl |[ Date   ]|
+  compile-ql-webdsl-type: ql |[ decimal ]| -> webdsl |[ Float  ]|
+  compile-ql-webdsl-type: ql |[ money   ]| -> webdsl |[ Float  ]|
   
 rules // QL expressions to WebDSL expressions
   
-  compile-ql-exp = bottomup(try(compile-ql-exp-part))
+  compile-ql-webdsl-exp = bottomup(try(compile-ql-webdsl-exp-part))
   
-  compile-ql-exp-part: Label(s) -> String(<try(un-double-quote)> s)
-  compile-ql-exp-part: Ref(qid) -> <compile-ql-question-name> qid
+  compile-ql-webdsl-exp-part: Label(s) -> String(<try(un-double-quote)> s)
+  compile-ql-webdsl-exp-part: Ref(qid) -> <compile-ql-webdsl-question-name> qid
   
-  compile-ql-exp-part: ql |[    !e    ]| -> webdsl:e |[    !e    ]|
-  compile-ql-exp-part: ql |[ e1 && e2 ]| -> webdsl:e |[ e1 && e2 ]|
-  compile-ql-exp-part: ql |[ e1 || e2 ]| -> webdsl:e |[ e1 || e2 ]|
-  compile-ql-exp-part: ql |[ e1 <  e2 ]| -> webdsl:e |[ e1 <  e2 ]|
-  compile-ql-exp-part: ql |[ e1 <= e2 ]| -> webdsl:e |[ e1 <= e2 ]|
-  compile-ql-exp-part: ql |[ e1 >  e2 ]| -> webdsl:e |[ e1 >  e2 ]|
-  compile-ql-exp-part: ql |[ e1 >= e2 ]| -> webdsl:e |[ e1 >= e2 ]|
-  compile-ql-exp-part: ql |[ e1 == e2 ]| -> webdsl:e |[ e1 == e2 ]|
-  compile-ql-exp-part: ql |[ e1 +  e2 ]| -> webdsl:e |[ e1 +  e2 ]|
-  compile-ql-exp-part: ql |[ e1 -  e2 ]| -> webdsl:e |[ e1 -  e2 ]|
-  compile-ql-exp-part: ql |[ e1 *  e2 ]| -> webdsl:e |[ e1 *  e2 ]|
-  compile-ql-exp-part: ql |[ e1 /  e2 ]| -> webdsl:e |[ e1 /  e2 ]|
+  compile-ql-webdsl-exp-part: ql |[    !e    ]| -> webdsl:e |[    !e    ]|
+  compile-ql-webdsl-exp-part: ql |[ e1 && e2 ]| -> webdsl:e |[ e1 && e2 ]|
+  compile-ql-webdsl-exp-part: ql |[ e1 || e2 ]| -> webdsl:e |[ e1 || e2 ]|
+  compile-ql-webdsl-exp-part: ql |[ e1 <  e2 ]| -> webdsl:e |[ e1 <  e2 ]|
+  compile-ql-webdsl-exp-part: ql |[ e1 <= e2 ]| -> webdsl:e |[ e1 <= e2 ]|
+  compile-ql-webdsl-exp-part: ql |[ e1 >  e2 ]| -> webdsl:e |[ e1 >  e2 ]|
+  compile-ql-webdsl-exp-part: ql |[ e1 >= e2 ]| -> webdsl:e |[ e1 >= e2 ]|
+  compile-ql-webdsl-exp-part: ql |[ e1 == e2 ]| -> webdsl:e |[ e1 == e2 ]|
+  compile-ql-webdsl-exp-part: ql |[ e1 +  e2 ]| -> webdsl:e |[ e1 +  e2 ]|
+  compile-ql-webdsl-exp-part: ql |[ e1 -  e2 ]| -> webdsl:e |[ e1 -  e2 ]|
+  compile-ql-webdsl-exp-part: ql |[ e1 *  e2 ]| -> webdsl:e |[ e1 *  e2 ]|
+  compile-ql-webdsl-exp-part: ql |[ e1 /  e2 ]| -> webdsl:e |[ e1 /  e2 ]|
 
 rules // Utility
 	
@@ -185,14 +185,14 @@ rules // Utility
 
 rules
 	
-	compile-ql-form-name:
+	compile-ql-webdsl-form-name:
 		x_formID -> |[ sess.user.x_formID ]|
 		
-  compile-ql-question-name:
+  compile-ql-webdsl-question-name:
   	qid -> |[ x_formID.x_questionID ]| 
 	  with 
 	  	fid          := <ql-question-form-name> qid;
-	  	x_formID     := <compile-ql-form-name> fid;
+	  	x_formID     := <compile-ql-webdsl-form-name> fid;
 	  	x_questionID := qid
 	
 	ql-question-form-name:

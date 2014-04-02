@@ -24,14 +24,14 @@ imports
 	ql/types.generated
   ql/dependencies.generated
   ql/desugar
-	ql/generate
+	ql/generate-webdsl
 	ql/sorting
 	ql/store
 	
 	qls/names
 	qls/types.generated
 	qls/desugar
-	qls/generate
+	qls/generate-webdsl
 	qls/normalize
 
 rules // Analysis
@@ -95,7 +95,7 @@ rules // Builders
     	task-setup(|project-path)
     with
     	filename   := <guarantee-extension(|"app")> path;
-    	webdsl-ast := <ql-or-qls(compile-ql, normalize-qls; compile-qls)> selected;
+    	webdsl-ast := <ql-or-qls(compile-ql-webdsl, normalize-qls; compile-qls-webdsl)> selected;
     	result     := <pp-webdsl-string> webdsl-ast
 
 rules // Debugging
