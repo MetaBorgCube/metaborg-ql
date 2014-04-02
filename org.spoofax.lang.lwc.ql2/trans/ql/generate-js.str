@@ -1,0 +1,139 @@
+module ql/generate-js
+
+imports
+  
+  libstratego-lib
+  libstratego-gpp
+  libstratego-aterm
+  lib/editor-common.generated
+
+  include/QL
+  lib/webdsl/WebDSL
+  lib/runtime/nabl/-
+  ql/names
+  
+rules
+  
+  compile-ql-js: 
+    form@|[ form fid { question* } ]| ->
+    $<$(document).ready(function () {
+        var form = new QLrt.FormWidget({ name: "<fid>", submitCallback: persist });
+        
+        
+        <question-js*>
+        $('#QL-content').append(form.domElement());
+        form.activate();
+    
+        function persist(data) {
+            localStorage['QL-persist'] = JSON.stringify(data);
+        }
+      });
+    >
+    with
+      question-js* := <map(compile-ql-js-question)> question*
+
+rules // Questions
+
+  compile-ql-js-question:
+    |[ if ( true ) { q* } ]| ->
+    $<var <qid> = new QLrt.SimpleFormElementWidget({
+        name        : "<qid>"
+      , label       : "<label>"
+      , valueWidget : <widget>
+      }).appendTo(form);
+      
+    >
+    with
+      q      := <Hd> q*
+    ; qid    := <compile-ql-js-qid> q
+    ; label  := <compile-ql-js-label> q 
+    ; widget := <compile-ql-js-widget> q
+
+  compile-ql-js-question:
+    |[ if ( cond ) { q* } ]| ->
+    $<var <qid> = new QLrt.ConditionalFormElementWidget({
+        name        : "<qid>"
+      , label       : "<label>"
+      , valueWidget : <widget>
+      , lazyValue   : new QLrt.LazyValue(
+          function () {
+            return [<cond-deps>];
+          },
+          function (<cond-deps>) {
+            return <cond-expr>;
+          }
+        )
+      }).appendTo(form);
+      
+    >
+    where
+      not(|[ true ]| := cond)
+    with
+      q         := <Hd> q*
+    ; qid       := <compile-ql-js-qid> q
+    ; label     := <compile-ql-js-label> q 
+    ; widget    := <compile-ql-js-widget> q
+    ; cond-dep* := <compile-ql-js-collect-dependencies> cond
+    ; cond-deps := <separate-by(|", "); concat-strings> cond-dep*
+    ; cond-expr := <compile-ql-js-exp> cond
+      
+rules // Widgets
+  
+  compile-ql-js-widget:
+    |[ qid : label t ]| -> <compile-ql-js-widget-impl(|"")> t
+    
+  compile-ql-js-widget:
+    |[ qid : label t ( exp ) ]| -> <compile-ql-js-widget-impl(|comp-val)> t
+    with
+      exp-dep* := <compile-ql-js-collect-dependencies> exp
+    ; exp-deps := <separate-by(|", "); concat-strings> exp-dep*
+    ; exp-expr := <compile-ql-js-exp> exp
+    ; comp-val := 
+      $<new QLrt.LazyValue(
+          function () {
+            return [<exp-deps>];
+          },
+          function (<exp-deps>) {
+            return <exp-expr>;
+          }
+        )>
+  
+  compile-ql-js-widget-impl(|computed): ql |[ boolean ]| -> $<new QLrt.BooleanValueWidget(<computed>)>
+  compile-ql-js-widget-impl(|computed): ql |[ string  ]| -> $<new QLrt.StringValueWidget(<computed>)>
+  compile-ql-js-widget-impl(|computed): ql |[ integer ]| -> $<new QLrt.IntegerValueWidget(<computed>)>
+  compile-ql-js-widget-impl(|computed): ql |[ date    ]| -> $<new QLrt.DateValueWidget(<computed>)>
+  compile-ql-js-widget-impl(|computed): ql |[ decimal ]| -> $<new QLrt.DecimalValueWidget(<computed>)>
+  compile-ql-js-widget-impl(|computed): ql |[ money   ]| -> $<new QLrt.MoneyValueWidget(<computed>)>
+  
+rules // Expressions
+  
+  compile-ql-js-exp = bottomup(where(is-string) <+ compile-ql-js-exp-part)
+  
+  compile-ql-js-exp-part: ql |[ true     ]| -> "true"
+  compile-ql-js-exp-part: ql |[ false    ]| -> "false"
+  
+  compile-ql-js-exp-part: ql |[ qid      ]| -> qid
+  
+  compile-ql-js-exp-part: ql |[ !e       ]| -> ${!{e}}
+  compile-ql-js-exp-part: ql |[ e1 && e2 ]| -> ${{e1} && {e2}}
+  compile-ql-js-exp-part: ql |[ e1 || e2 ]| -> ${{e1} || {e2}}
+  compile-ql-js-exp-part: ql |[ e1 <  e2 ]| -> ${{e1} < {e2}}
+  compile-ql-js-exp-part: ql |[ e1 <= e2 ]| -> ${{e1} <= {e2}}
+  compile-ql-js-exp-part: ql |[ e1 >  e2 ]| -> ${{e1} > {e2}}
+  compile-ql-js-exp-part: ql |[ e1 >= e2 ]| -> ${{e1} >= {e2}}
+  compile-ql-js-exp-part: ql |[ e1 == e2 ]| -> ${{e1} == {e2}}
+  compile-ql-js-exp-part: ql |[ e1 +  e2 ]| -> ${{e1} + {e2}}
+  compile-ql-js-exp-part: ql |[ e1 -  e2 ]| -> ${{e1} - {e2}}
+  compile-ql-js-exp-part: ql |[ e1 *  e2 ]| -> ${{e1} * {e2}}
+  compile-ql-js-exp-part: ql |[ e1 /  e2 ]| -> ${{e1} / {e2}}
+  
+rules // Projections
+  
+  compile-ql-js-collect-dependencies = collect-all(?Ref(<id>))
+  
+  compile-ql-js-qid: |[ qid : label t         ]| -> qid
+  compile-ql-js-qid: |[ qid : label t ( exp ) ]| -> qid
+  
+  compile-ql-js-label: |[ qid : label t         ]| -> <compile-ql-js-label-unquote> label
+  compile-ql-js-label: |[ qid : label t ( exp ) ]| -> <compile-ql-js-label-unquote> label
+	compile-ql-js-label-unquote: Label(label-str) -> <un-double-quote> label-str
