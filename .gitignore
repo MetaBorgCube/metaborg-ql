@@ -33,3 +33,5 @@ org.spoofax.lang.lwc.ql2/trans/ql/names.str
 org.spoofax.lang.lwc.ql2/trans/qls/names.str
 org.spoofax.lang.lwc.ql2/trans/ql/*.generated.str
 org.spoofax.lang.lwc.ql2/trans/qls/*.generated.str
+ql-js-example/.cache
+ql-js-example/*.ql
