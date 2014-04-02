@@ -133,8 +133,10 @@ rules // Debugging
     (selected, position, ast, path, project-path) -> (filename, result)
     with
       filename := <guarantee-extension(|$[analyzed.[<ql-or-qls(!"ql", !"qls")>]])> path;
-      result   := <pp-QL-string-debug> selected
+      result   := <try(rename-form); strip-annos; pp-QL-string-debug> selected
   		
+  rename-form: Form(name, q*) -> Form($[[name]Sorted], q*)
+  	
 	debug-index-project =
 		analysis-debug-index-project(|<language>)
 	debug-index-project-resolve = 
