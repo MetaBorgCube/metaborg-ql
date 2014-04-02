@@ -36,3 +36,6 @@ menus
     
     action: "Generate WebDSL app" = builder-generate-webdsl (openeditor)
     action: "Show normalized QLS" = builder-normalize-qls (openeditor)
+
+  menu: "Examples"
+    action: "Generate binary search tree example" = builder-generate-example (openeditor)
