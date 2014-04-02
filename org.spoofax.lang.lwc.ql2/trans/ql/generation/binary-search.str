@@ -43,7 +43,7 @@ rules
 	    ; l1  := <label> (i, h')
 	    ; q2* := <generate-binary-search-questions(|d')> (h, j)
 	    ; l2  := <label> (h, j)
-	    ; res := [q, q1*, Conditional(Not(Ref(l1)), q2*)]
+	    ; res := [q, Conditional(Ref(l), q1*), Conditional(And(Ref(l), Not(Ref(l1))), q2*)]
       end
    
    label: (i, i) -> $[q[i]]
