@@ -21,6 +21,7 @@ imports
 	utils
 	
 	ql/analysis/-
+	ql/generation/-
 	ql/generate-webdsl
 	ql/generate-js
 	ql/sorting
