@@ -15,9 +15,12 @@ properties
 
 binding rules
 
-	Form(n, _):
-		defines Form n
+	Form(f, _):
+		defines Form f
 		scopes Question
+		
+	FormImport(f) :
+		imports Question from Form f
 	
 	Question(q, _, t):
 		defines non-unique Question q

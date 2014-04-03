@@ -24,7 +24,7 @@ language General properties
   table:         include/QL.tbl
   start symbols: Start
   
-  provider:      include/ql.ctree
+  provider:      include/ql.jar
   provider:      include/ql-java.jar
   
   observer:      editor-analyze (multifile)
