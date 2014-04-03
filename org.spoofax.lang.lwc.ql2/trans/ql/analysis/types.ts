@@ -97,7 +97,7 @@ type rules
 
   Question(qid, l, t)
 + Computed(qid, l, TExpr(t, _)):-
-  where qid has type t'
+  where definition of qid has type t'
     and t' == t
    else error "Question has different types" on qid
    
