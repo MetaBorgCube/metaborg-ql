@@ -103,8 +103,6 @@ relations
 
 	IntTy()   <is: Numeric()
 	FloatTy() <is: Numeric()
-
-	x <dummy: y where x <is: y // Dummy relation to prevent compile error, will fix soon.
 		
 type functions
 
