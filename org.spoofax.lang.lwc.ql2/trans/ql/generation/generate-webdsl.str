@@ -1,4 +1,4 @@
-module ql/generate-webdsl
+module ql/generation/generate-webdsl
 
 imports
 	

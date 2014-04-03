@@ -1,4 +1,4 @@
-module ql/generate-js
+module ql/generation/generate-js
 
 imports
   

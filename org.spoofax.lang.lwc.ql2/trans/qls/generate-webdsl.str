@@ -12,7 +12,7 @@ imports
 	lib/runtime/nabl/-
 	lib/runtime/index/-
 
-  ql/generate-webdsl
+  ql/generation/generate-webdsl
   ql/analysis/-
 	ql/store
 	
