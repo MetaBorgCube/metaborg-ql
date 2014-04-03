@@ -1,4 +1,4 @@
-module ql/sorting
+module ql/sort
 
 imports
   include/QL

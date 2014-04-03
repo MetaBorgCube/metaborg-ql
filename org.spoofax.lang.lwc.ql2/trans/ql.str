@@ -20,19 +20,26 @@ imports
 	pp
 	utils
 	
-	ql/analysis/-
-	ql/generation/-
-	ql/generate-webdsl
-	ql/generate-js
-	ql/sort
+	ql/analysis/desugar
+	ql/analysis/names
+	ql/analysis/types.generated
+	ql/analysis/dependencies.generated
+	
+	ql/generation/generate-webdsl
+	ql/generation/generate-js
+	ql/generation/binary-search
+	
 	ql/import
+	ql/sort
 	ql/store
 	
-	qls/names
-	qls/types.generated
-	qls/desugar
+	
+	qls/analysis/desugar
+	qls/analysis/names
+	qls/analysis/types.generated
+	qls/analysis/normalize
+	
 	qls/generate-webdsl
-	qls/normalize
 
 rules // Analysis
 	
