@@ -44,3 +44,10 @@ type rules
     and not( dep <depends-on: qid )
       else error "cyclic dependency" on qid
       
+type rules
+
+  Question(qid, l, _)
++ Computed(qid, l, _):-
+  where qid has label l'
+    and l' == l
+   else error "Question has different labels" on qid
