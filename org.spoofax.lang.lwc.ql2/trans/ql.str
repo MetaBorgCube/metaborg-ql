@@ -186,3 +186,9 @@ rules // Debugging
 		
 	debug-reanalyze = 
 		analysis-debug-reanalyze(|<language>)
+		
+	analysis-disable-persist = id
+	analysis-default-debug-interface(msg) = debug(msg)
+	analysis-default-debug-interface = debug
+	analysis-default-debug-time-interface(msg) = debug(msg)
+	analysis-default-debug-time-interface = debug
