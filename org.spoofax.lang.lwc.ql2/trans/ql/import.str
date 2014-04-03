@@ -1,0 +1,18 @@
+module ql/import
+
+imports
+	
+	include/QL
+	
+	ql/store
+	
+strategies
+	
+	resolve-all-imports = alltd(resolve-import); topdown(try(flatten-list))
+	
+rules
+	
+	resolve-import:
+		|[ import fid ]| -> question*
+		with
+			|[ form fid1 { question* } ]| := <get-stored-ast> fid

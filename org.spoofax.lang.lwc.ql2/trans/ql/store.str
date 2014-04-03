@@ -14,17 +14,23 @@ signature constructors
 
 strategies
 	
-	ql-store-all(|ctx) = where(topdown(try(store-question-ast(|ctx))))
+	ql-store-all(|ctx) = where(topdown(try(store-ast(|ctx))))
 	
 rules
 
-	store-question-ast(|ctx):
+	store-ast(|ctx):
+		ast@|[ form fid { question* } ]| -> <id>
+		with
+			uri := <nabl-uri> fid;
+			<new-prop(|ctx, uri, AST(), ast)> fid
+
+	store-ast(|ctx):
 		ast@|[ if ( cond ) { qid : label t } ]| -> <id>
 		with
 			uri := <nabl-uri> qid;
 			<new-prop(|ctx, uri, AST(), ast)> qid
 
-	store-question-ast(|ctx):
+	store-ast(|ctx):
 		ast@|[ if ( cond ) { qid : label t ( exp ) } ]| -> <id>
 		with
 			uri := <nabl-uri> qid;
@@ -32,5 +38,4 @@ rules
 
 rules
 	
-	get-question-ast:
-		quest-ref -> <get-index-property(|AST())> quest-ref
+	get-stored-ast = get-index-property(|AST())

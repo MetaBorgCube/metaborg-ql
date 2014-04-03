@@ -14,15 +14,19 @@ templates // top-level
 		}
 	>
 	
-	Group.FormImport = <import <ID>>
+	Group = <<FormImport>>
+	
+	FormImport.FormImport = <import <ID>>
 	
 templates // questions
 
-	Group.Question = <
+	Group = <<Question>>
+
+	Question.Question = <
 		<ID> : <Label> <Type>
 	>
 	
-	Group.Computed = <
+	Question.Computed = <
 		<ID> : <Label> <TyExpr>
 	>
 	

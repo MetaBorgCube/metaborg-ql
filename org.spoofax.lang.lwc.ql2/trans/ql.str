@@ -22,12 +22,18 @@ imports
 	
 	ql/analysis/-
 	ql/generation/-
-	ql/sorting
+	ql/generate-webdsl
+	ql/generate-js
+	ql/sort
+	ql/import
 	ql/store
 	
-	qls/analysis/-
+	qls/names
+	qls/types.generated
+	qls/desugar
 	qls/generate-webdsl
-	
+	qls/normalize
+
 rules // Analysis
 	
 	editor-analyze = analysis-default-editor
@@ -89,7 +95,7 @@ rules // Builders
     	task-setup(|project-path)
     with
     	filename   := <guarantee-extension(|"app")> path;
-    	webdsl-ast := <ql-or-qls(sort-by-dependencies; compile-ql-webdsl, normalize-qls; compile-qls-webdsl)> ast;
+    	webdsl-ast := <ql-or-qls(resolve-all-imports; sort-by-dependencies; compile-ql-webdsl, normalize-qls; compile-qls-webdsl)> ast;
     	result     := <pp-webdsl-string> webdsl-ast
     	
 	builder-generate-js:
@@ -99,7 +105,7 @@ rules // Builders
     	task-setup(|project-path)
     with
     	filename := <guarantee-extension(|"js")> path;
-    	result   := <ql-or-qls(sort-by-dependencies; compile-ql-js, fail)> ast
+    	result   := <ql-or-qls(resolve-all-imports; sort-by-dependencies; compile-ql-js, fail)> ast
     	
 	builder-generate-js-html:
 		(selected, position, ast, path, project-path) -> (filename, result)
@@ -108,7 +114,7 @@ rules // Builders
     	task-setup(|project-path)
     with
     	filename := <guarantee-extension(|"html")> path;
-    	result   := <ql-or-qls(sort-by-dependencies; compile-ql-js-html, fail)> ast
+    	result   := <ql-or-qls(resolve-all-imports;sort-by-dependencies; compile-ql-js-html, fail)> ast
 
 rules // Debugging
 	
