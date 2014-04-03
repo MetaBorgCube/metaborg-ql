@@ -1,4 +1,4 @@
-module qls/names
+module qls/analysis/names
 
 imports
  

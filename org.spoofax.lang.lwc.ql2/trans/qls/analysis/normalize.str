@@ -3,7 +3,7 @@ module qls/normalize
 imports
   include/QL
   ql/analysis/names
-  qls/names
+  qls/analysis/names
   lib/runtime/index/-
   lib/runtime/task/-
   lib/editor-common.generated

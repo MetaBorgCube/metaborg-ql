@@ -25,12 +25,9 @@ imports
 	ql/sorting
 	ql/store
 	
-	qls/names
-	qls/types.generated
-	qls/desugar
+	qls/analysis/-
 	qls/generate-webdsl
-	qls/normalize
-
+	
 rules // Analysis
 	
 	editor-analyze = analysis-default-editor
