@@ -18,8 +18,4 @@ rules
 	  
   sort-by-dependencies = Form(id, quick-sort(depends-on))
 
-rules // fix for lib error
-  
-  get-index-relations(|rel):
-    term -> <index-get-all; mapconcat(relation-tuple-value; (insert-results-or-delay <+ MkSingleton))> RelTuple(term, rel, ())
   
