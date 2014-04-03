@@ -10,7 +10,16 @@ imports
   
 rules
   
-  builder-generate-example:
+  builder-generate-small-example:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+      index-setup(|<language>, project-path)
+    ; task-setup(|project-path)
+    ; [ f@Form(fn, _) ] := <generate-binary-search-forms(|True(), 16)> (1, 16)
+    ; filename := $[[<dirname> path]/[fn].ql]
+    ; result   := <strip-annos; pp-QL-string-debug> f
+  
+  builder-generate-big-example:
     (selected, position, ast, path, project-path) -> None()
     with
       index-setup(|<language>, project-path)
