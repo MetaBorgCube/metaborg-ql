@@ -13,15 +13,15 @@ org.spoofax.lang.lwc.ql/syntax/QLSgenerated.sdf
 org.spoofax.lang.lwc.qls/bin/.settings
 org.spoofax.lang.lwc.qls/bin/editor/*.generated.esv
 
-QLExample/.saved-but-not-built
-QLExample/.classpath
-QLExample/.settings
-QLExample/.cache
-QLExample/.servletapp
-QLExample/.webdsl-fragment-cache
-QLExample/.webdsl-parsecache
-QLExample/WebContent
-QLExample/.saved-but-not-built
+ql-webdsl-example/.saved-but-not-built
+ql-webdsl-example/.classpath
+ql-webdsl-example/.settings
+ql-webdsl-example/.cache
+ql-webdsl-example/.servletapp
+ql-webdsl-example/.webdsl-fragment-cache
+ql-webdsl-example/.webdsl-parsecache
+ql-webdsl-example/WebContent
+ql-webdsl-example/.saved-but-not-built
 
 org.spoofax.lang.lwc.ql2/syntax/lexical/Common.sdf
 org.spoofax.lang.lwc.ql2/syntax/ql/Expressions.sdf
