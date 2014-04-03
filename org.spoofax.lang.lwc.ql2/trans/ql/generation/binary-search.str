@@ -11,39 +11,62 @@ imports
 rules
   
   builder-generate-example:
-    (selected, position, ast, path, project-path) -> (filename, result)
+    (selected, position, ast, path, project-path) -> None()
     with
-      index-setup(|<language>, project-path);
-      task-setup(|project-path)
+      index-setup(|<language>, project-path)
+    ; task-setup(|project-path)
+    ; form* := <generate-binary-search>
+    ; <map(write-file(|path))> form*
+  
+  write-file(|path):
+    form@Form(fn, _) -> <id>
     with
-      example  := <generate-binary-search; ?Form(fn, _)> 16
-    ; result   := <pp-QL-string-debug> example  
-    ; filename := $[[<dirname> path]/[fn].ql]
-
-  generate-binary-search = 
-    ?d; <generate-binary-search-form(|d)> (1, d)
-    
-  generate-binary-search-form(|d):
-    (i, j) -> Form($[form[i]to[j]], q*) 
-    where
-      q* := <generate-binary-search-questions(|d)> 
+      filename := $[[<dirname> path]/[fn].ql]
+    ; content  := <strip-annos; pp-QL-string-debug> form
+    ; file     := <fopen> (filename, "w")
+    ; <fputs; fclose> (content, file);
+      <refresh-workspace-file> filename
       
-  generate-binary-search-questions(|d):
+  generate-binary-search = 
+    ![ Form("form", [<generate-binary-search-question(|True(), 512)> (1, 512)])
+     | <generate-binary-search-forms(|True(), 512)> (1, 512) ]
+    
+  generate-binary-search-forms(|c, d):
+    (i, j) -> res
+    with
+      if <?16> d then
+        q   := <generate-binary-search-question(|c, d)> (i, j)
+      ; res := [Form($[form[i]to[j]], [q])] 
+      else
+        l1  := <label> (i, j)
+      ; d'  := <div2> d
+      ; h   := <add> (i, d')
+      ; h'  := <dec> h
+      ; f1* := <generate-binary-search-forms(|Ref(l1), d')> (i, h')
+      ; l2  := <label> (i, h')
+      ; f2* := <generate-binary-search-forms(|And(Ref(l1), Not(Ref(l2))), d')> (h, j)
+      ; res := [f1*, f2*]
+      end
+        
+  generate-binary-search-question(|c, d):
     (i, j) -> res
     with
     	if ?(i, i) then
-        res := [ Question($[q[i]], Label($["Is the answer [i]?"]), BoolTy()) ]
+        res := Conditional(c, [ Question($[q[i]], Label($["Is the answer [i]?"]), BoolTy()) ])
       else
-        l   := <label> (i, j)
-	    ; q   := Question(l, Label($["Is the answer between [i] and [j]?"]), BoolTy())
+        l1  := <label> (i, j)
+	    ; q   := Question(l1, Label($["Is the answer between [i] and [j]?"]), BoolTy())
 	    ; d'  := <div2> d
 	    ; h   := <add> (i, d')
 	    ; h'  := <dec> h
-	    ; q1* := <generate-binary-search-questions(|d')> (i, h')
-	    ; l1  := <label> (i, h')
-	    ; q2* := <generate-binary-search-questions(|d')> (h, j)
-	    ; l2  := <label> (h, j)
-	    ; res := [q, Conditional(Ref(l), q1*), Conditional(And(Ref(l), Not(Ref(l1))), q2*)]
+	    ; if <?16> d' then
+		    	res := Conditional(c, [q])
+		    else
+		      q1  := <generate-binary-search-question(|Ref(l1), d')> (i, h')
+		    ; l2  := <label> (i, h')
+		    ; q2  := <generate-binary-search-question(|And(Ref(l1), Not(Ref(l2))), d')> (h, j)
+		    ; res := Conditional(c, [q, q1, q2])
+	      end
       end
    
    label: (i, i) -> $[q[i]]
