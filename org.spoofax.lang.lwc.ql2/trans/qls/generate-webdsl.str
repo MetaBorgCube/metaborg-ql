@@ -135,10 +135,11 @@ rules // QLS page to WebDSL page
 	  with
 	  	x_pageName     := <conc-strings> ("page", <int-to-string> n);
 	  	stat_saveall*  := <map(compile-qls-webdsl-page-save)> fref*;
-	  	parts_length   := <length> part*;
-	    parts_numbers  := <upto; Tl> parts_length;
+	  	qref_part*     := <collect-all(?StyledRef(_, _) <+ ?SimpleRef(_))> part*;
+	  	parts_length   := <length> qref_part*;
 	  	{| Var, Init, Action:
-	  		elem_group*  := <zip(compile-qls-webdsl-part(|parts_length)); concat> (part*, parts_numbers);
+	  		counter      := <new-counter>;
+	  		elem_group*  := <map(compile-qls-webdsl-part(|parts_length, counter)); concat> part*;
 		  	elem_var*    := <bagof-Var <+ ![]>;
 		  	stat_init*   := <bagof-Init <+ ![]>;
 		  	stat_action* := <bagof-Action <+ ![]>
@@ -159,29 +160,31 @@ rules // QLS page to WebDSL page
 
 rules // QLS part to WebDSL elements
 	  	
-	compile-qls-webdsl-part(|length):
-		(|[ qid { s* } ]|, nr) -> elem* |[placeholder x_p { x_q }]|
+	compile-qls-webdsl-part(|length, counter):
+		|[ qid { s* } ]| -> elem* |[placeholder x_p { x_q }]|
 		with
+			nr   := <next-counter> counter;
 			body := <get-stored-ast> qid;
 			x_p  := <compile-placeholder-name> nr;
 			x_q  := <compile-qls-webdsl-group(|s*, length, nr)> body
 
-	compile-qls-webdsl-part(|length):
-		(SimpleRef(qid), nr) -> elem* |[placeholder x_p { x_q }]|
+	compile-qls-webdsl-part(|length, counter):
+		SimpleRef(qid) -> elem* |[placeholder x_p { x_q }]|
 		with
+			nr   := <next-counter> counter;
 			body := <get-stored-ast> qid;
 			x_p  := <compile-placeholder-name> nr;
 			x_q  := <compile-qls-webdsl-group(|[], length, nr)> body
 			
-	compile-qls-webdsl-part(|length):
-	 (Section(elem_heading, part*), nr) -> elem* |[ pageHeader() { elem_heading } elem_group* ]| // TODO: Concrete syntax match? meta variable for STRING does not work..
+	compile-qls-webdsl-part(|length, counter):
+	 Section(elem_heading, part*) -> elem* |[ pageHeader() { elem_heading } elem_group* ]| // TODO: Concrete syntax match? meta variable for STRING does not work..
 		with
-			elem_group* := <map(\part -> (part, nr)\; compile-qls-webdsl-part(|length))> part*
+			elem_group* := <map(compile-qls-webdsl-part(|length, counter))> part*
 			
-	compile-qls-webdsl-part(|length):
-		(SubSection(elem_heading, part*), nr) -> elem* |[ pageHeader2() { elem_heading } elem_group* ]| // TODO: Concrete syntax match? meta variable for STRING does not work..
+	compile-qls-webdsl-part(|length, counter):
+		SubSection(elem_heading, part*) -> elem* |[ pageHeader2() { elem_heading } elem_group* ]| // TODO: Concrete syntax match? meta variable for STRING does not work..
 		with
-			elem_group* := <map(\part -> (part, nr)\; compile-qls-webdsl-part(|length))> part*
+			elem_group* := <map(compile-qls-webdsl-part(|length, counter))> part*
 			
 rules // QL group to WebDSL page elements
 	
