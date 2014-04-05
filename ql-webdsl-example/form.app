@@ -39,7 +39,7 @@ init
         if ( true ) {
           controlGroup ( "What is the checkin date?" ) [ style := "" ]
             {
-            input ( sess.user.VehicleCheckin.date ) [ oninput := update(["q2"]) , style := "" ]
+            input ( sess.user.VehicleCheckin.date ) [ oninput := update(["q2", "q3", "q4"]) , style := "" ]
               }
         }
         }
@@ -51,24 +51,24 @@ init
         "q2"
         {
         if ( true ) {
-          controlGroup ( "KM readout" ) [ style := "font-family: 'Arial';" ]
+          controlGroup ( "KM readout" ) [ style := "font-family: 'Helvetica';font-family: 'Arial';" ]
             {
-            inputajax ( sess.user.VehicleCheckin.kms ) [ oninput := update(["q1"]) , style := "font-family: 'Arial';" ]
+            inputajax ( sess.user.VehicleCheckin.kms ) [ oninput := update(["q1", "q3", "q4"]) , style := "font-family: 'Helvetica';font-family: 'Arial';" ]
               }
         }
         }
         placeholder
-        "q2"
+        "q3"
         {
         if ( true ) {
           controlGroup ( "KM last inspection" ) [ style := "" ]
             {
-            inputajax ( sess.user.VehicleCheckin.kmslast ) [ oninput := update(["q1"]) , style := "" ]
+            inputajax ( sess.user.VehicleCheckin.kmslast ) [ oninput := update(["q1", "q2", "q4"]) , style := "" ]
               }
         }
         }
         placeholder
-        "q2"
+        "q4"
         {
         if ( true ) {
           controlGroup ( "KM since last" ) [ style := "" ]
@@ -138,7 +138,7 @@ init
         if ( true ) {
           controlGroup ( "Problems?" ) [ style := "" ]
             {
-            inputajax ( sess.user.Problems.probs ) [ oninput := update(["q2", "q3", "q4", "q5"]) , style := "" ]
+            inputajax ( sess.user.Problems.probs ) [ oninput := update(["q2", "q3", "q4", "q5", "q6", "q7", "q8"]) , style := "" ]
               }
         }
         }
@@ -148,7 +148,7 @@ init
         if ( sess.user.Problems.probs ) {
           controlGroup ( "Since?" ) [ style := "" ]
             {
-            input ( sess.user.Problems.sinceP ) [ oninput := update(["q1", "q3", "q4", "q5"]) , style := "" ]
+            input ( sess.user.Problems.sinceP ) [ oninput := update(["q1", "q3", "q4", "q5", "q6", "q7", "q8"]) , style := "" ]
               }
         }
         }
@@ -162,17 +162,17 @@ init
         if ( sess.user.Problems.probs ) {
           controlGroup ( "Engine?" ) [ style := "" ]
             {
-            inputajax ( sess.user.Problems.engineP ) [ oninput := update(["q1", "q2", "q4", "q5"]) , style := "" ]
+            inputajax ( sess.user.Problems.engineP ) [ oninput := update(["q1", "q2", "q4", "q5", "q6", "q7", "q8"]) , style := "" ]
               }
         }
         }
         placeholder
-        "q3"
+        "q4"
         {
         if ( sess.user.Problems.engineP ) {
           controlGroup ( "Describe" ) [ style := "" ]
             {
-            inputajax ( sess.user.Problems.desEngP ) [ oninput := update(["q1", "q2", "q4", "q5"]) , style := "" ]
+            inputajax ( sess.user.Problems.desEngP ) [ oninput := update(["q1", "q2", "q3", "q5", "q6", "q7", "q8"]) , style := "" ]
               }
         }
         }
@@ -181,22 +181,22 @@ init
           "Drivetrain"
             }
         placeholder
-        "q4"
+        "q5"
         {
         if ( sess.user.Problems.probs ) {
           controlGroup ( "Drivetrain?" ) [ style := "" ]
             {
-            inputajax ( sess.user.Problems.drivetP ) [ oninput := update(["q1", "q2", "q3", "q5"]) , style := "" ]
+            inputajax ( sess.user.Problems.drivetP ) [ oninput := update(["q1", "q2", "q3", "q4", "q6", "q7", "q8"]) , style := "" ]
               }
         }
         }
         placeholder
-        "q4"
+        "q6"
         {
         if ( sess.user.Problems.drivetP ) {
           controlGroup ( "Describe" ) [ style := "" ]
             {
-            inputajax ( sess.user.Problems.desDrvP ) [ oninput := update(["q1", "q2", "q3", "q5"]) , style := "" ]
+            inputajax ( sess.user.Problems.desDrvP ) [ oninput := update(["q1", "q2", "q3", "q4", "q5", "q7", "q8"]) , style := "" ]
               }
         }
         }
@@ -205,22 +205,22 @@ init
           "Body"
             }
         placeholder
-        "q5"
+        "q7"
         {
         if ( sess.user.Problems.probs ) {
           controlGroup ( "Body?" ) [ style := "" ]
             {
-            inputajax ( sess.user.Problems.bodyP ) [ oninput := update(["q1", "q2", "q3", "q4"]) , style := "" ]
+            inputajax ( sess.user.Problems.bodyP ) [ oninput := update(["q1", "q2", "q3", "q4", "q5", "q6", "q8"]) , style := "" ]
               }
         }
         }
         placeholder
-        "q5"
+        "q8"
         {
         if ( sess.user.Problems.bodyP ) {
           controlGroup ( "Describe" ) [ style := "" ]
             {
-            inputajax ( sess.user.Problems.desBdyP ) [ oninput := update(["q1", "q2", "q3", "q4"]) , style := "" ]
+            inputajax ( sess.user.Problems.desBdyP ) [ oninput := update(["q1", "q2", "q3", "q4", "q5", "q6", "q7"]) , style := "" ]
               }
         }
         }
