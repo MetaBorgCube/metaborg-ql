@@ -6,20 +6,20 @@ form mariage {
   
   if (maritialStatusChange) {
     
-    maritialStatus: "Are you (still) married?" boolean
+    married: "Are you married?" boolean
       
     dateOfMarriage: "Date of marriage" date
  
-    if (!maritialStatus) {
-    	dateOfDivorce: "Date of divorce" date
+    if (!partner) {
+      dateOfDivorce: "Date of divorce" date
     }
   }
   
   validMarriage : "Form ok." boolean ( !maritialStatusChange || 
-                                       ( maritialStatus && 
+                                       ( married && 
                                          dateOfMarriage > dateOfBirth && 
                                          dateOfMarriage < date ) ||
                                        ( dateOfDivorce > dateOfMarriage && 
-                                         dateOfDivorce < date )
+                                         dateOfDivorce < date ) 
                                      )
 }
