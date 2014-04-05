@@ -26,3 +26,14 @@ lib-refactoring/*.generated.str
 **.generated.*
 trans/ql/analysis/names.str
 utils
+
+lib/analysis
+lib/editor
+lib/index
+lib/nabl
+lib/properties
+lib/relations
+lib/task
+lib/task
+lib/tmpl
+lib/types
