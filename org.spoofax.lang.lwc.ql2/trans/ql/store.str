@@ -14,7 +14,7 @@ signature constructors
 
 strategies
 	
-	ql-store-all(|ctx) = where(topdown(try(store-ast(|ctx))))
+	ql-store-all(|ctx) = where(topdown(try(store-ast(|$[[ctx]_asts]))))
 	
 rules
 
