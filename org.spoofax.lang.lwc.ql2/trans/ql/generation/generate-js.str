@@ -9,7 +9,7 @@ imports
 
   include/QL
   lib/webdsl/WebDSL
-  lib/runtime/nabl/-
+  lib/nabl/-
   ql/analysis/names
   
 rules

@@ -8,14 +8,15 @@ imports
 	include/QL
 	editor/QL-Outliner
 	lib/editor-common.generated
-	lib/runtime/index/-
-	lib/runtime/nabl/-
-	lib/runtime/properties/-
-	lib/runtime/relations/-
-	lib/runtime/types/-
-	lib/runtime/task/-
-	lib/runtime/analysis/-
-	lib/runtime/editor/-
+	
+	lib/index/-
+	lib/nabl/-
+	lib/properties/-
+	lib/relations/-
+	lib/types/-
+	lib/task/-
+	lib/analysis/-
+	lib/editor/-
 	
 	pp
 	utils

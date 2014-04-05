@@ -4,11 +4,11 @@ imports
   include/QL
   ql/analysis/names
   qls/analysis/names
-  lib/runtime/index/-
-  lib/runtime/task/-
+  lib/index/-
+  lib/task/-
   lib/editor-common.generated
-  lib/runtime/nabl/-
-  lib/runtime/relations/-
+  lib/nabl/-
+  lib/relations/-
   
   utils
   

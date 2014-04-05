@@ -1,13 +1,5 @@
 module qls/analysis/names
 
-imports
-  lib/runtime/nabl/-
-  lib/runtime/task/-
-  lib/runtime/properties/-
-  lib/runtime/types/-
-  lib/runtime/editor/-
-
-
 rules
 
   nabl-scoping-site =
@@ -174,6 +166,14 @@ rules
 
 
 imports
+  lib/index/-
+  lib/nabl/-
+  lib/properties/-
+  lib/relations/-
+  lib/types/-
+  lib/task/-
+  lib/analysis/-
+  lib/editor/-
   include/QL
   ql/analysis/names
 

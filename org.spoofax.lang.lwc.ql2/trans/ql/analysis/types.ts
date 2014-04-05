@@ -2,6 +2,15 @@ module ql/analysis/types
 
 imports
 
+	lib/index/-
+	lib/nabl/-
+	lib/properties/-
+	lib/relations/-
+	lib/types/-
+	lib/task/-
+	lib/analysis/-
+	lib/editor/-
+
 	include/QL
 
 type rules // Logical expressions

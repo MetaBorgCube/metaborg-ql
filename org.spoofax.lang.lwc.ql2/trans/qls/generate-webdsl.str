@@ -9,8 +9,8 @@ imports
 
 	include/QL
 	lib/webdsl/WebDSL
-	lib/runtime/nabl/-
-	lib/runtime/index/-
+	lib/nabl/-
+	lib/index/-
 
   ql/generation/generate-webdsl
 	ql/store

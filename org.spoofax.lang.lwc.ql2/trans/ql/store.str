@@ -4,9 +4,9 @@ imports
 	
 	include/QL
 
-	lib/runtime/index/-
-	lib/runtime/nabl/-
-	lib/runtime/properties/-
+	lib/index/-
+	lib/nabl/-
+	lib/properties/-
 	
 signature constructors
 	

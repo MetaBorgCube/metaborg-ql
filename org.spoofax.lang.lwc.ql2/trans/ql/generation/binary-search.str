@@ -3,8 +3,8 @@ module ql/generation/binary-search
 imports 
 
   include/QL
-  runtime/index/-
-  runtime/task/-
+  index/-
+  task/-
   editor-common.generated
   pp
   

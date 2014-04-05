@@ -2,10 +2,10 @@ module ql/sort
 
 imports
   include/QL
-  lib/runtime/relations/-
-  lib/runtime/index/-
-  lib/runtime/task/-
-  lib/runtime/nabl/-
+  lib/relations/-
+  lib/index/-
+  lib/task/-
+  lib/nabl/-
   
 rules
   
