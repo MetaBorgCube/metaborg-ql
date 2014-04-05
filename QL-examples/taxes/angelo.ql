@@ -1,25 +1,22 @@
-form mariage {
+form base {
   
-  import base
+  // import mariage
   
-  maritialStatusChange : "Maritial status changed in 2013?" boolean
+  date          : "Date" date
+  taxID         : "Tax ID" string 
+
+  name          : "Name" string
   
-  if (maritialStatusChange) {
-    
-    maritialStatus: "Are you (still) married?" boolean
-      
-    dateOfMarriage: "Date of marriage" date
- 
-    if (!maritialStatus) {
-      dateOfDivorce: "Date of divorce" date
-    }
+  partner: "Do you declare taxes for your partner as well?" boolean
+  
+  if (partner) {
+    namePartner        : "Name (partner)" string
+    dateOfBirthPartner : "Date of birth (partner)" date
+    placeOfBirthPartner: "Place of birth (partner)" string
   }
   
-  validMarriage : "Form ok." boolean ( !maritialStatusChange || 
-                                       ( maritialStatus && 
-                                         dateOfMarriage > dateOfBirth && 
-                                         dateOfMarriage < date ) ||
-                                       ( dateOfDivorce > dateOfMarriage && 
-                                         dateOfDivorce < date )
-                                     )
+  dateOfBirth   : "Date of birth" date
+  placeOfBirth  : "Place of birth" string
+  
+  validBaseData : "Form ok" boolean ( dateOfBirth < date )
 }
