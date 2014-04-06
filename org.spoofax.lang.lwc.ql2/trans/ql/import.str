@@ -15,4 +15,5 @@ rules
 	resolve-import:
 		|[ import fid ]| -> question*
 		with
-			|[ form fid1 { question* } ]| := <get-stored-ast> fid
+			Form(_, question*) := <get-stored-ast> fid
+
