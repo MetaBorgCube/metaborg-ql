@@ -1,23 +1,14 @@
-define style a {
-	font = "Helvetica"
-}
-
-define style b {
-	font = "Arial"
-	use a
-}
-
 page "General" for VehicleCheckin {
 	date
 	section "Car data" {
-		kms { use b }
+		kms
 		kmslast
 		travel
 	}
 }
 
 page "Problems" for Problems {
-	probs
+	probs { widget = checkbox }
 	sinceP
 	section "Engine" {
 		desEngP

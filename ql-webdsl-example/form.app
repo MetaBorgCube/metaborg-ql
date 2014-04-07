@@ -26,9 +26,10 @@ session sess {
 }
 page page1 ( )
 {
-init
-{
-}
+setupDatepicker (  )
+  init
+  {
+  }
   main (  )
     {
     horizontalForm ( "General" )
@@ -51,9 +52,9 @@ init
         "q2"
         {
         if ( true ) {
-          controlGroup ( "KM readout" ) [ style := "font-family: 'Helvetica';font-family: 'Arial';" ]
+          controlGroup ( "KM readout" ) [ style := "" ]
             {
-            inputajax ( sess.user.VehicleCheckin.kms ) [ oninput := update(["q1", "q3", "q4"]) , style := "font-family: 'Helvetica';font-family: 'Arial';" ]
+            inputajax ( sess.user.VehicleCheckin.kms ) [ oninput := update(["q1", "q3", "q4"]) , style := "" ]
               }
         }
         }
@@ -125,9 +126,10 @@ init
 }
 page page2 ( )
 {
-init
-{
-}
+setupDatepicker (  )
+  init
+  {
+  }
   main (  )
     {
     horizontalForm ( "Problems" )
@@ -138,7 +140,7 @@ init
         if ( true ) {
           controlGroup ( "Problems?" ) [ style := "" ]
             {
-            inputajax ( sess.user.Problems.probs ) [ oninput := update(["q2", "q3", "q4", "q5", "q6", "q7", "q8"]) , style := "" ]
+            inputajax ( sess.user.Problems.probs ) [ onchange : update(["q2", "q3", "q4", "q5", "q6", "q7", "q8"]) , style := "" ]
               }
         }
         }
@@ -162,7 +164,7 @@ init
         if ( sess.user.Problems.probs ) {
           controlGroup ( "Engine?" ) [ style := "" ]
             {
-            inputajax ( sess.user.Problems.engineP ) [ oninput := update(["q1", "q2", "q4", "q5", "q6", "q7", "q8"]) , style := "" ]
+            inputajax ( sess.user.Problems.engineP ) [ onchange : update(["q1", "q2", "q4", "q5", "q6", "q7", "q8"]) , style := "" ]
               }
         }
         }
@@ -186,7 +188,7 @@ init
         if ( sess.user.Problems.probs ) {
           controlGroup ( "Drivetrain?" ) [ style := "" ]
             {
-            inputajax ( sess.user.Problems.drivetP ) [ oninput := update(["q1", "q2", "q3", "q4", "q6", "q7", "q8"]) , style := "" ]
+            inputajax ( sess.user.Problems.drivetP ) [ onchange : update(["q1", "q2", "q3", "q4", "q6", "q7", "q8"]) , style := "" ]
               }
         }
         }
@@ -210,7 +212,7 @@ init
         if ( sess.user.Problems.probs ) {
           controlGroup ( "Body?" ) [ style := "" ]
             {
-            inputajax ( sess.user.Problems.bodyP ) [ oninput := update(["q1", "q2", "q3", "q4", "q5", "q6", "q8"]) , style := "" ]
+            inputajax ( sess.user.Problems.bodyP ) [ onchange : update(["q1", "q2", "q3", "q4", "q5", "q6", "q8"]) , style := "" ]
               }
         }
         }
@@ -272,9 +274,10 @@ init
 }
 page page3 ( )
 {
-init
-{
-}
+setupDatepicker (  )
+  init
+  {
+  }
   main (  )
     {
     horizontalForm ( "Other questions" )

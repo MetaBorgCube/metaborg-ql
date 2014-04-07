@@ -101,6 +101,8 @@ rules // QLS page to WebDSL page
 		(Page(x_heading, fref*, part*), n) -> // TODO: Concrete syntax match? meta variable for STRING does not work..
 		def |[
 	    page x_pageName() {
+	    	setupDatepicker()
+	    	
     		elem_var*
     		
     		init {
@@ -194,7 +196,7 @@ rules // QL group to WebDSL page elements
   	with
   		e_label        := <compile-ql-webdsl-exp> label;
   		passign_style* := <compile-qls-webdsl-simple-styles> styles;
-  		widget         := <fetch-elem(?TypedWidget(_, _)) <+ !()> styles;
+  		widget         := <debuga; fetch-elem(?Widget(_)) <+ !()> styles;
   		elem_input     := <compile-qls-webdsl-group-input(|passign_style*, part_length, nr)> (widget, q)
   		
 	// Computed question
@@ -214,9 +216,9 @@ rules // QL group to WebDSL page elements
 
 rules // QLS widget styles to WebDSL input
 	
-	compile-qls-webdsl-group-input(|passign_style*, part_length, nr) =
+	compile-qls-webdsl-group-input(|passign_style*, part_length, nr) = debug1; (
 		compile-qls-webdsl-group-input-special(|passign_style*, part_length, nr)
-		<+ compile-qls-webdsl-group-input-default(|passign_style*, part_length, nr)
+		<+ compile-qls-webdsl-group-input-default(|passign_style*, part_length, nr))
 	
 	// Default style
 	compile-qls-webdsl-group-input-default(|passign_styles, part_length, nr):
@@ -224,15 +226,21 @@ rules // QLS widget styles to WebDSL input
 		with
 			x_id         := <compile-ql-webdsl-question-name> qid;
 			x_updates    := <compile-update-list(|part_length, nr)>;
-			passign_all* := [passign |[oninput=update(x_updates)]|, passign_styles];
+			passign_all* := [<compile-qls-webdls-group-input-event(|x_updates)> t, passign_styles];
 			switch !t
 				case DateTy() : !call |[ input(x_id) [passign_all*] ]| // inputajax does not support dates
 				otherwise     : !call |[ inputajax(x_id) [passign_all*] ]|
 			end => result
+			
+	compile-qls-webdls-group-input-event(|x_updates) =
+		switch id
+			case BoolTy() : !passign |[onchange=update(x_updates)]|
+			otherwise     : !passign |[oninput=update(x_updates)]|
+		end
 	
 	// Special styling for boolean widgets with radio or dropdown style.		
 	compile-qls-webdsl-group-input-special(|passign_styles, part_length, nr):
-		(TypedWidget(BoolTy(), widget), |[ qid : label t ]|) -> call |[ x_call [passign_all*] ]|
+		(Widget(widget), |[ qid : label boolean ]|) -> call |[ x_call [passign_all*] ]|
 		where
 			<?Radio() <+ ?Dropdown()> widget
 		with
