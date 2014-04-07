@@ -9,7 +9,6 @@ entity Problems {
   desBdyP :: String
   desDrvP :: String
   desEngP :: String
-  since :: Date
   bodyP :: Bool
   drivetP :: Bool
   engineP :: Bool
@@ -138,7 +137,7 @@ setupDatepicker (  )
         "q1"
         {
         if ( true ) {
-          controlGroup ( "Problems?" ) [ style := "" ]
+          controlGroup ( "Does your car have any problems?" ) [ style := "" ]
             {
             inputajax ( sess.user.Problems.probs ) [ onchange : update(["q2", "q3", "q4", "q5", "q6", "q7", "q8"]) , style := "" ]
               }
@@ -148,9 +147,9 @@ setupDatepicker (  )
         "q2"
         {
         if ( sess.user.Problems.probs ) {
-          controlGroup ( "Since?" ) [ style := "" ]
+          controlGroup ( "Since when?" ) [ style := "color: #FF0000;" ]
             {
-            input ( sess.user.Problems.sinceP ) [ oninput := update(["q1", "q3", "q4", "q5", "q6", "q7", "q8"]) , style := "" ]
+            input ( sess.user.Problems.sinceP ) [ oninput := update(["q1", "q3", "q4", "q5", "q6", "q7", "q8"]) , style := "color: #FF0000;" ]
               }
         }
         }
@@ -162,7 +161,7 @@ setupDatepicker (  )
         "q3"
         {
         if ( sess.user.Problems.probs ) {
-          controlGroup ( "Engine?" ) [ style := "" ]
+          controlGroup ( "Are there problems with the engine?" ) [ style := "" ]
             {
             inputajax ( sess.user.Problems.engineP ) [ onchange : update(["q1", "q2", "q4", "q5", "q6", "q7", "q8"]) , style := "" ]
               }
@@ -172,9 +171,9 @@ setupDatepicker (  )
         "q4"
         {
         if ( sess.user.Problems.engineP ) {
-          controlGroup ( "Describe" ) [ style := "" ]
+          controlGroup ( "Describe the problem with the engine" ) [ style := "font-family: 'monospace';" ]
             {
-            inputajax ( sess.user.Problems.desEngP ) [ oninput := update(["q1", "q2", "q3", "q5", "q6", "q7", "q8"]) , style := "" ]
+            inputajax ( sess.user.Problems.desEngP ) [ oninput := update(["q1", "q2", "q3", "q5", "q6", "q7", "q8"]) , style := "font-family: 'monospace';" ]
               }
         }
         }
@@ -186,7 +185,7 @@ setupDatepicker (  )
         "q5"
         {
         if ( sess.user.Problems.probs ) {
-          controlGroup ( "Drivetrain?" ) [ style := "" ]
+          controlGroup ( "Are there problems with the drivetrain?" ) [ style := "" ]
             {
             inputajax ( sess.user.Problems.drivetP ) [ onchange : update(["q1", "q2", "q3", "q4", "q6", "q7", "q8"]) , style := "" ]
               }
@@ -196,9 +195,9 @@ setupDatepicker (  )
         "q6"
         {
         if ( sess.user.Problems.drivetP ) {
-          controlGroup ( "Describe" ) [ style := "" ]
+          controlGroup ( "Describe the problem with the drivetrain" ) [ style := "font-family: 'monospace';" ]
             {
-            inputajax ( sess.user.Problems.desDrvP ) [ oninput := update(["q1", "q2", "q3", "q4", "q5", "q7", "q8"]) , style := "" ]
+            inputajax ( sess.user.Problems.desDrvP ) [ oninput := update(["q1", "q2", "q3", "q4", "q5", "q7", "q8"]) , style := "font-family: 'monospace';" ]
               }
         }
         }
@@ -210,7 +209,7 @@ setupDatepicker (  )
         "q7"
         {
         if ( sess.user.Problems.probs ) {
-          controlGroup ( "Body?" ) [ style := "" ]
+          controlGroup ( "Are there problems with the body?" ) [ style := "" ]
             {
             inputajax ( sess.user.Problems.bodyP ) [ onchange : update(["q1", "q2", "q3", "q4", "q5", "q6", "q8"]) , style := "" ]
               }
@@ -220,9 +219,9 @@ setupDatepicker (  )
         "q8"
         {
         if ( sess.user.Problems.bodyP ) {
-          controlGroup ( "Describe" ) [ style := "" ]
+          controlGroup ( "Describe the problem with the body" ) [ style := "font-family: 'monospace';" ]
             {
-            inputajax ( sess.user.Problems.desBdyP ) [ oninput := update(["q1", "q2", "q3", "q4", "q5", "q6", "q7"]) , style := "" ]
+            inputajax ( sess.user.Problems.desBdyP ) [ oninput := update(["q1", "q2", "q3", "q4", "q5", "q6", "q7"]) , style := "font-family: 'monospace';" ]
               }
         }
         }
@@ -282,37 +281,27 @@ setupDatepicker (  )
     {
     horizontalForm ( "Other questions" )
       {
-      placeholder
-        "q1"
+      formActions (  )
         {
-        if ( sess.user.Problems.probs ) {
-          controlGroup ( "Since" ) [ style := "" ]
-            {
-            input ( sess.user.Problems.since ) [ style := "" ]
-              }
-        }
-        }
-        formActions (  )
+        submitlink
+          submit()
+          [
+          class := "btn btn-primary"
+          ]
           {
+          "Submit"
+          }
+          " "
           submitlink
-            submit()
-            [
-            class := "btn btn-primary"
-            ]
-            {
-            "Submit"
-            }
-            " "
-            submitlink
-            finish()
-            [
-            class := "btn btn-primary"
-            ]
-            {
-            "Finish"
-            }
-            " "
-            }
+          finish()
+          [
+          class := "btn btn-primary"
+          ]
+          {
+          "Finish"
+          }
+          " "
+          }
         }
       }
   action submit ( )
