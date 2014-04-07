@@ -1,6 +1,8 @@
 form income {
   
   import base
+  import property
+  import penalties
   
   income: "Your income in 2013" money
   if (partner) {
@@ -16,4 +18,6 @@ form income {
   taxRate: "How much income tax do you like to pay?" decimal
 
   incomeTax: "Income tax 2013" money (totalIncome * taxRate)
+  
+  totalTax: "Toal tax 2013" money (incomeTax + incomeTaxRent + rentingPenalty)
 }
