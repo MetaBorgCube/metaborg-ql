@@ -24,8 +24,20 @@ rules
     with
       index-setup(|<language>, project-path)
     ; task-setup(|project-path)
-    ; form* := <generate-binary-search>
-    ; <map(write-file(|path))> form*
+    ; fs := <generate-binary-search-forms(|True(), 512)> (1, 512)
+    ; i* := <map(form-to-import)> fs
+    ; f  := Form("form", [i*, <generate-binary-search-question(|True(), 512)> (1, 512)])
+    ; <map(write-file(|path))> [f|fs]
+ 
+  builder-generate-bigger-example:
+    (selected, position, ast, path, project-path) -> None()
+    with
+      index-setup(|<language>, project-path)
+    ; task-setup(|project-path)
+    ; fs := <generate-binary-search-forms(|True(), 1024)> (1, 1024)
+    ; i* := <map(form-to-import)> fs
+    ; f  := Form("form", [i*, <generate-binary-search-question(|True(), 1024)> (1, 1024)])
+    ; <map(write-file(|path))> [f|fs]
   
   write-file(|path):
     form@Form(fn, _) -> <id>
@@ -35,14 +47,7 @@ rules
     ; file     := <fopen> (filename, "w")
     ; <fputs; fclose> (content, file);
       <refresh-workspace-file> filename
-      
-  generate-binary-search:
-    _ -> [f|fs]
-    with
-      fs := <generate-binary-search-forms(|True(), 1024)> (1, 1024)
-    ; i* := <map(form-to-import)> fs
-    ; f  := Form("form", [i*, <generate-binary-search-question(|True(), 1024)> (1, 1024)])
-  
+         
   form-to-import:
     Form(f, _) -> FormImport(f)
     

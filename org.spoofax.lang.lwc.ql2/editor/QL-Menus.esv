@@ -42,3 +42,4 @@ menus
   menu: "Examples"
     action: "Generate small binary search tree example" = builder-generate-small-example (openeditor)
     action: "Generate big binary search tree example" = builder-generate-big-example (openeditor)
+    action: "Generate bigger binary search tree example" = builder-generate-bigger-example (openeditor)
