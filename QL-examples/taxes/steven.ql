@@ -19,5 +19,5 @@ form income {
 
   incomeTax: "Income tax 2013" money (totalIncome * taxRate)
   
-  totalTax: "Toal tax 2013" money (incomeTax + incomeTaxRent + rentingPenalty)
+  totalTax: "Total tax 2013" money (incomeTax + incomeTaxRent + rentingPenalty + sharePenalty)
 }

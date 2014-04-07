@@ -15,11 +15,11 @@ form mariage {
     }
   }
   
-  validMarriage : "Form ok." boolean ( !maritialStatusChange || 
-                                       ( married && 
-                                         dateOfMarriage > dateOfBirth && 
-                                         dateOfMarriage < date ) ||
-                                       ( dateOfDivorce > dateOfMarriage && 
-                                         dateOfDivorce < date ) 
-                                     )
+  validMarriage : "Marriage form ok." boolean ( !maritialStatusChange || 
+				                                       ( married && 
+				                                         dateOfMarriage > dateOfBirth && 
+				                                         dateOfMarriage < date ) ||
+				                                       ( dateOfDivorce > dateOfMarriage && 
+				                                         dateOfDivorce < date ) 
+				                                      )
 }

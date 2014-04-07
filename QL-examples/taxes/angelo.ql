@@ -1,6 +1,6 @@
 form base {
   
-  // import mariage
+  import mariage
   
   date          : "Date" date
   taxID         : "Tax ID" string 
@@ -18,5 +18,5 @@ form base {
   dateOfBirth   : "Date of birth" date
   placeOfBirth  : "Place of birth" string
   
-  validBaseData : "Form ok" boolean ( dateOfBirth < date )
+  validForm : "Form ok" boolean ( dateOfBirth < date && validMarriage)
 }
