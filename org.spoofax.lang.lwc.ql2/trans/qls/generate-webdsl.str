@@ -196,7 +196,7 @@ rules // QL group to WebDSL page elements
   	with
   		e_label        := <compile-ql-webdsl-exp> label;
   		passign_style* := <compile-qls-webdsl-simple-styles> styles;
-  		widget         := <debuga; fetch-elem(?Widget(_)) <+ !()> styles;
+  		widget         := <fetch-elem(?Widget(_)) <+ !()> styles;
   		elem_input     := <compile-qls-webdsl-group-input(|passign_style*, part_length, nr)> (widget, q)
   		
 	// Computed question
@@ -216,9 +216,9 @@ rules // QL group to WebDSL page elements
 
 rules // QLS widget styles to WebDSL input
 	
-	compile-qls-webdsl-group-input(|passign_style*, part_length, nr) = debug1; (
+	compile-qls-webdsl-group-input(|passign_style*, part_length, nr) = 
 		compile-qls-webdsl-group-input-special(|passign_style*, part_length, nr)
-		<+ compile-qls-webdsl-group-input-default(|passign_style*, part_length, nr))
+		<+ compile-qls-webdsl-group-input-default(|passign_style*, part_length, nr)
 	
 	// Default style
 	compile-qls-webdsl-group-input-default(|passign_styles, part_length, nr):
