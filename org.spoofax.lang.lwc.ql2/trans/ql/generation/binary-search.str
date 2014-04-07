@@ -36,9 +36,15 @@ rules
     ; <fputs; fclose> (content, file);
       <refresh-workspace-file> filename
       
-  generate-binary-search = 
-    ![ Form("form", [<generate-binary-search-question(|True(), 1024)> (1, 1024)])
-     | <generate-binary-search-forms(|True(), 1024)> (1, 1024) ]
+  generate-binary-search:
+    _ -> [f|fs]
+    with
+      fs := <generate-binary-search-forms(|True(), 1024)> (1, 1024)
+    ; i* := <map(form-to-import)> fs
+    ; f  := Form("form", [i*, <generate-binary-search-question(|True(), 1024)> (1, 1024)])
+  
+  form-to-import:
+    Form(f, _) -> FormImport(f)
     
   generate-binary-search-forms(|c, d):
     (i, j) -> res
