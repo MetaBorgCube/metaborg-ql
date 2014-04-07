@@ -15,7 +15,7 @@ rules
     with
       index-setup(|<language>, project-path)
     ; task-setup(|project-path)
-    ; [ f@Form(fn, _) ] := <generate-binary-search-forms(|True(), [], 16)> (1, 16)
+    ; [ f@Form(fn, _) ] := <generate-binary-search-forms(|True(), 16)> (1, 16)
     ; filename := $[[<dirname> path]/[fn].ql]
     ; result   := <strip-annos; pp-QL-string-debug> f
   
@@ -37,23 +37,30 @@ rules
       <refresh-workspace-file> filename
       
   generate-binary-search = 
-    ![ Form("form", [<generate-binary-search-question(|True(), 512)> (1, 512)])
-     | <generate-binary-search-forms(|True(), [], 512)> (1, 512) ]
+    ![ Form("form", [<generate-binary-search-question(|True(), 1024)> (1, 1024)])
+     | <generate-binary-search-forms(|True(), 1024)> (1, 1024) ]
     
-  generate-binary-search-forms(|c, i*, d):
+  generate-binary-search-forms(|c, d):
     (i, j) -> res
     with
       if <?16> d then
         q   := <generate-binary-search-question(|c, d)> (i, j)
+      ; if <?1> i then
+          i* := []
+        else
+          e  := <dec> i
+        ; s  := <subt> (i, d) 
+        ; i* := [FormImport($[form[s]to[e]])]
+        end
       ; res := [Form($[form[i]to[j]], [FormImport("form"), i*, q])] 
       else
         l1  := <label> (i, j)
       ; d'  := <div2> d
       ; h   := <add> (i, d')
       ; h'  := <dec> h
-      ; f1* := <generate-binary-search-forms(|Ref(l1), i*, d')> (i, h')
+      ; f1* := <generate-binary-search-forms(|Ref(l1), d')> (i, h')
       ; l2  := <label> (i, h')
-      ; f2* := <generate-binary-search-forms(|And(Ref(l1), Not(Ref(l2))), [i*, FormImport($[form[i]to[h']])], d')> (h, j)
+      ; f2* := <generate-binary-search-forms(|And(Ref(l1), Not(Ref(l2))), d')> (h, j)
       ; res := [f1*, f2*]
       end
         
