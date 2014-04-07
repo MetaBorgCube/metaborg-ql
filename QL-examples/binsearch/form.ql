@@ -1,4 +1,132 @@
 form form {
+  import form1to16
+
+  import form17to32
+
+  import form33to48
+
+  import form49to64
+
+  import form65to80
+
+  import form81to96
+
+  import form97to112
+
+  import form113to128
+
+  import form129to144
+
+  import form145to160
+
+  import form161to176
+
+  import form177to192
+
+  import form193to208
+
+  import form209to224
+
+  import form225to240
+
+  import form241to256
+
+  import form257to272
+
+  import form273to288
+
+  import form289to304
+
+  import form305to320
+
+  import form321to336
+
+  import form337to352
+
+  import form353to368
+
+  import form369to384
+
+  import form385to400
+
+  import form401to416
+
+  import form417to432
+
+  import form433to448
+
+  import form449to464
+
+  import form465to480
+
+  import form481to496
+
+  import form497to512
+
+  import form513to528
+
+  import form529to544
+
+  import form545to560
+
+  import form561to576
+
+  import form577to592
+
+  import form593to608
+
+  import form609to624
+
+  import form625to640
+
+  import form641to656
+
+  import form657to672
+
+  import form673to688
+
+  import form689to704
+
+  import form705to720
+
+  import form721to736
+
+  import form737to752
+
+  import form753to768
+
+  import form769to784
+
+  import form785to800
+
+  import form801to816
+
+  import form817to832
+
+  import form833to848
+
+  import form849to864
+
+  import form865to880
+
+  import form881to896
+
+  import form897to912
+
+  import form913to928
+
+  import form929to944
+
+  import form945to960
+
+  import form961to976
+
+  import form977to992
+
+  import form993to1008
+
+  import form1009to1024
+
   if (true) {
     q1to1024 : "Is the answer between 1 and 1024?" boolean
 
