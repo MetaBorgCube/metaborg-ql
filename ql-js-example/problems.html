@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+	<html>
+		<head>
+			<meta charset="UTF-8">
+			<title>Questionnaire - reference implementation</title>
+			<link href="css/QL.css" rel="stylesheet" type="text/css" media="all" />
+			<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+			<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+			<script type="text/javascript" src="http://underscorejs.org/underscore-min.js"></script>
+			<script type="text/javascript" src="http://www.decorplanit.com/plugin/autoNumeric-1.9.17.js"></script>
+			<link href="css/jquery-ui.css" rel="stylesheet" type="text/css" media="all" />
+			<script type="text/javascript">QLrt = {};</script>
+			<script type="text/javascript" src="js/framework/util.js"></script>
+			<script type="text/javascript" src="js/framework/structural-widgets.js"></script>
+			<script type="text/javascript" src="js/framework/value-widgets.js"></script>
+	
+			<script type="text/javascript">
+				$(document).ready(function () {
+				  var form = new QLrt.FormWidget({ name: "Problems", submitCallback: persist });
+				  
+				  
+				  var date = new QLrt.SimpleFormElementWidget({
+				    name        : "date"
+				  , label       : "What is the checkin date?"
+				  , valueWidget : new QLrt.DateValueWidget()
+				  }).appendTo(form);
+				  
+				  var kms = new QLrt.SimpleFormElementWidget({
+				    name        : "kms"
+				  , label       : "KM readout"
+				  , valueWidget : new QLrt.IntegerValueWidget()
+				  }).appendTo(form);
+				  
+				  var kmslast = new QLrt.SimpleFormElementWidget({
+				    name        : "kmslast"
+				  , label       : "KM last inspection"
+				  , valueWidget : new QLrt.IntegerValueWidget()
+				  }).appendTo(form);
+				  
+				  var travel = new QLrt.SimpleFormElementWidget({
+				    name        : "travel"
+				  , label       : "KM since last"
+				  , valueWidget : new QLrt.IntegerValueWidget(new QLrt.LazyValue(
+				                                                function () {
+				                                                  return [kms, kmslast];
+				                                                },
+				                                                function (kms, kmslast) {
+				                                                  return kms - kmslast;
+				                                                }
+				                                              ))
+				  }).appendTo(form);
+				  
+				  var probs = new QLrt.SimpleFormElementWidget({
+				    name        : "probs"
+				  , label       : "Does your car have any problems?"
+				  , valueWidget : new QLrt.BooleanValueWidget()
+				  }).appendTo(form);
+				  
+				  var sinceP = new QLrt.ConditionalFormElementWidget({
+				    name        : "sinceP"
+				  , label       : "Since when?"
+				  , valueWidget : new QLrt.DateValueWidget()
+				  , lazyValue   : new QLrt.LazyValue(
+				      function () {
+				        return [probs];
+				      },
+				      function (probs) {
+				        return probs;
+				      }
+				    )
+				  }).appendTo(form);
+				  
+				  var engineP = new QLrt.ConditionalFormElementWidget({
+				    name        : "engineP"
+				  , label       : "Are there problems with the engine?"
+				  , valueWidget : new QLrt.BooleanValueWidget()
+				  , lazyValue   : new QLrt.LazyValue(
+				      function () {
+				        return [probs];
+				      },
+				      function (probs) {
+				        return probs;
+				      }
+				    )
+				  }).appendTo(form);
+				  
+				  var drivetP = new QLrt.ConditionalFormElementWidget({
+				    name        : "drivetP"
+				  , label       : "Are there problems with the drivetrain?"
+				  , valueWidget : new QLrt.BooleanValueWidget()
+				  , lazyValue   : new QLrt.LazyValue(
+				      function () {
+				        return [probs];
+				      },
+				      function (probs) {
+				        return probs;
+				      }
+				    )
+				  }).appendTo(form);
+				  
+				  var bodyP = new QLrt.ConditionalFormElementWidget({
+				    name        : "bodyP"
+				  , label       : "Are there problems with the body?"
+				  , valueWidget : new QLrt.BooleanValueWidget()
+				  , lazyValue   : new QLrt.LazyValue(
+				      function () {
+				        return [probs];
+				      },
+				      function (probs) {
+				        return probs;
+				      }
+				    )
+				  }).appendTo(form);
+				  
+				  var desEngP = new QLrt.ConditionalFormElementWidget({
+				    name        : "desEngP"
+				  , label       : "Describe the problem with the engine"
+				  , valueWidget : new QLrt.StringValueWidget()
+				  , lazyValue   : new QLrt.LazyValue(
+				      function () {
+				        return [engineP];
+				      },
+				      function (engineP) {
+				        return engineP;
+				      }
+				    )
+				  }).appendTo(form);
+				  
+				  var desDrvP = new QLrt.ConditionalFormElementWidget({
+				    name        : "desDrvP"
+				  , label       : "Describe the problem with the drivetrain"
+				  , valueWidget : new QLrt.StringValueWidget()
+				  , lazyValue   : new QLrt.LazyValue(
+				      function () {
+				        return [drivetP];
+				      },
+				      function (drivetP) {
+				        return drivetP;
+				      }
+				    )
+				  }).appendTo(form);
+				  
+				  var desBdyP = new QLrt.ConditionalFormElementWidget({
+				    name        : "desBdyP"
+				  , label       : "Describe the problem with the body"
+				  , valueWidget : new QLrt.StringValueWidget()
+				  , lazyValue   : new QLrt.LazyValue(
+				      function () {
+				        return [bodyP];
+				      },
+				      function (bodyP) {
+				        return bodyP;
+				      }
+				    )
+				  }).appendTo(form);
+				  
+				  
+				  $('#QL-content').append(form.domElement());
+				  form.activate();
+				
+				  function persist(data) {
+				      localStorage['QL-persist'] = JSON.stringify(data);
+				  }
+				});
+				
+			</script>
+		</head>
+	<body>
+	<div id="container">
+	    <h1>Questionnaire</h1>
+	
+	    <div id="QL-content"></div>
+	</div>
+	</body>
+	</html>
