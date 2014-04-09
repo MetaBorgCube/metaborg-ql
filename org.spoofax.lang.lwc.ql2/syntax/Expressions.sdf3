@@ -1,8 +1,8 @@
-module ql/Expressions
+module Expressions
 
 imports
 
-	lexical/Common
+	Lexical
 
 templates
 	

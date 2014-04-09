@@ -20,9 +20,6 @@ binding rules
 	Form(f, _):
 		defines Form f
 		scopes Question
-		
-	FormImport(f) :
-		imports Question from Form f
 	
 	Question(q, l, t):
 		defines non-unique Question q

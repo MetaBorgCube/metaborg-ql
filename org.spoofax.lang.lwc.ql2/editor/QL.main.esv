@@ -20,7 +20,7 @@ language General properties
   description:   "Spoofax-generated editor for the QL language"
   url:           http://strategoxt.org
   
-  extensions:    ql, qls
+  extensions:    ql
   table:         include/QL.tbl
   start symbols: Start
   

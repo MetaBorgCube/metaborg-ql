@@ -9,8 +9,8 @@ imports
   
 rules
   
-  question-name: |[ if (c) { qid: label type  } ]| -> qid
-  question-name: |[ if (c) { qid: label texpr } ]| -> qid
+  question-name: Conditional(c, Question(qid, _, _)) -> qid
+  question-name: Conditional(c, Computed(qid, _, _)) -> qid
   
   depends-on(|q1) =
 	  qid2 := <question-name> 

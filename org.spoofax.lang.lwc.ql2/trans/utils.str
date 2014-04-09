@@ -4,10 +4,6 @@ imports
 	
 	include/QL
 
-rules // language selection
-	
-	ql-or-qls(ql, qls) = if ?QLS(_, _) then qls else ql end
-
 rules // set transitive closure
 	
 	transitive-closure(s) = transitive-closure(s|[])

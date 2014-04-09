@@ -3,16 +3,14 @@ module ql/analysis/dependencies
 imports
 
   include/QL
-
-relations
-
-  define transitive <depends-on:
         
 type rules
 
   True()   has dependency ()
   False()  has dependency () 
   Ref(qid) has dependency qid
+  
+type rules
   
   Not(e) has dependency dep
   where e has dependency dep
@@ -30,6 +28,12 @@ type rules
   where e1 has dependency dep1
     and e2 has dependency dep2
 
+relations
+
+  define transitive <depends-on:
+
+type rules
+
   Computed(qid, _, TExpr(_, e)):-
   where e has dependency dep
     and store qid <depends-on: dep
@@ -46,11 +50,3 @@ type rules
   where e has dependency dep
     and not( dep <depends-on: qid )
       else error "cyclic dependency" on qid
-      
-type rules
-
-  Question(qid, l, _)
-+ Computed(qid, l, _):-
-  where definition of qid has label l'
-    and l' == l
-   else error "Question has different labels" on qid

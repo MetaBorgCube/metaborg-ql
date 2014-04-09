@@ -5,14 +5,11 @@ imports
 	libstratego-gpp
 	lib/runtime/tmpl/pp
 	
-	Common.pp.generated
+	Lexical.pp.generated
 	Expressions.pp.generated
-	QL-Top.pp.generated
-	QL.pp.generated
-	QLS-Top.pp.generated
-	Styles.pp.generated
 	Types.pp.generated
-
+	QL.pp.generated
+	
 rules
 	
   pp-QL-string =

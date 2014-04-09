@@ -1,16 +1,39 @@
 module QL
 
 imports
-	
-	lexical/Common
-	ql/QL-Top
-	qls/QLS-Top
 
+  Expressions
+  Types
+	Lexical
+	
 context-free start-symbols
 
-  Start
+	Start
 
-templates
+templates // top-level
 
-  Start = <<Form>>
-	Start = <<QLS>>
+	Start.Form = <
+		form <ID> {
+			<Group*; separator="\n\n">
+		}
+	>
+	
+templates // questions
+
+	Group.Question = <
+		<ID> : <Label> <Type>
+	>
+	
+	Group.Computed = <
+		<ID> : <Label> <TyExpr>
+	>
+	
+	Label.Label = <<STRING>>
+	
+templates // conditional
+
+	Group.Conditional = <
+		if (<Expr>) {
+			<Group*; separator="\n\n">
+		}
+	>
