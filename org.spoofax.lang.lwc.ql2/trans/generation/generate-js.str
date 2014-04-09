@@ -1,16 +1,10 @@
-module ql/generation/generate-js
+module generation/generate-js
 
 imports
-  
-  libstratego-lib
-  libstratego-gpp
-  libstratego-aterm
-  lib/editor-common.generated
-
+	
   include/QL
-  lib/webdsl/WebDSL
-  lib/runtime/nabl/-
-  ql/analysis/names
+  
+  analysis/names
   
 rules
   
@@ -47,7 +41,7 @@ rules
 		]
        
   compile-ql-js: 
-    form@|[ form fid { question* } ]| ->
+    form@Form(fid, question*) ->
     $<$(document).ready(function () {
         var form = new QLrt.FormWidget({ name: "<fid>", submitCallback: persist });
         
@@ -67,7 +61,7 @@ rules
 rules // Questions
 
   compile-ql-js-question:
-    |[ if ( true ) { q* } ]| ->
+    Conditional(True(), [question]) ->
     $<var <qid> = new QLrt.SimpleFormElementWidget({
         name        : "<qid>"
       , label       : "<label>"
@@ -76,13 +70,12 @@ rules // Questions
       
     >
     with
-      q      := <Hd> q*
-    ; qid    := <compile-ql-js-qid> q
-    ; label  := <compile-ql-js-label> q 
-    ; widget := <compile-ql-js-widget> q
+      qid      := <compile-ql-js-qid> question
+    ; label    := <compile-ql-js-label> question
+    ; widget   := <compile-ql-js-widget> question
 
   compile-ql-js-question:
-    |[ if ( cond ) { q* } ]| ->
+    Conditional(cond, [question]) ->
     $<var <qid> = new QLrt.ConditionalFormElementWidget({
         name        : "<qid>"
       , label       : "<label>"
@@ -99,12 +92,11 @@ rules // Questions
       
     >
     where
-      not(|[ true ]| := cond)
+      not(True() := cond)
     with
-      q         := <Hd> q*
-    ; qid       := <compile-ql-js-qid> q
-    ; label     := <compile-ql-js-label> q 
-    ; widget    := <compile-ql-js-widget> q
+      qid       := <compile-ql-js-qid> question
+    ; label     := <compile-ql-js-label> question
+    ; widget    := <compile-ql-js-widget> question
     ; cond-dep* := <compile-ql-js-collect-dependencies> cond
     ; cond-deps := <separate-by(|", "); concat-strings> cond-dep*
     ; cond-expr := <compile-ql-js-exp> cond
@@ -112,10 +104,10 @@ rules // Questions
 rules // Widgets
   
   compile-ql-js-widget:
-    |[ qid : label t ]| -> <compile-ql-js-widget-impl(|"")> t
+    Question(_, _, t) -> <compile-ql-js-widget-impl(|"")> t
     
   compile-ql-js-widget:
-    |[ qid : label t ( exp ) ]| -> <compile-ql-js-widget-impl(|comp-val)> t
+    Computed(_, _, TExpr(t, exp)) -> <compile-ql-js-widget-impl(|comp-val)> t
     with
       exp-dep* := <compile-ql-js-collect-dependencies> exp
     ; exp-deps := <separate-by(|", "); concat-strings> exp-dep*
@@ -130,42 +122,42 @@ rules // Widgets
           }
         )>
   
-  compile-ql-js-widget-impl(|computed): ql |[ boolean ]| -> $<new QLrt.BooleanValueWidget(<computed>)>
-  compile-ql-js-widget-impl(|computed): ql |[ string  ]| -> $<new QLrt.StringValueWidget(<computed>)>
-  compile-ql-js-widget-impl(|computed): ql |[ integer ]| -> $<new QLrt.IntegerValueWidget(<computed>)>
-  compile-ql-js-widget-impl(|computed): ql |[ date    ]| -> $<new QLrt.DateValueWidget(<computed>)>
-  compile-ql-js-widget-impl(|computed): ql |[ decimal ]| -> $<new QLrt.DecimalValueWidget(<computed>)>
-  compile-ql-js-widget-impl(|computed): ql |[ money   ]| -> $<new QLrt.MoneyValueWidget(<computed>)>
+  compile-ql-js-widget-impl(|computed): BoolTy() -> $<new QLrt.BooleanValueWidget(<computed>)>
+  compile-ql-js-widget-impl(|computed): StringTy() -> $<new QLrt.StringValueWidget(<computed>)>
+  compile-ql-js-widget-impl(|computed): IntTy() -> $<new QLrt.IntegerValueWidget(<computed>)>
+  compile-ql-js-widget-impl(|computed): DateTy() -> $<new QLrt.DateValueWidget(<computed>)>
+  compile-ql-js-widget-impl(|computed): FloatTy() -> $<new QLrt.DecimalValueWidget(<computed>)>
+  compile-ql-js-widget-impl(|computed): MoneyTy() -> $<new QLrt.MoneyValueWidget(<computed>)>
   
 rules // Expressions
   
   compile-ql-js-exp = bottomup(where(is-string) <+ compile-ql-js-exp-part)
   
-  compile-ql-js-exp-part: ql |[ true     ]| -> "true"
-  compile-ql-js-exp-part: ql |[ false    ]| -> "false"
+  compile-ql-js-exp-part: True() -> "true"
+  compile-ql-js-exp-part: False() -> "false"
   
-  compile-ql-js-exp-part: ql |[ qid      ]| -> qid
+  compile-ql-js-exp-part: Ref(qid) -> qid
   
-  compile-ql-js-exp-part: ql |[ !e       ]| -> ${!{e}}
-  compile-ql-js-exp-part: ql |[ e1 && e2 ]| -> ${{e1} && {e2}}
-  compile-ql-js-exp-part: ql |[ e1 || e2 ]| -> ${{e1} || {e2}}
-  compile-ql-js-exp-part: ql |[ e1 <  e2 ]| -> ${{e1} < {e2}}
-  compile-ql-js-exp-part: ql |[ e1 <= e2 ]| -> ${{e1} <= {e2}}
-  compile-ql-js-exp-part: ql |[ e1 >  e2 ]| -> ${{e1} > {e2}}
-  compile-ql-js-exp-part: ql |[ e1 >= e2 ]| -> ${{e1} >= {e2}}
-  compile-ql-js-exp-part: ql |[ e1 == e2 ]| -> ${{e1} == {e2}}
-  compile-ql-js-exp-part: ql |[ e1 +  e2 ]| -> ${{e1} + {e2}}
-  compile-ql-js-exp-part: ql |[ e1 -  e2 ]| -> ${{e1} - {e2}}
-  compile-ql-js-exp-part: ql |[ e1 *  e2 ]| -> ${{e1} * {e2}}
-  compile-ql-js-exp-part: ql |[ e1 /  e2 ]| -> ${{e1} / {e2}}
+  compile-ql-js-exp-part: Not(e) -> ${!{e}}
+  compile-ql-js-exp-part: And(e1, e2) -> ${{e1} && {e2}}
+  compile-ql-js-exp-part: Or(e1, e2) -> ${{e1} || {e2}}
+  compile-ql-js-exp-part: Lt(e1, e2) -> ${{e1} < {e2}}
+  compile-ql-js-exp-part: Leq(e1, e2) -> ${{e1} <= {e2}}
+  compile-ql-js-exp-part: Gt(e1, e2) -> ${{e1} > {e2}}
+  compile-ql-js-exp-part: Geq(e1, e2) -> ${{e1} >= {e2}}
+  compile-ql-js-exp-part: Eq(e1, e2) -> ${{e1} == {e2}}
+  compile-ql-js-exp-part: Plus(e1, e2) -> ${{e1} + {e2}}
+  compile-ql-js-exp-part: Minus(e1, e2) -> ${{e1} - {e2}}
+  compile-ql-js-exp-part: Mul(e1, e2) -> ${{e1} * {e2}}
+  compile-ql-js-exp-part: Div(e1, e2) -> ${{e1} / {e2}}
   
 rules // Projections
   
   compile-ql-js-collect-dependencies = collect-all(?Ref(<id>))
   
-  compile-ql-js-qid: |[ qid : label t         ]| -> qid
-  compile-ql-js-qid: |[ qid : label t ( exp ) ]| -> qid
+	compile-ql-js-qid: Question(qid, _, _) -> qid
+  compile-ql-js-qid: Computed(qid, _, _) -> qid
   
-  compile-ql-js-label: |[ qid : label t         ]| -> <compile-ql-js-label-unquote> label
-  compile-ql-js-label: |[ qid : label t ( exp ) ]| -> <compile-ql-js-label-unquote> label
+  compile-ql-js-label: Question(_, label, _) -> <compile-ql-js-label-unquote> label
+  compile-ql-js-label: Computed(_, label, _) -> <compile-ql-js-label-unquote> label
 	compile-ql-js-label-unquote: Label(label-str) -> <un-double-quote> label-str

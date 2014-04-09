@@ -20,13 +20,13 @@ imports
 	pp
 	utils
 	
-	ql/analysis/desugar
-	ql/analysis/names
-	ql/analysis/types.generated
-	ql/analysis/dependencies.generated
-	ql/generation/generate-js
-	ql/sort
-	ql/store
+	analysis/desugar
+	analysis/names
+	analysis/types.generated
+	analysis/dependencies.generated
+	generation/generate-js
+	generation/sort
+	generation/store
 
 rules // Analysis
 	

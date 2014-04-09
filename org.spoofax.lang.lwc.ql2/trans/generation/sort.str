@@ -1,11 +1,10 @@
-module ql/sort
+module generation/sort
 
 imports
+	
   include/QL
+  
   lib/runtime/relations/-
-  lib/runtime/index/-
-  lib/runtime/task/-
-  lib/runtime/nabl/-
   
 rules
   

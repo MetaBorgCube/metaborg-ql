@@ -1,11 +1,9 @@
-module ql/store
+module generation/store
 
 imports
 	
 	include/QL
 
-	lib/runtime/index/-
-	lib/runtime/nabl/-
 	lib/runtime/properties/-
 	
 signature constructors

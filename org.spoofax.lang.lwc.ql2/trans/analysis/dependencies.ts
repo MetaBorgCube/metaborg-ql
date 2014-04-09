@@ -1,4 +1,4 @@
-module ql/analysis/dependencies
+module analysis/dependencies
 
 imports
 

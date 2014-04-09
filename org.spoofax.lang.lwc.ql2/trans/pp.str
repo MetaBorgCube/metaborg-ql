@@ -23,7 +23,3 @@ rules
        result := <pp-QL-string> ast
     <+ <bottomup(try(not(is-string); not(is-list); not(pp-QL-string); debug(!"cannot pp ")))> ast
     ;  result := ""
-
-  pp-webdsl-string =
-    ast2abox(|[<import-term(lib/webdsl/WebDSL.pp.af)>]);
-    box2text-string(|120)
