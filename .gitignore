@@ -13,16 +13,6 @@ org.spoofax.lang.lwc.ql/syntax/QLSgenerated.sdf
 org.spoofax.lang.lwc.qls/bin/.settings
 org.spoofax.lang.lwc.qls/bin/editor/*.generated.esv
 
-ql-webdsl-example/.saved-but-not-built
-ql-webdsl-example/.classpath
-ql-webdsl-example/.settings
-ql-webdsl-example/.cache
-ql-webdsl-example/.servletapp
-ql-webdsl-example/.webdsl-fragment-cache
-ql-webdsl-example/.webdsl-parsecache
-ql-webdsl-example/WebContent
-ql-webdsl-example/.saved-but-not-built
-
 org.spoofax.lang.lwc.ql2/syntax/lexical/Common.sdf
 org.spoofax.lang.lwc.ql2/syntax/ql/Expressions.sdf
 org.spoofax.lang.lwc.ql2/syntax/ql/QL-Top.sdf
@@ -34,5 +24,3 @@ org.spoofax.lang.lwc.ql2/trans/qls/names.str
 org.spoofax.lang.lwc.ql2/trans/ql/*.generated.str
 org.spoofax.lang.lwc.ql2/trans/qls/*.generated.str
 ql-js-example/.cache
-ql-js-example/*.ql
-names.str
