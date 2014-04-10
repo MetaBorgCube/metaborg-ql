@@ -2,7 +2,7 @@ module analysis/types
 
 imports
 
-	include/QL
+	include/QL // Ignore unresolved error
 
 type rules // Logical expressions
 

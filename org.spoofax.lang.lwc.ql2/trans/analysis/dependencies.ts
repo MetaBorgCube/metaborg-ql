@@ -2,7 +2,7 @@ module analysis/dependencies
 
 imports
 
-  include/QL
+  include/QL // Ignore unresolved error
         
 type rules
 
@@ -50,3 +50,4 @@ type rules
   where e has dependency dep
     and not( dep <depends-on: qid )
       else error "cyclic dependency" on qid
+
