@@ -36,10 +36,4 @@ menus
     
     action: "Generate JS HTML" = builder-generate-js-html (openeditor)
     action: "Generate JS" = builder-generate-js (openeditor)
-    action: "Generate WebDSL" = builder-generate-webdsl (openeditor)
-    action: "Show normalized QLS" = builder-normalize-qls (openeditor)
 
-  menu: "Examples"
-    action: "Generate small binary search tree example" = builder-generate-small-example (openeditor)
-    action: "Generate big binary search tree example" = builder-generate-big-example (openeditor)
-    action: "Generate bigger binary search tree example" = builder-generate-bigger-example (openeditor)
