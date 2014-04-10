@@ -4,8 +4,25 @@ start symbol Start
 
 test parse new literals [[
 	form f {
-		if(1 + 0.2 * $5.0) {
-			
-		}
+		if(1 + -0.2 / 0.5 * $5.0 > $-999) {}
 	}
 ]] parse succeeds
+
+test int literal type [[
+	form f {
+		if(1 > [[2]]) {}
+	}
+]] run get-type to IntTy()
+
+test decimal literal type [[
+	form f {
+		if(1 > [[2.0]]) {}
+	}
+]] run get-type to FloatTy()
+
+test money literal type [[
+	form f {
+		if($3 > [[$2.0]]) {}
+	}
+]] run get-type to MoneyTy()
+
