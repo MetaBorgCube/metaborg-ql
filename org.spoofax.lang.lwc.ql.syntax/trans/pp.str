@@ -1,0 +1,25 @@
+module pp
+
+imports
+
+	libstratego-gpp
+	lib/runtime/tmpl/pp
+	
+	Lexical.pp.generated
+	Expressions.pp.generated
+	Types.pp.generated
+	QL.pp.generated
+	
+rules
+	
+  pp-QL-string =
+    prettyprint-Start
+    ; !V([], <id>)
+    ; box2text-string(|120)
+      
+  pp-QL-string-debug :
+    ast -> result
+    with
+       result := <pp-QL-string> ast
+    <+ <bottomup(try(not(is-string); not(is-list); not(pp-QL-string); debug(!"cannot pp ")))> ast
+    ;  result := ""
