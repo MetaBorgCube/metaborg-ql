@@ -1,0 +1,15 @@
+module QL
+
+imports
+
+  Expressions
+  Types
+  Lexical
+	
+context-free start-symbols
+
+	Start Expr Type
+
+templates
+
+	Start.Form = <<>>

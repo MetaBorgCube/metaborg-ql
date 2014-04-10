@@ -1,0 +1,14 @@
+module QL-Completions
+
+imports
+
+	QL-Completions.generated
+	
+	Common.generated
+	Expressions.generated
+	Types.generated
+
+completions   
+
+  completion proposer : editor-complete
+  completion trigger  : ":"

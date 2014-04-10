@@ -1,0 +1,25 @@
+module analysis/desugar
+
+imports
+	
+	include/QL
+	
+rules
+
+	desugar-all:
+		Form(fid, q1*) -> Form(fid, q2*)
+		where
+			<normalize-questions> q1* => q2*
+
+	normalize-questions: [] -> []
+	normalize-questions =
+		repeat(
+				[normalize-question|id] 
+			+ normalize-group
+		); 
+		[id|normalize-questions]
+
+rules
+	
+	normalize-question = fail
+	normalize-group = fail
