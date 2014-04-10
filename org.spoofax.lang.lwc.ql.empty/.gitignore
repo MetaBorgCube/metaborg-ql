@@ -23,6 +23,7 @@ syntax/*.sdf
 lib/runtime
 lib/*.generated.str
 lib-refactoring/*.generated.str
-**.generated.*
 trans/ql/analysis/names.str
 utils
+*.generated.str
+*.generated.esv
