@@ -23,8 +23,8 @@ imports
 	analysis/names
 	analysis/types.generated
 	analysis/dependencies.generated
-	// generation/generate-js
-	// generation/sort
+	generation/generate-js
+	generation/sort
 
 rules // Analysis
 	
@@ -158,10 +158,6 @@ rules // Debugging
 		
 	debug-reanalyze = 
 		analysis-debug-reanalyze(|<language>)
-
-signature constructors
-	
-	Form : ID * List(Question) -> Start
 	
 rules
 	
