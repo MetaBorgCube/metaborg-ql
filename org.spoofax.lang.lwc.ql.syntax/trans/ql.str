@@ -162,7 +162,3 @@ rules // Debugging
 rules
 	
 	rename-form(|append) = Form(!$[[<id>][append]], id)
-	
-	sort-by-dependencies = fail
-	compile-ql-js = fail
-	compile-ql-js-html = fail
