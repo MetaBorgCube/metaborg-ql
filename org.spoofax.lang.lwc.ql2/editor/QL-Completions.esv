@@ -6,9 +6,6 @@ imports
 	
 	Common.generated
 	Expressions.generated
-	QL-Top.generated
-	QLS-Top.generated
-	Styles.generated
 	Types.generated
 
 completions   
