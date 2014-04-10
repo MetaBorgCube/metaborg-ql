@@ -1,0 +1,39 @@
+module QL
+
+imports
+
+  Expressions
+  Types
+  Lexical
+	
+context-free start-symbols
+
+	Start Expr Type
+
+templates // top-level
+
+	Start.Form = <
+		form <ID> {
+			<Question*; separator="\n\n">
+		}
+	>
+	
+templates // questions
+
+	Question.Question = <
+		<ID> : <Label> <Type>
+	>
+	
+	Question.Computed = <
+		<ID> : <Label> <TyExpr>
+	>
+	
+	Label.Label = <<STRING>>
+	
+templates // conditional
+
+	Question.Conditional = <
+		if (<Expr>) {
+			<Question*; separator="\n\n">
+		}
+	>
