@@ -71,7 +71,7 @@ rules // Editor services
     with
     	ext      := <get-extension> path;
       filename := <guarantee-extension(|$[pp.[ext]])> path;
-      result   := <pp-QL-string-debug> selected
+      result   := <rename-form(|"Formatted"); pp-QL-string-debug> selected
 
   editor-properties:
     (target, position, ast, path, project-path) ->
@@ -111,7 +111,7 @@ rules // Debugging
 		(selected, position, ast, path, project-path) -> (filename, result)
 		with
 			filename := <guarantee-extension(|"desugared.ql")> path;
-			result	 := <desugar-all; pp-QL-string-debug> selected
+			result	 := <desugar-all; rename-form(|"Desugared"); pp-QL-string-debug> selected
 
 	// Prints the desugared abstract syntax ATerm of a selection.
 	debug-show-desugared-aterm:
@@ -135,9 +135,9 @@ rules // Debugging
       task-setup(|project-path)
     with
       filename := <guarantee-extension(|"analyzed.ql")> path;
-      result   := <try(sort-by-dependencies; rename-form); strip-annos; pp-QL-string-debug> selected
+      result   := <try(sort-by-dependencies; rename-form(|"Sorted")); strip-annos; pp-QL-string-debug> selected
   		
-  rename-form = Form(!$[[<id>]Sorted], id)
+  rename-form(|append) = Form(!$[[<id>][append]], id)
   	
 	debug-index-project =
 		analysis-debug-index-project(|<language>)
