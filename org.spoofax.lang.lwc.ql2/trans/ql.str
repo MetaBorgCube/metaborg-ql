@@ -25,14 +25,12 @@ imports
 	analysis/dependencies.generated
 	generation/generate-js
 	generation/sort
-	generation/store
 
 rules // Analysis
 	
 	editor-analyze = analysis-default-editor
 	
-	analysis-pre-trans        = desugar-all
-	analysis-post-trans(|ctx) = ql-store-all(|ctx)
+	analysis-pre-trans = desugar-all
 	
 	analysis-single-default-interface = 
 		analysis-single-default(id, id, id|<language>)
