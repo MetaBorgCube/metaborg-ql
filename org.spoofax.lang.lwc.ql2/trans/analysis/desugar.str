@@ -26,10 +26,10 @@ rules
 		q@Computed(_, _, _) -> Conditional(True(), [q])
 	
 	normalize-question:
-		Conditional(c1, Conditional(c2, q*)) -> Conditional(And(c1, c2), q*)
+		Conditional(c1, [Conditional(c2, q*)]) -> Conditional(And(c1, c2), q*)
 		
 	normalize-group:
-		[Conditional(c, [q1, q2 | q1*]) | q2*] -> [Conditional(c, q1), Conditional(c, [q2 | q1*]) | q2*]
+		[Conditional(c, [q1, q2 | qs1]) | qs2] -> [Conditional(c, [q1]), Conditional(c, [q2 | qs1]) | qs2]
 
 // rules
 // 		
