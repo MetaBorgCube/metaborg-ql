@@ -1,0 +1,11 @@
+module extension
+language QL
+start symbol Start
+
+test parse new literals [[
+	form f {
+		if(1 + 0.2 * $5) {
+			
+		}
+	}
+]] parse succeeds

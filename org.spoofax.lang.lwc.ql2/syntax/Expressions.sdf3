@@ -45,3 +45,9 @@ templates
 template options
 
 	keyword -/- [a-zA-Z0-9\_]
+
+templates
+
+	Expr.IntLit   = <<INT>>
+	Expr.FloatLit = <<FLOAT>>
+	Expr.MoneyLit = <@ <FLOAT>>

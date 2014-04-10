@@ -79,6 +79,10 @@ type rules // Literals
 
 	True()  : BoolTy()
 	False() : BoolTy()
+	
+	IntLit(_)   : IntTy()
+	FloatLit(_) : FloatTy()
+	MoneyLit(_) : MoneyTy()
 
 type rules
 

@@ -135,6 +135,9 @@ rules // Expressions
   
   compile-ql-js-exp-part: True()  -> "true"
   compile-ql-js-exp-part: False() -> "false"
+  compile-ql-js-exp-part: IntLit(i) -> i
+  compile-ql-js-exp-part: FloatLit(f) -> f
+  compile-ql-js-exp-part: MoneyLit(m) -> m 
   
   compile-ql-js-exp-part: Ref(qid) -> qid
   
