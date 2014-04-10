@@ -34,15 +34,15 @@ org.spoofax.lang.lwc.ql.analysis/trans/qls/names.str
 org.spoofax.lang.lwc.ql.analysis/trans/ql/*.generated.str
 org.spoofax.lang.lwc.ql.analysis/trans/qls/*.generated.str
 
-org.spoofax.lang.lwc.ql2/syntax/lexical/Common.sdf
-org.spoofax.lang.lwc.ql2/syntax/ql/Expressions.sdf
-org.spoofax.lang.lwc.ql2/syntax/ql/QL-Top.sdf
-org.spoofax.lang.lwc.ql2/syntax/ql/Types.sdf
-org.spoofax.lang.lwc.ql2/syntax/qls/QLS-Top.sdf
-org.spoofax.lang.lwc.ql2/syntax/qls/Styles.sdf
-org.spoofax.lang.lwc.ql2/trans/ql/names.str
-org.spoofax.lang.lwc.ql2/trans/qls/names.str
-org.spoofax.lang.lwc.ql2/trans/ql/*.generated.str
-org.spoofax.lang.lwc.ql2/trans/qls/*.generated.str
+org.spoofax.lang.lwc.ql.full/syntax/lexical/Common.sdf
+org.spoofax.lang.lwc.ql.full/syntax/ql/Expressions.sdf
+org.spoofax.lang.lwc.ql.full/syntax/ql/QL-Top.sdf
+org.spoofax.lang.lwc.ql.full/syntax/ql/Types.sdf
+org.spoofax.lang.lwc.ql.full/syntax/qls/QLS-Top.sdf
+org.spoofax.lang.lwc.ql.full/syntax/qls/Styles.sdf
+org.spoofax.lang.lwc.ql.full/trans/ql/names.str
+org.spoofax.lang.lwc.ql.full/trans/qls/names.str
+org.spoofax.lang.lwc.ql.full/trans/ql/*.generated.str
+org.spoofax.lang.lwc.ql.full/trans/qls/*.generated.str
 
 ql-js-example/.cache

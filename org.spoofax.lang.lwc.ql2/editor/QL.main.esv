@@ -14,7 +14,7 @@ imports
 language General properties
   
   name:          QL
-  id:            org.spoofax.lang.lwc.ql2
+  id:            org.spoofax.lang.lwc.ql.full
   extends:       Root
   
   description:   "Spoofax-generated editor for the QL language"

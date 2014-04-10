@@ -8,16 +8,16 @@
             description="QL"
             language="QL"
             derivedFrom="DynamicRoot"
-            validator="org.spoofax.lang.lwc.ql2.QLValidator"
-            validatorClass="org.spoofax.lang.lwc.ql2.QLValidator"
+            validator="org.spoofax.lang.lwc.ql.full.QLValidator"
+            validatorClass="org.spoofax.lang.lwc.ql.full.QLValidator"
       ></language>
    </extension>
    <extension
-         id="org.spoofax.lang.lwc.ql2.parser"
+         id="org.spoofax.lang.lwc.ql.full.parser"
          name="QL Parser"
          point="org.eclipse.imp.runtime.parser">
       <parser
-            class="org.spoofax.lang.lwc.ql2.QLParseController"
+            class="org.spoofax.lang.lwc.ql.full.QLParseController"
             language="QL">
       </parser>
    </extension>    
