@@ -50,4 +50,5 @@ templates
 
 	Expr.IntLit   = <<INT>>
 	Expr.FloatLit = <<FLOAT>>
-	Expr.MoneyLit = <@ <FLOAT>>
+	Expr.MoneyLit = <$<FLOAT>>
+	Expr.MoneyLit = <$<INT>>

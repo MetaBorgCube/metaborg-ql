@@ -6,9 +6,13 @@ imports
         
 type rules
 
-  True()   has dependency ()
-  False()  has dependency () 
-  Ref(qid) has dependency qid
+  True()      has dependency ()
+  False()     has dependency ()
+  IntLit(_)   has dependency ()
+  FloatLit(_) has dependency ()
+  MoneyLit(_) has dependency ()
+  
+  Ref(qid)    has dependency qid
   
 type rules
   
