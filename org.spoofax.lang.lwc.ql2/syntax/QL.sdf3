@@ -4,7 +4,7 @@ imports
 
   Expressions
   Types
-	Lexical
+  Lexical
 	
 context-free start-symbols
 
@@ -14,17 +14,17 @@ templates // top-level
 
 	Start.Form = <
 		form <ID> {
-			<Group*; separator="\n\n">
+			<Question*; separator="\n\n">
 		}
 	>
 	
 templates // questions
 
-	Group.Question = <
+	Question.Question = <
 		<ID> : <Label> <Type>
 	>
 	
-	Group.Computed = <
+	Question.Computed = <
 		<ID> : <Label> <TyExpr>
 	>
 	
@@ -32,8 +32,8 @@ templates // questions
 	
 templates // conditional
 
-	Group.Conditional = <
+	Question.Conditional = <
 		if (<Expr>) {
-			<Group*; separator="\n\n">
+			<Question*; separator="\n\n">
 		}
 	>
