@@ -4,7 +4,8 @@ imports
 
 	QL-Completions.generated
 	
-	Common.generated
+	QL.generated
+	Lexical.generated
 	Expressions.generated
 	Types.generated
 
