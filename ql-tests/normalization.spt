@@ -6,7 +6,7 @@ test normalize no condition for question [[
 	form f {
 		q : "Question" boolean
 	}
-]] run desugar-all to [[
+]] run normalize-all to [[
 	form f {
 		if(true) { q : "Question" boolean }
 	}	
@@ -16,7 +16,7 @@ test normalize no condition for computed [[
 	form f {
 		q : "Question" boolean(true)
 	}
-]] run desugar-all to [[
+]] run normalize-all to [[
 	form f {
 		if(true) { q : "Question" boolean(true) }
 	}	
@@ -32,7 +32,7 @@ test normalize nested condition [[
 			}
 		}
 	}
-]] run desugar-all to [[
+]] run normalize-all to [[
 	form f {
 		if(true) { q1 : "Question 1" boolean }
 		if(true) { q2 : "Question 2" boolean }
@@ -48,7 +48,7 @@ test normalize multiple questions in condition [[
 			q3 : "Question 3" boolean
 		}
 	}
-]] run desugar-all to [[
+]] run normalize-all to [[
 	form f {
 		if(true) { q1 : "Question 1" boolean }
 		if(q1) { q2 : "Question 2" boolean }
