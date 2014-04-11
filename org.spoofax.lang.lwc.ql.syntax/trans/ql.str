@@ -19,7 +19,7 @@ imports
 	
 	pp
 	
-	analysis/desugar
+	analysis/normalize
 	analysis/names
 	analysis/types.generated
 	analysis/dependencies.generated
@@ -30,7 +30,7 @@ rules // Analysis
 	
 	editor-analyze = analysis-default-editor
 	
-	analysis-pre-trans = desugar-all
+	analysis-pre-trans = normalize-all
 	
 	analysis-single-default-interface = 
 		analysis-single-default(id, id, id|<language>)
@@ -106,19 +106,19 @@ rules // Debugging
 			filename := <guarantee-extension(|"aterm")> path;
 			result	 := selected
 
-	// Prints the desugared concrete syntax of a selection.
-	debug-show-desugared:
+	// Prints the normalized concrete syntax of a selection.
+	debug-show-normalized:
 		(selected, position, ast, path, project-path) -> (filename, result)
 		with
-			filename := <guarantee-extension(|"desugared.ql")> path;
-			result	 := <desugar-all; rename-form(|"Desugared"); pp-QL-string-debug> selected
+			filename := <guarantee-extension(|"normalized.ql")> path;
+			result	 := <normalize-all; rename-form(|"normalized"); pp-QL-string-debug> selected
 
-	// Prints the desugared abstract syntax ATerm of a selection.
-	debug-show-desugared-aterm:
+	// Prints the normalized abstract syntax ATerm of a selection.
+	debug-show-normalized-aterm:
 		(selected, position, ast, path, project-path) -> (filename, result)
 		with
-			filename := <guarantee-extension(|"desugared.aterm")> path;
-			result	 := <desugar-all> selected
+			filename := <guarantee-extension(|"normalized.aterm")> path;
+			result	 := <normalize-all> selected
 			
 	// Prints the analyzed abstract syntax ATerm.
 	debug-show-analyzed-aterm:
