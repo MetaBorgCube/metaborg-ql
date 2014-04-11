@@ -8,7 +8,7 @@ imports
   
 rules
   
- outline = simple-label-outline(to-outline-label)
+  outline = simple-label-outline(to-outline-label)
   
   to-outline-label:
     Form(f, _) -> f{"icons/file_obj.gif"}
@@ -22,4 +22,9 @@ rules
     Computed(_, Label(l), _) -> l'{"icons/information.gif"}
     with
       l' := <un-double-quote> l
+    
+  to-outline-label: 
+    Conditional(c, _) -> l{"icons/linkto_help.gif"}
+    with
+      l := <origin-text> c
     
