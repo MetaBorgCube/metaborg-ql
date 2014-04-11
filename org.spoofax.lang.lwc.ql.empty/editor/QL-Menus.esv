@@ -4,12 +4,12 @@ menus
 
   menu: "Syntax"
     
-    action: "Format"               = editor-format (openeditor) (realtime) (source)
-    action: "Show abstract aterm"  = debug-show-aterm (openeditor) (realtime) (meta) (source)
+    action: "Format"                = editor-format (openeditor) (realtime) (source)
+    action: "Show abstract syntax"  = debug-show-aterm (openeditor) (realtime) (meta) (source)
     action: "Show normalized"       = debug-show-normalized (openeditor) (realtime) (meta) (source)
-    action: "Show normalized aterm" = debug-show-normalized-aterm (openeditor) (realtime) (meta) (source)
-    action: "Show analyzed"        = debug-show-analyzed       (openeditor) (meta)
-    action: "Show analyzed aterm"  = debug-show-analyzed-aterm (openeditor) (meta)
+    action: "Show normalized ATerm" = debug-show-normalized-aterm (openeditor) (realtime) (meta) (source)
+    action: "Show analyzed"         = debug-show-analyzed       (openeditor) (meta)
+    action: "Show analyzed ATerm"   = debug-show-analyzed-aterm (openeditor) (meta)
     
   menu: "Analysis"
     
