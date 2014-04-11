@@ -1,15 +1,31 @@
 module editor/QL-Outliner
 
 imports
-	
   include/QL
   lib/runtime/editor/outline-library
   lib/runtime/editor/origins
+  libstrategolib
   
 rules
   
-	outline = simple-label-outline(to-outline-label)
+  outline = simple-label-outline(to-outline-label)
   
-rules
+  to-outline-label:
+    Form(f, _) -> f{"icons/file_obj.gif"}
   
-  to-outline-label = fail
+  to-outline-label: 
+    Question(_, Label(l), _) -> l'{"icons/linkto_help.gif"}
+    with
+      l' := <un-double-quote> l
+      
+  to-outline-label: 
+    Computed(_, Label(l), _) -> l'{"icons/information.gif"}
+    with
+      l' := <un-double-quote> l
+    
+  to-outline-label: 
+    Conditional(c, _) -> l{"icons/linkto_help.gif"}
+    with
+      l := <origin-text> c
+    
+  
