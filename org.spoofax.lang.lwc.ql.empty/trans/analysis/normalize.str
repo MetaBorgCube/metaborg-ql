@@ -1,4 +1,4 @@
-module analysis/desugar
+module analysis/normalize
 
 imports
 	
@@ -6,7 +6,7 @@ imports
 	
 rules
 
-	desugar-all:
+	normalize-all:
 		Form(fid, q1*) -> Form(fid, q2*)
 		where
 			<normalize-questions> q1* => q2*
