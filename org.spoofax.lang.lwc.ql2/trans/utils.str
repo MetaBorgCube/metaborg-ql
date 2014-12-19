@@ -23,29 +23,12 @@ rules // set transitive closure
 	
 rules // lists & sets
 	
-	// make-set with custom equality checker
 	make-set(eq) = foldr(![], union(eq), ![<id>])
 	
-	// move the head of a list to the tail of the list
 	hd-to-tl = <conc> (<Tl>, [<Hd>])
 	
-	/*
-	* Compute the sub-list of duplicate items.
-	* 
-	* @param eq (a, a) -?> b
-	*				Strategy for checking equality of two elements
-	* @param swp (a, b) -?> (b,a) 
-	* 			Strategy for swaping elements if required (for sorting)
-	* @type List(a) -> List(b)
-	*/
 	duplicates(eq,swp) = ?[_];![] <+ qsort(swp); duplicates(eq)
 	
-	/*
-	* Compute the sub-list of duplicate items in a sorted list.
-	* @param eq (a, a) -?> b
-	*				Strategy for checking equality of two elements
-	* @type List(a) -> List(b)
-	*/
 	duplicates(eq) = ?[_];![] <+ <zip> (<id>, <hd-to-tl>); filter(eq)
 	
 rules

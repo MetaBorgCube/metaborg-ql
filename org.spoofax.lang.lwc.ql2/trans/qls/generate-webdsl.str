@@ -190,7 +190,6 @@ rules // QLS part to WebDSL elements
 			
 rules // QL group to WebDSL page elements
 	
-	// Regular question
   compile-qls-webdsl-group(|styles, part_length, nr): 
   	q@|[ qid : label t ]| -> elem |[ controlGroup(e_label) [passign_style*] { elem_input } ]|
   	with
@@ -199,7 +198,6 @@ rules // QL group to WebDSL page elements
   		widget         := <fetch-elem(?Widget(_)) <+ !()> styles;
   		elem_input     := <compile-qls-webdsl-group-input(|passign_style*, part_length, nr)> (widget, q)
   		
-	// Computed question
   compile-qls-webdsl-group(|styles, part_length, nr): 
   	|[ qid : label t ( exp ) ]| -> elem |[ controlGroup(e_label) [passign_style*] { output(e_typeExp) [passign_style*] } ]|
   	with
@@ -207,7 +205,6 @@ rules // QL group to WebDSL page elements
   		e_typeExp      := <compile-ql-webdsl-exp> exp;
   		passign_style* := <compile-qls-webdsl-simple-styles> styles
   		
-	// Condition
   compile-qls-webdsl-group(|styles, part_length, nr): 
   	|[ if ( cond ) { q* } ]| -> elem |[ if (e_cond) { elem_group* } ]|
   	with
@@ -220,7 +217,6 @@ rules // QLS widget styles to WebDSL input
 		compile-qls-webdsl-group-input-special(|passign_style*, part_length, nr)
 		<+ compile-qls-webdsl-group-input-default(|passign_style*, part_length, nr)
 	
-	// Default style
 	compile-qls-webdsl-group-input-default(|passign_styles, part_length, nr):
 		(_, |[ qid : label t ]|) -> result
 		with
@@ -238,7 +234,6 @@ rules // QLS widget styles to WebDSL input
 			otherwise     : !passign |[oninput=update(x_updates)]|
 		end
 	
-	// Special styling for boolean widgets with radio or dropdown style.		
 	compile-qls-webdsl-group-input-special(|passign_styles, part_length, nr):
 		(Widget(widget), |[ qid : label boolean ]|) -> call |[ x_call [passign_all*] ]|
 		where

@@ -1,0 +1,33 @@
+Stratego
+    filter remove_matches ^\s*//
+    filter call_regexp_common C
+    extension str
+    3rd_gen_scale 1.00
+SDF2
+    filter remove_matches ^\s*%%
+    extension sdf
+    3rd_gen_scale 1.00
+SDF3
+    filter remove_matches ^\s*//
+    filter call_regexp_common C
+    extension tmpl
+    extension sdf3
+    3rd_gen_scale 1.00
+ESV
+    filter remove_matches ^\s*%%
+    extension esv
+    3rd_gen_scale 1.00
+Meta
+    extension meta
+    3rd_gen_scale 1.00
+NaBL
+    filter remove_matches ^\s*//
+    filter call_regexp_common C
+    extension nd
+    extension nab
+    3rd_gen_scale 1.00
+TS
+    filter remove_matches ^\s*//
+    filter call_regexp_common C
+    extension ts
+    3rd_gen_scale 1.00

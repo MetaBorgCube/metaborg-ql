@@ -16,4 +16,3 @@ rules
 		|[ import fid ]| -> question*
 		with
 			Form(_, question*) := <get-stored-ast> fid
-

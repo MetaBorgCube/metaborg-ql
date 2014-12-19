@@ -2,44 +2,6 @@ module QL-Menus
 
 menus
 
-  menu: "Syntax"
-    
-    action: "Format"               = editor-format (openeditor) (realtime) (source)
-    action: "Show abstract aterm"  = debug-show-aterm (openeditor) (realtime) (meta) (source)
-    action: "Show desugared"       = debug-show-desugared (openeditor) (realtime) (meta) (source)
-    action: "Show desugared aterm" = debug-show-desugared-aterm (openeditor) (realtime) (meta) (source)
-    action: "Show analyzed"        = debug-show-analyzed       (openeditor) (meta)
-    action: "Show analyzed aterm"  = debug-show-analyzed-aterm (openeditor) (meta)
-    
-  menu: "Analysis"
-    
-    action: "Reset and reanalyze"  = debug-reanalyze (meta)   
-
-    submenu: "Show analysis"
-      action: "Project"            = debug-project (openeditor) (meta)
-      action: "Partition"          = debug-partition (openeditor) (meta)
-    end
-    
-    submenu: "Show index"
-      action: "Project"            = debug-index-project (openeditor) (meta)
-      action: "Project (resolved)" = debug-index-project-resolve (openeditor) (meta)
-      action: "Partition"          = debug-index-partition (openeditor) (meta)
-    end
-    
-    submenu: "Show tasks"
-      action: "Project"            = debug-task-project (openeditor) (meta)
-      action: "Partition"          = debug-task-partition (openeditor) (meta)
-      action: "Selection"          = debug-task-selection (openeditor) (meta)
-    end
-  
   menu: "Semantics"
-    
-    action: "Generate JS HTML" = builder-generate-js-html (openeditor)
-    action: "Generate JS" = builder-generate-js (openeditor)
-    action: "Generate WebDSL" = builder-generate-webdsl (openeditor)
-    action: "Show normalized QLS" = builder-normalize-qls (openeditor)
 
-  menu: "Examples"
-    action: "Generate small binary search tree example" = builder-generate-small-example (openeditor)
-    action: "Generate big binary search tree example" = builder-generate-big-example (openeditor)
-    action: "Generate bigger binary search tree example" = builder-generate-bigger-example (openeditor)
+    action: "Generate WebDSL" = builder-generate-webdsl (openeditor)
