@@ -10,15 +10,15 @@ context-free start-symbols
 
 	Start Expr Type
 
-templates // top-level
+context-free syntax // top-level
 
 	Start.Form = <
 		form <ID> {
-			<Question*; separator="\n\n">
+			<{Question "\n\n"}*>
 		}
 	>
 	
-templates // questions
+context-free syntax // questions
 
 	Question.Question = <
 		<ID> : <Label> <Type>
@@ -28,12 +28,12 @@ templates // questions
 		<ID> : <Label> <TyExpr>
 	>
 	
-	Label.Label = <<STRING>>
+	Label.Label = STRING
 	
-templates // conditional
+context-free syntax // conditional
 
 	Question.Conditional = <
 		if (<Expr>) {
-			<Question*; separator="\n\n">
+      <{Question "\n\n"}*>
 		}
 	>

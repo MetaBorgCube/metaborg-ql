@@ -4,7 +4,7 @@ imports
 
 	Lexical
 
-templates
+context-free syntax
 	
 	Expr = <(<Expr>)> {bracket}
 	
@@ -34,7 +34,7 @@ context-free priorities
 	{left: Expr.And } >
 	{left: Expr.Or }
 
-templates
+context-free syntax
 
 	Expr.True  = <true>
 	Expr.False = <false>
@@ -46,9 +46,9 @@ template options
 
 	keyword -/- [a-zA-Z0-9\_]
 
-templates
+context-free syntax
 
-	Expr.IntLit   = <<INT>>
-	Expr.FloatLit = <<FLOAT>>
-	Expr.MoneyLit = <$<FLOAT>>
-	Expr.MoneyLit = <$<INT>>
+	NumLit.IntLit   = INT
+	NumLit.FloatLit = FLOAT
+	Expr            = NumLit
+	Expr.MoneyLit   = <$<NumLit>>

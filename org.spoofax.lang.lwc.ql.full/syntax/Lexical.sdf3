@@ -2,23 +2,23 @@ module Lexical
 
 lexical syntax
 
-  [a-zA-Z][a-zA-Z0-9]*   -> ID
-  "-"? [0-9]+            -> INT
-  "-"? [0-9]+ "." [0-9]+ -> FLOAT
+  ID    = [a-zA-Z][a-zA-Z0-9]*
+  INT   = "-"? [0-9]+           
+  FLOAT = "-"? [0-9]+ "." [0-9]+ 
   
-  "\"" StringChar* "\"" -> STRING
-  ~[\"\n]               -> StringChar
-  "\\\""                -> StringChar
-  BackSlashChar         -> StringChar
-  "\\"                  -> BackSlashChar
+  STRING        = "\"" StringChar* "\""
+  StringChar    = ~[\"\n]
+  StringChar    = "\\\""
+  StringChar    = BackSlashChar 
+  BackSlashChar = "\\"
   
-  [\ \t\n\r] -> LAYOUT
+  LAYOUT = [\ \t\n\r]
   
-  [\*]                             -> CommentChar
-  "/*" (~[\*] | CommentChar)* "*/" -> LAYOUT
-  "//" ~[\n\r]* ([\n\r] | EOF)     -> LAYOUT
+  CommentChar = [\*]
+  LAYOUT      = "/*" (~[\*] | CommentChar)* "*/"
+  LAYOUT      = "//" ~[\n\r]* ([\n\r] | EOF)
   
-  -> EOF
+  EOF =
 
 lexical restrictions
 
