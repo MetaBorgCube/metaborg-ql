@@ -25,5 +25,6 @@ lib/*.generated.str
 lib-refactoring/*.generated.str
 *.generated.str
 *.generated.esv
-trans/ql/analysis/names.str
+trans/analysis/names.str
 utils
+/src-gen
