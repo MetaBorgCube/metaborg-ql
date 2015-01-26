@@ -27,5 +27,3 @@ language General properties
   provider:      include/ql.ctree
   
   observer:      editor-analyze (multifile)
-  
-  // on save:       editor-save
