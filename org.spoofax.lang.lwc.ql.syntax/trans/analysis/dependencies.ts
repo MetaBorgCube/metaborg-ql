@@ -2,4 +2,4 @@ module analysis/dependencies
 
 imports
 
-  include/QL // Ignore unresolved error
+  include/QL analysis/names // Ignore unresolved errors
