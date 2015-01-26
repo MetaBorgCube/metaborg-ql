@@ -2,14 +2,14 @@ module Types
 
 imports
 
-	Expressions
+  Expressions
 
-templates
+context-free syntax
 
-	Type.BoolTy   = <boolean>
-	Type.StringTy = <string>
-	Type.IntTy    = <integer>
-	Type.DateTy   = <date>
-	Type.FloatTy  = <decimal>
-	Type.MoneyTy  = <money>
-	TyExpr.TExpr  = <<Type> ( <Expr> )>
+  Type.BoolTy   = <boolean>
+  Type.StringTy = <string>
+  Type.IntTy    = <integer>
+  Type.DateTy   = <date>
+  Type.FloatTy  = <decimal>
+  Type.MoneyTy  = <money>
+  TyExpr.TExpr  = <<Type> ( <Expr> )>

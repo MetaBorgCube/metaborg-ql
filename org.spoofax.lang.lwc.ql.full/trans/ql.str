@@ -136,8 +136,6 @@ rules // Debugging
     with
       filename := <guarantee-extension(|"analyzed.ql")> path;
       result   := <try(sort-by-dependencies; rename-form(|"Sorted")); strip-annos; pp-QL-string-debug> selected
-      
-  rename-form(|append) = Form(!$[[<id>][append]], id)
     
   debug-index-project =
     analysis-debug-index-project(|<language>)
@@ -160,3 +158,7 @@ rules // Debugging
     
   debug-reanalyze = 
     analysis-debug-reanalyze(|<language>)
+
+rules
+  
+  rename-form(|append) = Form(!$[[<id>][append]], id)

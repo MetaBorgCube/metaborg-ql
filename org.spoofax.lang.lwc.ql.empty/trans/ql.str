@@ -18,10 +18,19 @@ imports
   lib/runtime/editor/-
   
   pp
+  
+  analysis/normalize
+  analysis/names
+  analysis/types.generated
+  analysis/dependencies.generated
+  // generation/generate-js
+  // generation/sort
 
 rules // Analysis
   
   editor-analyze = analysis-default-editor
+  
+  analysis-pre-trans = normalize-all
   
   analysis-single-default-interface = 
     analysis-single-default(id, id, id|<language>)
@@ -64,6 +73,30 @@ rules // Editor services
       filename := <guarantee-extension(|$[pp.[ext]])> path;
       result   := <rename-form(|"Formatted"); pp-QL-string-debug> selected
 
+  editor-properties:
+    (target, position, ast, path, project-path) ->
+      <get-editor-properties(debug; pp-QL-string |<language>, project-path); debug> target
+      
+rules // Builders
+  
+  builder-generate-js:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+      index-setup(|<language>, project-path);
+      task-setup(|project-path)
+    with
+      filename := <guarantee-extension(|"js")> path;
+      result   := <sort-by-dependencies; compile-ql-js> ast
+      
+  builder-generate-js-html:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+      index-setup(|<language>, project-path);
+      task-setup(|project-path)
+    with
+      filename := <guarantee-extension(|"html")> path;
+      result   := <sort-by-dependencies; compile-ql-js-html> ast
+
 rules // Debugging
   
   // Prints the abstract syntax ATerm of a selection.
@@ -73,6 +106,59 @@ rules // Debugging
       filename := <guarantee-extension(|"aterm")> path;
       result   := selected
 
+  // Prints the normalized concrete syntax of a selection.
+  debug-show-normalized:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+      filename := <guarantee-extension(|"normalized.ql")> path;
+      result   := <normalize-all; rename-form(|"normalized"); pp-QL-string-debug> selected
+
+  // Prints the normalized abstract syntax ATerm of a selection.
+  debug-show-normalized-aterm:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+      filename := <guarantee-extension(|"normalized.aterm")> path;
+      result   := <normalize-all> selected
+      
+  // Prints the analyzed abstract syntax ATerm.
+  debug-show-analyzed-aterm:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+      filename := <guarantee-extension(|"analyzed.aterm")> path;
+      result   := ast
+  
+  // Prints the analyzed concrete syntax of a selection.
+  debug-show-analyzed:
+    (selected, position, ast, path, project-path) -> (filename, result)
+    with
+      index-setup(|<language>, project-path);
+      task-setup(|project-path)
+    with
+      filename := <guarantee-extension(|"analyzed.ql")> path;
+      result   := <try(sort-by-dependencies; rename-form(|"Sorted")); strip-annos; pp-QL-string-debug> selected
+    
+  debug-index-project =
+    analysis-debug-index-project(|<language>)
+  debug-index-project-resolve = 
+    analysis-debug-index-project-resolve(|<language>)
+  debug-index-partition =
+    analysis-debug-index-partition(|<language>)
+
+  debug-task-project =
+    analysis-debug-task-project(|<language>)
+  debug-task-partition =
+    analysis-debug-task-partition(|<language>)
+  debug-task-selection = 
+    analysis-debug-task-selection(|<language>)
+    
+  debug-project =
+    analysis-debug-project(|<language>)
+  debug-partition =
+    analysis-debug-partition(|<language>)
+    
+  debug-reanalyze = 
+    analysis-debug-reanalyze(|<language>)
+
 signature constructors
   
   Form : ID * List(Question) -> Start
@@ -80,3 +166,6 @@ signature constructors
 rules
   
   rename-form(|append) = Form(!$[[<id>][append]], id)
+  sort-by-dependencies = fail
+  compile-ql-js = fail
+  compile-ql-js-html = fail

@@ -36,4 +36,3 @@ menus
     
     action: "Generate JS HTML" = builder-generate-js-html (openeditor)
     action: "Generate JS" = builder-generate-js (openeditor)
-

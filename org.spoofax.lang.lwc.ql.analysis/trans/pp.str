@@ -4,11 +4,7 @@ imports
 
 	libstratego-gpp
 	lib/runtime/tmpl/pp
-	
-	Lexical.pp.generated
-	Expressions.pp.generated
-	Types.pp.generated
-	QL.pp.generated
+  src-gen/pp/QL-pp
 	
 rules
 	
