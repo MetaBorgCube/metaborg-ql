@@ -27,4 +27,3 @@ rules
     Conditional(c, _) -> l{"icons/linkto_help.gif"}
     with
       l := <origin-text> c
-    

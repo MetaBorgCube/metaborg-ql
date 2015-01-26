@@ -5,35 +5,35 @@ imports
   Expressions
   Types
   Lexical
-	
+  
 context-free start-symbols
 
-	Start Expr Type
+  Start Expr Type
 
 context-free syntax // top-level
 
-	Start.Form = <
-		form <ID> {
-			<{Question "\n\n"}*>
-		}
-	>
-	
+  Start.Form = <
+    form <ID> {
+      <{Question "\n\n"}*>
+    }
+  >
+  
 context-free syntax // questions
 
-	Question.Question = <
-		<ID> : <Label> <Type>
-	>
-	
-	Question.Computed = <
-		<ID> : <Label> <TyExpr>
-	>
-	
-	Label.Label = STRING
-	
+  Question.Question = <
+    <ID> : <Label> <Type>
+  >
+  
+  Question.Computed = <
+    <ID> : <Label> <TyExpr>
+  >
+  
+  Label.Label = STRING
+  
 context-free syntax // conditional
 
-	Question.Conditional = <
-		if (<Expr>) {
+  Question.Conditional = <
+    if (<Expr>) {
       <{Question "\n\n"}*>
-		}
-	>
+    }
+  >

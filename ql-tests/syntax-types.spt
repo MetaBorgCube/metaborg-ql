@@ -8,3 +8,4 @@ test integer [[ integer ]] parse succeeds
 test decimal [[ decimal ]] parse succeeds
 test date [[ date ]] parse succeeds
 test money [[ money ]] parse succeeds
+

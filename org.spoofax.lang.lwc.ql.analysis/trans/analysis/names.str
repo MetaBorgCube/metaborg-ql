@@ -5,7 +5,74 @@ imports
   lib/runtime/task/-
   lib/runtime/properties/-
   lib/runtime/types/-
+  lib/runtime/relations/-
   lib/runtime/editor/-
+  include/QL
+
+
+signature
+  constructors
+    NablNsForm     : Namespace
+    NablNsQuestion : Namespace
+
+
+signature
+  constructors
+    NablProp_dependency : Property
+
+
+rules
+
+  nabl-custom-properties(add-properties) =
+    ![NablProp_dependency()] ; add-properties
+
+  dependency-is(|ctx__) =
+    nabl-prop-calc(|ctx__, [])
+
+  dependency-is(|ctx__, dep*) =
+    nabl-prop-calc(|ctx__, dep*)
+
+  dependency-task(|ctx__) =
+    get-or-create-property-task(|ctx__, NablProp_dependency())
+
+  dependency-list(|ctx__) =
+    nabl-prop-list(|ctx__, [])
+
+  dependency-list(|ctx__, dep*) =
+    nabl-prop-list(|ctx__, dep*)
+
+  dependency-lookup(|ctx__) =
+    nabl-prop-lookup(|NablProp_dependency(), ctx__, [])
+
+  dependency-lookup(|ctx__, dep*) =
+    nabl-prop-lookup(|NablProp_dependency(), ctx__, dep*)
+
+  dependency-match(|ctx__, expected) =
+    nabl-prop-match(
+    | NablProp_dependency()
+    , ctx__
+    , Eq()
+    , expected
+    )
+
+  dependency-match(|ctx__, relation, expected) =
+    nabl-prop-match(|NablProp_dependency(), ctx__, relation, expected)
+
+  create-dependency-task(|ctx__) =
+    fail
+
+  get-dependency(|) =
+    get-property(|NablProp_dependency())
+
+  store-dependency(|ctx__, prop) =
+    nabl-store-prop(
+    | ctx__
+    , Prop(NablProp_dependency(), prop, [])
+    )
+
+  create-property-task(|ctx__, kind):
+    term -> <create-dependency-task(|ctx__)> term
+    where NablProp_dependency() := kind
 
 
 rules
@@ -20,7 +87,7 @@ rules
   nabl-name-apply(s) =
     Form(s, id)
 
-  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, ctx__, uniques__, uri__, states__) =
     ?Form(f, _)
     ; origin-track-forced(
         Form(
@@ -28,7 +95,7 @@ rules
             ?c-uri1__
           , ?s-uri1__
           | lang__
-          , partition__
+          , ctx__
           , uniques__
           , uri__
           , uri__
@@ -52,7 +119,7 @@ rules
   nabl-name-apply(s) =
     Question(s, id, id)
 
-  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, ctx__, uniques__, uri__, states__) =
     ?Question(q, l, t)
     ; origin-track-forced(
         Question(
@@ -60,7 +127,7 @@ rules
             ?c-uri1__
           , ?s-uri1__
           | lang__
-          , partition__
+          , ctx__
           , uniques__
           , uri__
           , uri__
@@ -79,16 +146,17 @@ rules
     ; match(sibl-uris__|s-uri1__)
     ; match(implicits__|[])
 
-  nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
+  nabl-prop-site(|lang__, ctx__, uris__, states__, implicits__) =
     ?Question(q, l, t)
-    ; Question(
-        nabl-store-props(
-        | partition__
-        , [Prop(Type(), t, [])]
-        )
-      , id
-      , id
-      )
+    ; (where(id)
+       ; Question(
+           nabl-store-props(
+           | ctx__
+           , [Prop(Type(), t, [])]
+           )
+         , id
+         , id
+         ))
     ; fail
 
   nabl-get-name :
@@ -97,7 +165,7 @@ rules
   nabl-name-apply(s) =
     Computed(s, id, TExpr(id, id))
 
-  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, partition__, uniques__, uri__, states__) =
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, ctx__, uniques__, uri__, states__) =
     ?Computed(q, l, TExpr(t, _))
     ; origin-track-forced(
         Computed(
@@ -105,7 +173,7 @@ rules
             ?c-uri1__
           , ?s-uri1__
           | lang__
-          , partition__
+          , ctx__
           , uniques__
           , uri__
           , uri__
@@ -124,16 +192,17 @@ rules
     ; match(sibl-uris__|s-uri1__)
     ; match(implicits__|[])
 
-  nabl-prop-site(|lang__, partition__, uris__, states__, implicits__) =
+  nabl-prop-site(|lang__, ctx__, uris__, states__, implicits__) =
     ?Computed(q, l, TExpr(t, _))
-    ; Computed(
-        nabl-store-props(
-        | partition__
-        , [Prop(Type(), t, [])]
-        )
-      , id
-      , TExpr(id, id)
-      )
+    ; (where(id)
+       ; Computed(
+           nabl-store-props(
+           | ctx__
+           , [Prop(Type(), t, [])]
+           )
+         , id
+         , TExpr(id, id)
+         ))
     ; fail
 
   nabl-get-name :
@@ -142,93 +211,27 @@ rules
   nabl-name-apply(s) =
     Ref(s)
 
-  nabl-use-site(|lang__, partition__, uniques__, uris__, states__) =
+  nabl-use-site(|lang__, ctx__, uniques__, uris__, states__) =
     ?Ref(q)
     ; origin-track-forced(
         Ref(
           nabl-use(
           | lang__
-          , partition__
+          , ctx__
           , uniques__
           , uris__
-          , [ UseCandidate(
-                NablNsQuestion()
-              , []
-              , Current()
-              , True()
-              , []
-              )
+          , [ <{:
+                 id
+                 ; !UseCandidate(
+                      NablNsQuestion()
+                    , []
+                    , Current()
+                    , True()
+                    , []
+                    )
+               }>
             ]
           )
         )
       |
       )
-
-
-imports
-  include/QL
-
-
-signature
-  constructors
-    NablNsForm     : Namespace
-    NablNsQuestion : Namespace
-
-
-signature
-  constructors
-    NablProp_dependency : Property
-
-
-rules
-
-  nabl-custom-properties(add-properties) =
-    ![NablProp_dependency()] ; add-properties
-
-  dependency-is(|task*) =
-    nabl-prop-calc(|task*, [])
-
-  dependency-task(|task*) =
-    get-or-create-property-task(|task*, NablProp_dependency())
-
-  dependency-is(|task*, dep*) =
-    nabl-prop-calc(|task*, dep*)
-
-  dependency-list(|task*) =
-    nabl-prop-list(|task*, [])
-
-  dependency-list(|task*, dep*) =
-    nabl-prop-list(|task*, dep*)
-
-  dependency-lookup(|task*) =
-    nabl-prop-lookup(|NablProp_dependency(), task*, [])
-
-  dependency-lookup(|task*, dep*) =
-    nabl-prop-lookup(|NablProp_dependency(), task*, dep*)
-
-  dependency-match(|task*, expected) =
-    nabl-prop-match(
-    | NablProp_dependency()
-    , task*
-    , Eq()
-    , expected
-    )
-
-  dependency-match(|task*, relation, expected) =
-    nabl-prop-match(|NablProp_dependency(), task*, relation, expected)
-
-  create-dependency-task(|task*) =
-    fail
-
-  get-dependency =
-    get-property(|NablProp_dependency())
-
-  store-dependency(|partition, prop) =
-    nabl-store-prop(
-    | partition
-    , Prop(NablProp_dependency(), prop, [])
-    )
-
-  create-property-task(|partition, kind):
-    term -> <create-dependency-task(|partition)> term
-    where NablProp_dependency() := kind

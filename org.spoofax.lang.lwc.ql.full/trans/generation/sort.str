@@ -16,5 +16,3 @@ rules
   ; <question-name; relation-match(|"<depends-on:", qid2)> q1
 	  
   sort-by-dependencies = Form(id, quick-sort(depends-on))
-
-  
