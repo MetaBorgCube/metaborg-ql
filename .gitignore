@@ -46,3 +46,5 @@ org.spoofax.lang.lwc.ql.full/trans/ql/*.generated.str
 org.spoofax.lang.lwc.ql.full/trans/qls/*.generated.str
 
 ql-js-example/.cache
+
+spoofax-hands-on.zip
