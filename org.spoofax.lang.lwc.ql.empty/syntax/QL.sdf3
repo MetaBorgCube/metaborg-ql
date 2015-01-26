@@ -5,11 +5,11 @@ imports
   Expressions
   Types
   Lexical
-	
+  
 context-free start-symbols
 
-	Start Expr Type
+  Start Expr Type
 
-templates
+context-free syntax
 
-	Start.Form = <<>>
+  Start.Form = 

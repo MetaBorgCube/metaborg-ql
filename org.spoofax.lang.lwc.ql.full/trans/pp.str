@@ -2,13 +2,12 @@ module pp
 
 imports
 
-	libstratego-gpp
-	lib/runtime/tmpl/pp
-	
-	src-gen/pp/QL-pp
-	
+  libstratego-gpp
+  lib/runtime/tmpl/pp
+  src-gen/pp/QL-pp
+  
 rules
-	
+  
   pp-QL-string =
     prettyprint-Start
     ; !V([], <id>)

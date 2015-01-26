@@ -2,7 +2,9 @@ module Types
 
 imports
 
-	Expressions
+  Expressions
 
-templates
+context-free syntax
 
+  Type.BoolTy = 
+ 

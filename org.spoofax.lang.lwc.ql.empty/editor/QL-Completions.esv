@@ -2,12 +2,8 @@ module QL-Completions
 
 imports
 
-	QL-Completions.generated
-	
-	QL.generated
-	Lexical.generated
-	Expressions.generated
-	Types.generated
+  QL-Completions.generated
+  src-gen/completions/QL-esv
 
 completions   
 

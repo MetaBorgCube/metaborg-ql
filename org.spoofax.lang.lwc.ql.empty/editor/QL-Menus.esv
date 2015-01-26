@@ -6,34 +6,3 @@ menus
     
     action: "Format"                = editor-format (openeditor) (realtime) (source)
     action: "Show abstract syntax"  = debug-show-aterm (openeditor) (realtime) (meta) (source)
-    action: "Show normalized"       = debug-show-normalized (openeditor) (realtime) (meta) (source)
-    action: "Show normalized ATerm" = debug-show-normalized-aterm (openeditor) (realtime) (meta) (source)
-    action: "Show analyzed"         = debug-show-analyzed       (openeditor) (meta)
-    action: "Show analyzed ATerm"   = debug-show-analyzed-aterm (openeditor) (meta)
-    
-  menu: "Analysis"
-    
-    action: "Reset and reanalyze"  = debug-reanalyze (meta)   
-
-    submenu: "Show analysis"
-      action: "Project"            = debug-project (openeditor) (meta)
-      action: "Partition"          = debug-partition (openeditor) (meta)
-    end
-    
-    submenu: "Show index"
-      action: "Project"            = debug-index-project (openeditor) (meta)
-      action: "Project (resolved)" = debug-index-project-resolve (openeditor) (meta)
-      action: "Partition"          = debug-index-partition (openeditor) (meta)
-    end
-    
-    submenu: "Show tasks"
-      action: "Project"            = debug-task-project (openeditor) (meta)
-      action: "Partition"          = debug-task-partition (openeditor) (meta)
-      action: "Selection"          = debug-task-selection (openeditor) (meta)
-    end
-  
-  menu: "Semantics"
-    
-    action: "Generate JS HTML" = builder-generate-js-html (openeditor)
-    action: "Generate JS" = builder-generate-js (openeditor)
-
