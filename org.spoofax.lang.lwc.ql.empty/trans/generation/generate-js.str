@@ -1,7 +1,7 @@
 module generation/generate-js
 
 imports
-	
+  
   include/QL
   
   analysis/names
@@ -9,36 +9,36 @@ imports
 rules
   
   compile-ql-js-html:
-  	form ->
-  	$[<!DOCTYPE html>
-			<html>
-				<head>
-					<meta charset="UTF-8">
-					<title>Questionnaire - reference implementation</title>
-					<link href="css/QL.css" rel="stylesheet" type="text/css" media="all" />
-					<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-					<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
-					<script type="text/javascript" src="http://underscorejs.org/underscore-min.js"></script>
-					<script type="text/javascript" src="http://www.decorplanit.com/plugin/autoNumeric-1.9.17.js"></script>
-					<link href="css/jquery-ui.css" rel="stylesheet" type="text/css" media="all" />
-					<script type="text/javascript">QLrt = {};</script>
-					<script type="text/javascript" src="js/framework/util.js"></script>
-					<script type="text/javascript" src="js/framework/structural-widgets.js"></script>
-					<script type="text/javascript" src="js/framework/value-widgets.js"></script>
-			
-					<script type="text/javascript">
-						[<compile-ql-js> form]
-					</script>
-				</head>
-			<body>
-			<div id="container">
-			    <h1>Questionnaire</h1>
-			
-			    <div id="QL-content"></div>
-			</div>
-			</body>
-			</html>
-		]
+    form ->
+    $[<!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Questionnaire - reference implementation</title>
+          <link href="css/QL.css" rel="stylesheet" type="text/css" media="all" />
+          <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+          <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+          <script type="text/javascript" src="http://underscorejs.org/underscore-min.js"></script>
+          <script type="text/javascript" src="http://www.decorplanit.com/plugin/autoNumeric-1.9.17.js"></script>
+          <link href="css/jquery-ui.css" rel="stylesheet" type="text/css" media="all" />
+          <script type="text/javascript">QLrt = {};</script>
+          <script type="text/javascript" src="js/framework/util.js"></script>
+          <script type="text/javascript" src="js/framework/structural-widgets.js"></script>
+          <script type="text/javascript" src="js/framework/value-widgets.js"></script>
+      
+          <script type="text/javascript">
+            [<compile-ql-js> form]
+          </script>
+        </head>
+      <body>
+      <div id="container">
+          <h1>Questionnaire</h1>
+      
+          <div id="QL-content"></div>
+      </div>
+      </body>
+      </html>
+    ]
        
   compile-ql-js: 
     form@Form(fid, question*) ->
@@ -155,9 +155,9 @@ rules // Projections
   
   compile-ql-js-collect-dependencies = collect-all(?Ref(<id>))
   
-	compile-ql-js-qid: Question(qid, _, _) -> qid
+  compile-ql-js-qid: Question(qid, _, _) -> qid
   compile-ql-js-qid: Computed(qid, _, _) -> qid
   
   compile-ql-js-label: Question(_, label, _) -> <compile-ql-js-label-unquote> label
   compile-ql-js-label: Computed(_, label, _) -> <compile-ql-js-label-unquote> label
-	compile-ql-js-label-unquote: Label(label-str) -> <un-double-quote> label-str
+  compile-ql-js-label-unquote: Label(label-str) -> <un-double-quote> label-str

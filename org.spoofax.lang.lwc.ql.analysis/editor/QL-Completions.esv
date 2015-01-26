@@ -2,8 +2,8 @@ module QL-Completions
 
 imports
 
-	QL-Completions.generated
-	src-gen/completions/QL-esv
+  QL-Completions.generated
+  src-gen/completions/QL-esv
 
 completions   
 

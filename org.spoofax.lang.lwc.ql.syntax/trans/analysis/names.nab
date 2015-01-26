@@ -1,17 +1,17 @@
 module analysis/names
 
 imports
-	
-	include/QL
+  
+  include/QL
 
 namespaces
 
-	
+  
 
 properties
 
-	
+  
 
 binding rules
 
-	
+  

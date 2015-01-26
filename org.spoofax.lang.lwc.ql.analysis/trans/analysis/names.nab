@@ -1,13 +1,13 @@
 module analysis/names
 
 imports
-	
-	include/QL
+  
+  include/QL
 
 namespaces
 
-	Form
-	Question
+  Form
+  Question
 
 properties
 
@@ -15,17 +15,17 @@ properties
   
 binding rules
 
-	Form(f, _):
-		defines Form f
-		scopes Question
-	
-	Question(q, l, t):
-		defines non-unique Question q
-			of type t
+  Form(f, _):
+    defines Form f
+    scopes Question
+  
+  Question(q, l, t):
+    defines non-unique Question q
+      of type t
  
-	Computed(q, l, TExpr(t, _)):
-		defines non-unique Question q
-			of type t
-	    
-	Ref(q):
-		refers to Question q
+  Computed(q, l, TExpr(t, _)):
+    defines non-unique Question q
+      of type t
+      
+  Ref(q):
+    refers to Question q

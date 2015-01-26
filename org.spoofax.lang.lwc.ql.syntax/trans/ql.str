@@ -1,22 +1,22 @@
 module ql
 
 imports
-	
-	libstratego-lib
-	libstratego-gpp
-	libstratego-aterm
-	include/QL
-	editor/QL-Outliner
-	lib/editor-common.generated
-	lib/runtime/index/-
-	lib/runtime/nabl/-
-	lib/runtime/properties/-
-	lib/runtime/relations/-
-	lib/runtime/types/-
-	lib/runtime/task/-
-	lib/runtime/analysis/-
-	lib/runtime/editor/-
-	
+  
+  libstratego-lib
+  libstratego-gpp
+  libstratego-aterm
+  include/QL
+  editor/QL-Outliner
+  lib/editor-common.generated
+  lib/runtime/index/-
+  lib/runtime/nabl/-
+  lib/runtime/properties/-
+  lib/runtime/relations/-
+  lib/runtime/types/-
+  lib/runtime/task/-
+  lib/runtime/analysis/-
+  lib/runtime/editor/-
+  
   pp
   
   analysis/normalize
