@@ -143,6 +143,8 @@ rules // Debugging
     analysis-debug-index-project-resolve(|<language>)
   debug-index-partition =
     analysis-debug-index-partition(|<language>)
+	debug-index-partition-resolve =
+		analysis-debug-index-partition-resolve(|<language>)
 
   debug-task-project =
     analysis-debug-task-project(|<language>)
