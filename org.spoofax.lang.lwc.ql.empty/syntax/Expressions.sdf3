@@ -6,7 +6,7 @@ imports
 
 context-free syntax
   
-  Expr.Ref = 
+  Expr = <(<Expr>)> {bracket}
     
 context-free priorities 
 
