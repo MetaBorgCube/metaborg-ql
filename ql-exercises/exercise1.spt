@@ -1,0 +1,41 @@
+module syntax-forms
+language QL
+start symbol Start
+
+test empty form [[
+	form empty {}
+]] parse succeeds
+
+test other empty form [[
+	form other {
+		
+	}
+]] parse succeeds
+
+test nonempty form [[
+	form nonempty {
+		question : "Label" boolean		
+	}
+]] parse succeeds
+
+test only one form [[
+	form one {}
+	form two {}
+]] parse fails
+
+test multiple questions [[
+	form questions {
+		problems : "Does your car have problems?" boolean
+		what     : "What is the problem?" string
+	}
+]] parse succeeds
+
+test builtin types [[
+	form questions {
+		birthday : "When is your birthday?" date
+		cats     : "How many cats do you own?" decimal
+		bread    : "How much does a bread cost?" money
+	}
+]] parse succeeds
+
+
