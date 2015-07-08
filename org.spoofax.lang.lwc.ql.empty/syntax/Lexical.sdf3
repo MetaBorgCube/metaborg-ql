@@ -44,3 +44,7 @@ context-free restrictions
   LAYOUT? -/- [\ \t\n\r]
   LAYOUT? -/- [\/].[\/]
   LAYOUT? -/- [\/].[\*]
+
+template options
+
+  keyword -/- [a-zA-Z0-9\_]

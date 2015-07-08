@@ -1,10 +1,8 @@
 module Types
 
-imports
-
-  Expressions
+imports Expressions
 
 context-free syntax
 
-  Type.BoolTy = 
+  Type.BoolTy = <boolean>
  
