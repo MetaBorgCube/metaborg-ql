@@ -1,0 +1,7 @@
+module Types
+
+imports Expressions
+
+context-free syntax
+
+  Type.BoolTy = <boolean>

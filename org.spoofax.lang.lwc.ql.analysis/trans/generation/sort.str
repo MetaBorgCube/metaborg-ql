@@ -1,0 +1,18 @@
+module generation/sort
+
+imports
+  
+  include/QL
+  
+  lib/runtime/relations/-
+  
+rules
+  
+  question-name: Conditional(c, Question(qid, _, _)) -> qid
+  question-name: Conditional(c, Computed(qid, _, _)) -> qid
+  
+  depends-on(|q1) =
+    qid2 := <question-name> 
+  ; <question-name; relation-match(|"<depends-on:", qid2)> q1
+    
+  sort-by-dependencies = Form(id, quick-sort(depends-on))

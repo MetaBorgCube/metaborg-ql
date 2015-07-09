@@ -1,0 +1,47 @@
+module names
+language QL
+start symbol Start
+
+test question reference [[
+	form f {
+		[[q]] : "Question" boolean
+		if([[q]]) {}
+	}
+]] resolve #2 to #1
+
+test unresolved question reference [[
+	form f {
+		if([[q]]) {}
+	}
+]] 2 errors
+
+test duplicate questions [[
+	form f {
+		problems : "Does your car have problems?" boolean
+		if(problems) {
+			what : "What is the problem?" string
+		}
+		if(!problems) {
+			what : "What is not the problem?" string
+		}
+	}
+]] 0 errors
+
+test duplicate questions and computed values [[
+	form f {
+		problems : "Does your car have problems?" boolean
+		if(problems) {
+			what : "What is the problem?" string
+		}
+		if(!problems) {
+			what : "Was there a problem?" boolean(problems)
+		}
+	}
+]] 0 errors
+
+test type of question definition [[
+	form f {
+		[[problems : "Does your car have problems?" boolean]]
+	}
+]] run get-type to BoolTy()
+

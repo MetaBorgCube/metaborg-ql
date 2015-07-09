@@ -1,0 +1,31 @@
+module ExpressionsAmb
+
+imports Lexical
+
+context-free syntax
+  
+  Expr = <(<Expr>)> {bracket}
+  
+  Expr.Ref = <<ID>>
+  
+  Expr.Not = <!<Expr>> 
+  Expr.And = <<Expr> && <Expr>>
+  Expr.Or  = <<Expr> || <Expr>>
+  
+  Expr.Lt   = [[Expr] < [Expr]]
+  Expr.Leq  = [[Expr] <= [Expr]]
+  Expr.Gt   = [[Expr] > [Expr]]
+  Expr.Geq  = [[Expr] >= [Expr]]
+  Expr.Eq   = <<Expr> == <Expr>>
+  
+  Expr.Add  = <<Expr> + <Expr>>
+  Expr.Sub  = <<Expr> - <Expr>>   
+  Expr.Mul  = <<Expr> * <Expr>>
+  Expr.Div  = <<Expr> / <Expr>>
+  
+context-free syntax
+
+  Expr.True  = <true>
+  Expr.False = <false>
+
+

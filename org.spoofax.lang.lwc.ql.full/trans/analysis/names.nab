@@ -1,0 +1,31 @@
+module analysis/names
+
+imports
+  
+  include/QL
+  
+namespaces
+
+  Form
+  Question
+
+properties
+
+  dependency of Question: ID
+  
+binding rules
+
+  Form(f, _):
+    defines Form f
+    scopes Question
+  
+  Question(q, l, t):
+    defines non-unique Question q
+      of type t
+ 
+  Computed(q, l, TExpr(t, _)):
+    defines non-unique Question q
+      of type t
+      
+  Ref(q):
+    refers to Question q

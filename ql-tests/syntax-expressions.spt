@@ -1,0 +1,50 @@
+module syntax-expressions
+language QL
+start symbol Expr
+
+test true literal [[ true ]] parse succeeds
+test false literal [[ false ]] parse succeeds
+
+test logical [[
+	!true && false || true
+]] parse succeeds
+
+test greater than [[
+	v1 > v2
+]] parse succeeds
+
+test greater than or equals [[
+	v1 >= v2
+]] parse succeeds
+
+test less than [[
+	v1 < v2
+]] parse succeeds
+
+test less than or equals [[
+	v1 <= v2
+]] parse succeeds
+
+test equals [[
+	v1 == v2
+]] parse succeeds
+
+test arithmetic [[
+	v1 + v2 - v3 * v4 / v5
+]] parse succeeds
+
+
+test not over and priority [[ !x && y ]] parse to [[ (!x) && y ]]
+test not over or priority [[ !x || y ]] parse to [[ (!x) || y ]]
+
+test mul over add priority [[ x + y * z ]] parse to [[ x + (y * z) ]]
+test mul over sub priority [[ x - y * z ]] parse to [[ x - (y * z) ]]
+
+test add and sub same priority [[x + y - z]] parse to [[(x + y) - z]]
+test sub and add same priority [[x - y + z]] parse to [[(x - y) + z]]
+
+test lt over add priority [[x < y + z]] parse to [[(x < y) + z]]
+test lt over and priority [[w < x && y < z]] parse to [[((w < x) && (y < z))]]
+
+test and over or priority [[ x || y && z ]] parse to [[x || (y && z)]]
+
