@@ -1,36 +1,34 @@
 module Expressions
 
-imports
-
-  Lexical
+imports Lexical
 
 context-free syntax
   
   Expr = <(<Expr>)> {bracket}
   
   Expr.Ref = <<ID>>
-  
+       
+  Expr.Mul  = <<Expr> * <Expr>> {left}
+  Expr.Div  = <<Expr> / <Expr>> {left}
+  Expr.Add  = <<Expr> + <Expr>> {left}
+  Expr.Sub  = <<Expr> - <Expr>> {left}   
+    
   Expr.Not = <!<Expr>> 
-  Expr.And = <<Expr> && <Expr>> {left}
-  Expr.Or   = <<Expr> || <Expr>> {left}
+  Expr.And = <<Expr> && <Expr>>
+  Expr.Or  = <<Expr> || <Expr>> {left}
   
   Expr.Lt   = [[Expr] < [Expr]]  {non-assoc}
-  Expr.Leq = [[Expr] <= [Expr]] {non-assoc}
+  Expr.Leq  = [[Expr] <= [Expr]] {non-assoc}
   Expr.Gt   = [[Expr] > [Expr]]  {non-assoc}
-  Expr.Geq = [[Expr] >= [Expr]] {non-assoc}
+  Expr.Geq  = [[Expr] >= [Expr]] {non-assoc}
   Expr.Eq   = <<Expr> == <Expr>> {non-assoc}
-  
-  Expr.Plus  = <<Expr> + <Expr>> {left}
-  Expr.Minus = <<Expr> - <Expr>> {left}        
-  Expr.Mul   = <<Expr> * <Expr>> {left}
-  Expr.Div   = <<Expr> / <Expr>> {left}
-  
+
 context-free priorities 
 
   Expr.Not > 
-  {non-assoc: Expr.Lt Expr. Leq Expr.Gt Expr.Geq Expr.Eq } >
   {left: Expr.Mul Expr.Div } >
-  {left: Expr.Plus Expr.Minus } >
+  {left: Expr.Add Expr.Sub } >
+  {non-assoc: Expr.Lt Expr. Leq Expr.Gt Expr.Geq Expr.Eq } >
   {left: Expr.And } >
   {left: Expr.Or }
 
@@ -45,3 +43,10 @@ context-free syntax
 template options
 
   keyword -/- [a-zA-Z0-9\_]
+ 
+context-free syntax
+
+  NumLit.IntLit   = INT
+  NumLit.FloatLit = FLOAT
+  Expr            = NumLit
+  Expr.MoneyLit   = <$<NumLit>>
