@@ -65,7 +65,7 @@ test computed [[
       , Computed(
           "c"
         , Label("\"sum of a and b\"")
-        , TExpr(IntegerTy(), Plus(Ref("a"), Ref("b")))
+        , TExpr(IntegerTy(), Add(Ref("a"), Ref("b")))
         )
       ]
     )
