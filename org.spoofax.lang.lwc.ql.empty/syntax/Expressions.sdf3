@@ -5,8 +5,7 @@ imports Lexical
 context-free syntax
   
   Expr = <(<Expr>)> {bracket}
-    
-context-free priorities 
-
-
-
+  
+  Expr.Ref = <<ID>>
+       
+  Expr.Add  = <<Expr> + <Expr>> 
