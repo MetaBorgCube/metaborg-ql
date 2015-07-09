@@ -5,6 +5,7 @@ imports
   libstratego-gpp
   lib/runtime/tmpl/pp
   src-gen/pp/QL-pp
+  include/QL-parenthesize
   
 rules
   
@@ -16,6 +17,6 @@ rules
   pp-QL-string-debug :
     ast -> result
     with
-       result := <pp-QL-string> ast
+       result := <parenthesize-QL; pp-QL-string> ast
     <+ <bottomup(try(not(is-string); not(is-list); not(pp-QL-string); debug(!"cannot pp ")))> ast
     ;  result := ""
