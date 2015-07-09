@@ -3,20 +3,22 @@ language QL
 start symbol Start
 
 test empty form [[
-	form empty {}
+  form empty {}
 ]] parse succeeds
 
 test other empty form [[
-	form other {
-		
-	}
-]] parse succeeds
+  form other {
+  }
+]] parse to Form("other", [])
 
 test nonempty form [[
-	form nonempty {
-		question : "Label" boolean		
-	}
-]] parse succeeds
+  form nonempty {
+	  question : "Label" boolean		
+  }
+]] parse to 
+   Form("nonempty", [
+     Question("question", Label("\"Label\""), BoolTy())
+   ])
 
 test only one form [[
 	form one {}
@@ -28,7 +30,12 @@ test multiple questions [[
 		problems : "Does your car have problems?" boolean
 		what     : "What is the problem?" string
 	}
-]] parse succeeds
+]] parse to
+   Form("questions"
+    , [ Question("problems", Label("\"Does your car have problems?\""), BoolTy())
+      , Question("what", Label("\"What is the problem?\""), StringTy())
+      ]
+    )
 
 test builtin types [[
 	form questions {
@@ -36,6 +43,29 @@ test builtin types [[
 		cats     : "How many cats do you own?" decimal
 		bread    : "How much does a bread cost?" money
 	}
-]] parse succeeds
+]] parse to
+    Form("questions"
+    , [ Question("birthday", Label("\"When is your birthday?\""), DateTy())
+      , Question("cats", Label("\"How many cats do you own?\""), DecimalTy())
+      , Question("bread", Label("\"How much does a bread cost?\""), MoneyTy())
+      ]
+    )
 
-
+test computed [[
+  form nonempty {
+    a : "question a" integer
+    b : "questoin b" integer
+    c : "sum of a and b" integer(a + b)
+  }
+]] parse to 
+    Form(
+      "nonempty"
+    , [ Question("a", Label("\"question a\""), IntegerTy())
+      , Question("b", Label("\"questoin b\""), IntegerTy())
+      , Computed(
+          "c"
+        , Label("\"sum of a and b\"")
+        , TExpr(IntegerTy(), Plus(Ref("a"), Ref("b")))
+        )
+      ]
+    )

@@ -2,50 +2,89 @@ module syntax-expressions
 language QL
 start symbol Expr
 
-test true literal [[ true ]] parse to True()
-test false literal [[ false ]] parse to False()
+test not [[
+  !x
+]] parse to Not(Ref("x"))
 
-test not [[!true]] parse to Not(True())
+test and [[
+	x && y
+]] parse to And(Ref("x"), Ref("y"))
 
-test logical [[
-	((!true) && false) || true 
-]] parse to Or(And(Not(True()), False()), True()) 
+test or [[
+  x || y
+]] parse to Or(Ref("x"), Ref("y"))
+
+test integer literal [[
+  245 
+]] parse to IntLit("245")
 
 test greater than [[
 	v1 > v2
-]] parse succeeds
+]] parse to Gt(Ref("v1"), Ref("v2"))
 
 test greater than or equals [[
 	v1 >= v2
-]] parse succeeds
+]] parse to Geq(Ref("v1"), Ref("v2"))
 
 test less than [[
 	v1 < v2
-]] parse succeeds
+]] parse to Lt(Ref("v1"), Ref("v2"))
 
 test less than or equals [[
 	v1 <= v2
-]] parse succeeds
+]] parse to Leq(Ref("v1"), Ref("v2"))
 
 test equals [[
 	v1 == v2
-]] parse succeeds
+]] parse to Eq(Ref("v1"), Ref("v2"))
 
-test arithmetic [[
-	(v1 + v2) - (v3 * (v4 / v5))
-]] parse succeeds
+test not and [[ 
+  !(x && y) 
+]] parse to Not(And(Ref("x"), Ref("y")))
 
+test or not [[ 
+  (!x) || y 
+]] parse to Or(Not(Ref("x")), Ref("y"))
 
-test not over and priority [[ !(x && y) ]] parse succeeds
-test not over or priority [[ (!x) || y ]] parse succeeds
+test and mul [[ 
+  x + (y * z) 
+ ]] parse to Add(Ref("x"), Mul(Ref("y"), Ref("z")))
+ 
+test sub mul [[ 
+  x - (y * z) 
+]] parse to Sub(Ref("x"), Mul(Ref("y"), Ref("z")))
 
-test mul over add priority [[ x + (y * z) ]] parse succeeds
-test mul over sub priority [[ x - (y * z) ]] parse succeeds
+test add sub [[
+  (x + y) - z
+]] parse to Sub(Add(Ref("x"), Ref("y")), Ref("z"))
 
-test add and sub same priority [[(x + y) - z]] parse succeeds
-test sub and add same priority [[x - (y + z)]] parse succeeds
+test sub add [[
+  x - (y + z)
+]] parse to Sub(Ref("x"), Add(Ref("y"), Ref("z")))
 
-test lt over add priority [[x < (y + z)]] parse succeeds
-test lt over and priority [[(w < x) && (y < z)]] parse succeeds
+test lt add [[
+  x < (y + z)
+]] parse to Lt(Ref("x"), Add(Ref("y"), Ref("z")))
 
-test and over or priority [[ x || (y && z) ]] parse succeeds
+test lt and [[
+  (w < x) && (y < z)
+]] parse to  And(
+                Lt(Ref("w"), Ref("x"))
+              , Lt(Ref("y"), Ref("z"))
+             )
+             
+test or and [[ 
+  x || (y && z) 
+]] parse to Or(Ref("x"), And(Ref("y"), Ref("z")))
+
+test operators combined  [[
+  ((v1 + v2) - (v3 * (v4 / v5))) == y
+]] parse to 
+   Eq(
+      Sub(
+        Add(Ref("v1"), Ref("v2"))
+      , Mul(Ref("v3"), Div(Ref("v4"), Ref("v5")))
+      )
+    , Ref("y")
+    )
+    
