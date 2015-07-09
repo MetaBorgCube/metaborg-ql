@@ -1,14 +1,10 @@
 module QL
 
-imports
-
-  Expressions
-  Types
-  Lexical
+imports Expressions
+imports Types
+imports Lexical
   
-context-free start-symbols
-
-  Start Expr Type
+context-free start-symbols Start Expr Type
 
 context-free syntax // top-level
 
