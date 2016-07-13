@@ -2,9 +2,9 @@ module editor/QL-Outliner
 
 imports
   
-  include/QL
-  lib/runtime/editor/outline-library
-  lib/runtime/editor/origins
+  signatures/-
+  runtime/editor/outline-library
+  runtime/editor/origins
   
 rules
   

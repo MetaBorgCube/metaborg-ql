@@ -2,7 +2,7 @@ module analysis/normalize
 
 imports
   
-  include/QL
+  signatures/QL-sig
   
 rules
 

@@ -2,4 +2,5 @@ module analysis/dependencies
 
 imports
 
-  include/QL analysis/names // Ignore unresolved errors
+  signatures/QL-sig 
+  names // Ignore unresolved errors

@@ -2,4 +2,5 @@ module analysis/types
 
 imports
 
-  include/QL // Ignore unresolved error
+  signatures/QL-sig
+   // Ignore unresolved error

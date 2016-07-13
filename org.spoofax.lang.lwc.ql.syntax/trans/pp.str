@@ -3,9 +3,9 @@ module pp
 imports
 
   libstratego-gpp
-  lib/runtime/tmpl/pp
-  src-gen/pp/QL-pp
-  include/QL-parenthesize
+  runtime/tmpl/pp
+  pp/QL-pp
+  pp/QL-parenthesize
   
 rules
   
@@ -20,3 +20,9 @@ rules
        result := <parenthesize-QL; pp-QL-string> ast
     <+ <bottomup(try(not(is-string); not(is-list); not(pp-QL-string); debug(!"cannot pp ")))> ast
     ;  result := ""
+
+  pp-partial-QL-string =
+    parenthesize-QL
+    ; prettyprint-example
+    ; !V([], <id>)
+    ; box2text-string(|120)

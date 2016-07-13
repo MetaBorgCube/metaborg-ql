@@ -1,12 +1,9 @@
-module QL.main
+module Main
 
 imports
 
   QL-Colorer
-  QL-Completions
-  QL-Folding
   QL-Menus
-  QL-Refactorings
   QL-References
   QL-Syntax
   QL-Views
@@ -21,9 +18,9 @@ language General properties
   url:           http://strategoxt.org
   
   extensions:    ql
-  table:         include/QL.tbl
+  table:         target/metaborg/sdf.tbl
   start symbols: Start
   
-  provider:      include/ql.ctree
+  provider:      target/metaborg/stratego.ctree  
   
-  observer:      editor-analyze (multifile)
+  observer : editor-analyze (multifile)

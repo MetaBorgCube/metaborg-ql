@@ -2,7 +2,7 @@ module analysis/names
 
 imports
   
-  include/QL
+  signatures/QL-sig
 
 namespaces
 
