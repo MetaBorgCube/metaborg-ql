@@ -19,12 +19,12 @@ context-free syntax // questions
   Question.Question = <
     <ID> : <Label> <Type>
   >
+    
+  Label.Label = STRING
   
   Question.Computed = <
     <ID> : <Label> <TyExpr>
   >
-  
-  Label.Label = STRING
   
 context-free syntax // conditional
 

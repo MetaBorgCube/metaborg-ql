@@ -1,9 +1,9 @@
 ---
 id: org.metaborg:lang.lwc.ql.syntax:1.0.0-SNAPSHOT
 name: QL
-metaborgVersion: 2.0.0-SNAPSHOT
+metaborgVersion: 2.1.0-SNAPSHOT
 placeholder:
-  prefix : "$"
+  prefix : "#"
 dependencies:
   compile:
   - org.metaborg:org.metaborg.meta.lang.esv:${metaborgVersion}

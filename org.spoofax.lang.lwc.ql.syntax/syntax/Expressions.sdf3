@@ -4,8 +4,6 @@ imports Lexical
 
 context-free syntax
   
-  Expr = <(<Expr>)> {bracket}
-  
   Expr.Ref = <<ID>>
        
   Expr.Mul  = <<Expr> * <Expr>> {left}
@@ -22,6 +20,8 @@ context-free syntax
   Expr.Gt   = [[Expr] > [Expr]]  {non-assoc}
   Expr.Geq  = [[Expr] >= [Expr]] {non-assoc}
   Expr.Eq   = <<Expr> == <Expr>> {non-assoc}
+  Expr = <(<Expr>)> {bracket}
+  
 
 context-free priorities 
 
