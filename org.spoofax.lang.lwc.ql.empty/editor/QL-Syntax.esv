@@ -1,3 +1,0 @@
-module QL-Syntax
-
-imports QL-Syntax.generated

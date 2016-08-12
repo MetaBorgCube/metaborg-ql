@@ -1,3 +1,0 @@
-module QL-Colorer
-
-imports QL-Colorer.generated

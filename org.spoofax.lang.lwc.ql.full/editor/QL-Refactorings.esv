@@ -1,3 +1,0 @@
-module QL-Refactorings
-
-imports QL-Refactorings.generated
