@@ -1,0 +1,35 @@
+module ql
+
+imports expressions
+imports types
+imports lex
+
+context-free sorts Start Question Label
+
+context-free syntax // top-level
+
+  Start.Form = <
+    form <ID> {
+      <{Question "\n\n"}*>
+    }
+  >
+  
+context-free syntax // questions
+
+  Question.Question = <
+    <ID> : <Label> <Type>
+  >
+    
+  Label.Label = STRING
+  
+  Question.Computed = <
+    <ID> : <Label> <TyExpr>
+  >
+  
+context-free syntax // conditional
+
+  Question.Conditional = <
+    if (<Expr>) {
+      <{Question "\n\n"}*>
+    }
+  >

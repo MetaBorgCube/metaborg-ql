@@ -1,0 +1,12 @@
+module StrategoLang/gradual-types/overlays-namespaced
+
+imports
+  StrategoLang/core/identifiers-namespaced	
+  StrategoLang/core/signatures-namespaced	
+  StrategoLang/gradual-types/signatures-namespaced	
+  StrategoLang/sugar/overlays-namespaced
+
+context-free syntax
+
+  StrategoLang-Overlay.OverlayDeclNoArgs = [[StrategoLang-Id] :: [StrategoLang-ConstType]] { }
+  StrategoLang-Overlay.OverlayDecl = [[StrategoLang-Id]([{StrategoLang-Type ", "}*]) :: [StrategoLang-ConstType]] { }

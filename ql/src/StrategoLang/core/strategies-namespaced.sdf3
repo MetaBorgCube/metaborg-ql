@@ -1,0 +1,189 @@
+module StrategoLang/core/strategies-namespaced
+
+imports
+  StrategoLang/core/terms-namespaced	
+  StrategoLang/core/constants-namespaced	
+  StrategoLang/core/signatures-namespaced	
+  StrategoLang/core/identifiers-namespaced
+
+template options
+
+  keyword -/- [a-zA-Z0-9\'\-\_]
+  tokenize : ")(|"
+
+sorts StrategoLang-Def
+
+context-free syntax
+
+  StrategoLang-Def = StrategoLang-StrategyDef { }
+
+sorts StrategoLang-StrategyDef StrategoLang-SDefT
+
+context-free syntax
+
+  StrategoLang-StrategyDef = StrategoLang-SDefT { }
+  StrategoLang-SDefT.SDefT = <<StrategoLang-SId>(<{StrategoLang-Typedid ", "}*> | <{StrategoLang-Typedid ", "}*>) =
+  <StrategoLang-Strategy>> { }
+  StrategoLang-Def.AnnoDef = <<StrategoLang-Anno+> <StrategoLang-StrategyDef>> { }
+  StrategoLang-StrategyDef.ExtSDefInl = <external <StrategoLang-SId>(<{StrategoLang-Typedid ", "}*> | <{StrategoLang-Typedid ", "}*>) =
+  <StrategoLang-Strategy>> { }
+  StrategoLang-StrategyDef.ExtSDef = <external <StrategoLang-MaybeEmptySId>(<{StrategoLang-Typedid ", "}*> | <{StrategoLang-Typedid ", "}*>)> { }
+
+sorts SId-LEX MaybeEmptySId-LEX
+
+lexical syntax
+
+  StrategoLang-SId = StrategoLang-Id { }
+  StrategoLang-MaybeEmptySId = { }
+  StrategoLang-MaybeEmptySId = StrategoLang-SId { }
+
+sorts StrategoLang-Anno
+
+context-free syntax
+
+  StrategoLang-Anno.Extend = <extend> { }
+  StrategoLang-Anno.Override = <override> { }
+  StrategoLang-Anno.Internal = <internal> { }
+
+sorts StrategoLang-Typedid
+
+context-free syntax
+
+  StrategoLang-Typedid.VarDec = <<StrategoLang-ID> : <StrategoLang-OldType>> { }
+
+sorts StrategoLang-Strategy StrategoLang-SVar
+
+context-free syntax
+
+  StrategoLang-Strategy.Fail = <fail> { }
+  StrategoLang-Strategy.Id = <id> { }
+  StrategoLang-Strategy.ProceedT = <proceed(<{StrategoLang-Strategy ", "}*>|<{StrategoLang-Term ", "}*>)> { }
+  StrategoLang-Strategy.ProceedNoArgs = <proceed> { }
+  StrategoLang-Strategy.Match = <?<StrategoLang-Term>> { }
+  StrategoLang-Strategy.Build = <!<StrategoLang-Term>> { }
+  StrategoLang-Strategy.Scope = <{<{StrategoLang-ID ", "}*>: <StrategoLang-Strategy> }> { }
+  StrategoLang-Strategy.Seq = <<StrategoLang-Strategy>; <StrategoLang-Strategy>> {right}
+  StrategoLang-Strategy.GuardedLChoice = [[StrategoLang-Strategy] < [StrategoLang-Strategy] + [StrategoLang-Strategy]] {right}
+  StrategoLang-Strategy.PrimT = <prim(<StrategoLang-String>, <{StrategoLang-Strategy ", "}*>|<{StrategoLang-Term ", "}*>)> { }
+  StrategoLang-Strategy.Some = <some(<StrategoLang-Strategy>)> { }
+  StrategoLang-Strategy.One = <one(<StrategoLang-Strategy>)> { }
+  StrategoLang-Strategy.All = <all(<StrategoLang-Strategy>)> { }
+  StrategoLang-SVar.SVar = StrategoLang-SId { }
+  StrategoLang-Strategy.Let = <let
+  <{StrategoLang-Def "\n"}*>
+in
+  <StrategoLang-Strategy>
+end> { }
+  StrategoLang-Strategy.CallT = <<StrategoLang-SVar>(<{StrategoLang-Strategy ", "}*>|<{StrategoLang-Term ", "}*>)> { }
+  StrategoLang-Strategy.CallDynamic = <call(<StrategoLang-Term>|<{StrategoLang-Strategy ", "}*>|<{StrategoLang-Term ", "}*>)> {deprecated("Dynamic calls are not supported")}
+  StrategoLang-Strategy.ImportTerm = <import-term(<StrategoLang-ModName>)> { }
+
+context-free priorities
+
+  {StrategoLang-Strategy.Build
+   StrategoLang-Strategy.Match} > StrategoLang-Strategy.Seq > StrategoLang-Strategy.GuardedLChoice
+
+sorts StrategoLang-MatchOrder StrategoLang-MatchCase
+
+context-free syntax
+
+  StrategoLang-Strategy.MultiMatch = <match <StrategoLang-MatchOrder>
+  <{StrategoLang-MatchCase "\n"}*>
+end> { }
+  StrategoLang-MatchOrder.Sequential = <sequential> { }
+  StrategoLang-MatchCase.ScopedGuardedMatchCase = <case <{StrategoLang-ID ", "}*> | <StrategoLang-Term> when <StrategoLang-Strategy>: <StrategoLang-Strategy>> { }
+
+sorts StrategoLang-DTree
+
+context-free syntax
+
+  StrategoLang-Strategy = StrategoLang-DTree { }
+  StrategoLang-DTree.SwitchT = <switch <StrategoLang-PathTp> {
+  <{StrategoLang-AltT "\n"}*>
+  <StrategoLang-Default>
+}> { }
+  StrategoLang-DTree.SwitchTNoDefault = <switch <StrategoLang-PathTp> {
+  <{StrategoLang-AltT "\n"}*>
+}> { }
+  StrategoLang-DTree.GuardedLeafs = <<{StrategoLang-Guard "\n"}+>> { }
+
+sorts StrategoLang-SwitchV
+
+context-free syntax
+
+  StrategoLang-SwitchV.SwitchV = <switch <StrategoLang-PathVF> {
+  <{StrategoLang-AltV "\n"}*>
+  <StrategoLang-Default>
+}> { }
+  StrategoLang-SwitchV.SwitchVNoDefault = <switch <StrategoLang-PathVF> {
+  <{StrategoLang-AltV "\n"}*>
+}> { }
+
+sorts StrategoLang-AltT StrategoLang-AltV StrategoLang-Default
+
+context-free syntax
+
+  StrategoLang-AltT.AltT = <alt <StrategoLang-PatT>:
+  <StrategoLang-SwitchV>> { }
+  StrategoLang-AltV.AltV = <alt <StrategoLang-PatV>:
+  <StrategoLang-Strategy>> { }
+  StrategoLang-AltV.GuardedAltV = <alt <StrategoLang-PatV>
+  <{StrategoLang-Guard "\n"}+>> { }
+  StrategoLang-Default.Default = <default:
+  <StrategoLang-Strategy>> { }
+  StrategoLang-Default.GuardedDefault = <default
+  <{StrategoLang-Guard "\n"}+>> { }
+
+sorts StrategoLang-Guard
+
+context-free syntax
+
+  StrategoLang-Guard.Guard = <where <StrategoLang-Strategy>:
+  <StrategoLang-Strategy>> { }
+
+sorts StrategoLang-Path StrategoLang-PathTrm StrategoLang-PathTp StrategoLang-PathFld StrategoLang-PathVF
+
+context-free syntax
+
+  StrategoLang-Path = StrategoLang-PathTrm { }
+  StrategoLang-Path = StrategoLang-PathTp { }
+  StrategoLang-Path = StrategoLang-PathFld { }
+  StrategoLang-PathVF = StrategoLang-PathTrm { }
+  StrategoLang-PathVF = StrategoLang-PathFld { }
+  StrategoLang-PathTrm.CurP = <current> { }
+  StrategoLang-PathTrm.SubP = <<StrategoLang-PathTrm>.<StrategoLang-Int>> { }
+  StrategoLang-PathTrm.AnnoP = <<StrategoLang-PathTrm>.anno> { }
+  StrategoLang-PathTrm.HeadP = <<StrategoLang-PathTrm>.head> { }
+  StrategoLang-PathTrm.TailP = <<StrategoLang-PathTrm>.tail> { }
+  StrategoLang-PathTp.TypeP = <<StrategoLang-PathTrm>.type> { }
+  StrategoLang-PathFld.SizeP = <<StrategoLang-PathTrm>.size> { }
+  StrategoLang-PathFld.ConP = <<StrategoLang-PathTrm>.con> { }
+  StrategoLang-PathFld.IntP = <<StrategoLang-PathTrm>.int> { }
+  StrategoLang-PathFld.RealP = <<StrategoLang-PathTrm>.real> { }
+  StrategoLang-PathFld.StrP = <<StrategoLang-PathTrm>.str> { }
+
+sorts StrategoLang-PatV
+
+context-free syntax
+
+  StrategoLang-PatV.FunC = <(<StrategoLang-Id>, <StrategoLang-Int>)> { }
+  StrategoLang-PatV.StrC = StrategoLang-String { }
+  StrategoLang-PatV.IntC = StrategoLang-Int { }
+  StrategoLang-PatV.RealC = StrategoLang-Real { }
+  StrategoLang-PatV.AnnoC = <{_}> { }
+  StrategoLang-PatV.TupleC = <(<StrategoLang-Int>)> { }
+
+sorts StrategoLang-PatT
+
+context-free syntax
+
+  StrategoLang-PatT.ApplT = <APPL> { }
+  StrategoLang-PatT.LisT = <LIST> { }
+  StrategoLang-PatT.IntT = <INT> { }
+  StrategoLang-PatT.RealT = <REAL> { }
+  StrategoLang-PatT.StringT = <STRING> { }
+  StrategoLang-PatT.CtorT = <CTOR> { }
+  StrategoLang-PatT.TupleT = <TUPLE> { }
+  StrategoLang-PatT.RefT = <REF> { }
+  StrategoLang-PatT.BlobT = <BLOB> { }
+  StrategoLang-PatT.PlaceT = <PLACEHOLDER> { }

@@ -1,0 +1,31 @@
+module StrategoLang/core/layout-namespaced
+
+
+sorts Ws-LEX ShortCom-LEX LongCom-LEX CommChar-LEX Asterisk-LEX Eof-LEX
+
+lexical syntax
+
+  StrategoLang-Ws = [\t\ \n\r] { }
+  StrategoLang-ShortCom = "//" ~[\n\r]* [\n\r] | StrategoLang-Eof { }
+  StrategoLang-LongCom = "/*" StrategoLang-CommChar* "*/" { }
+  StrategoLang-Eof = { }
+  StrategoLang-CommChar = ~[\*] { }
+  StrategoLang-Asterisk = "*" { }
+  StrategoLang-CommChar = StrategoLang-Asterisk { }
+
+lexical restrictions
+
+  StrategoLang-Asterisk -/- [\/]
+  StrategoLang-Eof -/- ~[ ]
+
+lexical syntax
+
+  LAYOUT = StrategoLang-ShortCom { }
+  LAYOUT = StrategoLang-LongCom { }
+  LAYOUT = StrategoLang-Ws { }
+
+context-free restrictions
+
+  LAYOUT? -/- [\ \t\n\r]
+  LAYOUT? -/- [\/].[\*]
+  LAYOUT? -/- [\/].[\/]

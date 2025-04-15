@@ -1,0 +1,76 @@
+module StrategoLang/sugar/dynamic-rules-namespaced
+
+imports
+  StrategoLang/core/identifiers-namespaced	
+  StrategoLang/core/terms-namespaced	
+  StrategoLang/core/signatures-namespaced	
+  StrategoLang/core/strategies-namespaced	
+  StrategoLang/sugar/strategies-namespaced	
+  StrategoLang/sugar/rules-namespaced
+
+template options
+
+  tokenize : ")("
+
+sorts StrategoLang-ScopeLabels
+
+context-free syntax
+
+  StrategoLang-Strategy.DynRuleScope = <{| <StrategoLang-ScopeLabels>
+: <StrategoLang-Strategy>
+|}> { }
+  StrategoLang-ScopeLabels = {StrategoLang-DynRuleScopeId ", "}* { }
+  StrategoLang-ScopeLabels.ScopeLabels = <~<StrategoLang-Term>> { }
+
+sorts StrategoLang-DynRuleDef StrategoLang-DynRuleId StrategoLang-DynRuleScopeId
+
+context-free syntax
+
+  StrategoLang-Strategy.GenDynRules = <rules(<StrategoLang-DynRuleDef*>)> { }
+  StrategoLang-DynRuleDef.AddScopeLabel = <<StrategoLang-SId> + <StrategoLang-Term>> { }
+  StrategoLang-DynRuleDef.UndefineDynRule = <<StrategoLang-DynRuleId> :- <StrategoLang-Term>> { }
+  StrategoLang-DynRuleDef.SetDynRule = <<StrategoLang-DynRuleId> : <StrategoLang-Rule>> { }
+  StrategoLang-DynRuleDef.AddDynRule = <<StrategoLang-DynRuleId> :+ <StrategoLang-Rule>> { }
+  StrategoLang-DynRuleDef.SetDynRuleMatch = <<StrategoLang-DynRuleId> : <StrategoLang-Term>> { }
+  StrategoLang-DynRuleDef.DynRuleAssign = <<StrategoLang-DynRuleId> := <StrategoLang-Term>> { }
+  StrategoLang-DynRuleDef.DynRuleAssignAdd = <<StrategoLang-DynRuleId> :+= <StrategoLang-Term>> { }
+  StrategoLang-DynRuleDef.SetDynRuleDepends = <<StrategoLang-DynRuleId> : <StrategoLang-Rule> depends on <StrategoLang-Term>> { }
+  StrategoLang-DynRuleId.LabeledDynRuleId = <<StrategoLang-RuleDec> . <StrategoLang-Term>> { }
+  StrategoLang-DynRuleId.AddLabelDynRuleId = <<StrategoLang-RuleDec> + <StrategoLang-Term>> { }
+  StrategoLang-DynRuleId.DynRuleId = StrategoLang-RuleDec { }
+  StrategoLang-DynRuleScopeId.LabeledDynRuleScopeId = <<StrategoLang-Id> . <StrategoLang-Term>> { }
+  StrategoLang-DynRuleScopeId.DynRuleScopeId = StrategoLang-Id { }
+
+sorts StrategoLang-RuleDec
+
+context-free syntax
+
+  StrategoLang-RuleDec.RDecNoArgs = StrategoLang-SId { }
+  StrategoLang-RuleDec.RDec = <<StrategoLang-SId>(<{StrategoLang-Typedid ", "}*> )> { }
+  StrategoLang-RuleDec.RDecT = <<StrategoLang-SId>(<{StrategoLang-Typedid ", "}*> | <{StrategoLang-Typedid ", "}*>)> { }
+
+sorts StrategoLang-RuleNames
+
+context-free syntax
+
+  StrategoLang-RuleNames = {StrategoLang-SId ", "}* { }
+  StrategoLang-RuleNames.RuleNames = <~<StrategoLang-Term>> { }
+  StrategoLang-Strategy.DynRuleIntersectFix = </<StrategoLang-RuleNames>\\* <StrategoLang-Strategy>> { }
+
+syntax
+
+  StrategoLang-Strategy-CF.DynRuleUnionFix = "\\" LAYOUT?-CF StrategoLang-RuleNames-CF "/*" LAYOUT?-CF StrategoLang-Strategy-CF { }
+  StrategoLang-Strategy-CF.DynRuleUnionFix1 = "\\" LAYOUT?-CF StrategoLang-RuleNames-CF " /*" LAYOUT?-CF StrategoLang-Strategy-CF { }
+  StrategoLang-Strategy-CF.DynRuleIntersectUnionFix = "/" LAYOUT?-CF StrategoLang-RuleNames-CF LAYOUT?-CF "\\" LAYOUT?-CF StrategoLang-RuleNames-CF "/*" LAYOUT?-CF StrategoLang-Strategy-CF { }
+  StrategoLang-Strategy-CF.DynRuleIntersectUnionFix1 = "/" LAYOUT?-CF StrategoLang-RuleNames-CF LAYOUT?-CF "\\" LAYOUT?-CF StrategoLang-RuleNames-CF " /*" LAYOUT?-CF StrategoLang-Strategy-CF { }
+
+context-free syntax
+
+  StrategoLang-Strategy.DynRuleIntersect = <<StrategoLang-Strategy> /<StrategoLang-RuleNames>\\ <StrategoLang-Strategy>> {right}
+  StrategoLang-Strategy.DynRuleUnion = <<StrategoLang-Strategy> \\<StrategoLang-RuleNames>/ <StrategoLang-Strategy>> {right}
+  StrategoLang-Strategy.DynRuleIntersectUnion = <<StrategoLang-Strategy> /<StrategoLang-RuleNames>\\<StrategoLang-RuleNames>/ <StrategoLang-Strategy>> {right}
+
+context-free priorities
+
+  StrategoLang-Strategy.BA > {StrategoLang-Strategy.DynRuleIntersectFix
+                              StrategoLang-Strategy.DynRuleUnionFix} > StrategoLang-Strategy.AM > StrategoLang-Strategy.DynRuleIntersect > StrategoLang-Strategy.DynRuleUnion > StrategoLang-Strategy.DynRuleIntersectUnion > StrategoLang-Strategy.Seq

@@ -1,0 +1,15 @@
+module StrategoLang/sugar/constants-namespaced
+
+imports
+  StrategoLang/core/identifiers-namespaced	
+  StrategoLang/core/constants-namespaced	
+  StrategoLang/sugar/string-quotations-namespaced
+
+sorts Char-LEX CharChar-LEX
+
+lexical syntax
+
+  StrategoLang-Char = "'" StrategoLang-CharChar "'" { }
+  StrategoLang-CharChar = ~[\'\\\n\r] { }
+  StrategoLang-CharChar = [\\] [tnrbf\"\'\\] { }
+  StrategoLang-Id = StrategoLang-Char {reject}

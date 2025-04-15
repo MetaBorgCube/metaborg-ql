@@ -1,0 +1,48 @@
+module mix
+
+imports
+
+  StrategoLang/import-namespaced
+  StrategoLang/core/modules-namespaced
+  StrategoLang/sugar/terms-namespaced
+  ql
+  types
+  expressions
+  lex
+
+context-free start-symbols
+
+  Module
+
+context-free sorts
+
+  Module
+
+context-free syntax
+
+  Module = StrategoLang-Module
+
+  StrategoLang-PreTerm.ToMetaExpr = [[ql |[ Form ]|]]
+  StrategoLang-PreTerm.ToMetaExpr = [[ql |[ TyExpr ]|]]
+  StrategoLang-PreTerm.ToMetaExpr = [[ql |[ Type ]|]]
+  StrategoLang-PreTerm.ToMetaExpr = [[ql |[ Expr ]|]]
+
+context-free syntax
+
+  Expr.meta-var = ExprVar
+  Label.meta-var = ("label"|"text"|"l") [0-9]*
+  Type.meta-var = ("type"|"t") [0-9]*
+  TyExpr.meta-var = ("texpr"|"texp"|"te") [0-9]*
+  ID.meta-var = IDVar
+
+lexical sorts
+
+  IDVar ExprVar
+
+lexical syntax
+
+  IDVar = [fgq] "id" [0-9]*
+  ExprVar = ("cond"|"expr"|"exp"|"e"|"c") [0-9]*
+
+  ID = IDVar {reject}
+  ID = ExprVar {reject}

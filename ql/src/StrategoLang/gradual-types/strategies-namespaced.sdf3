@@ -1,0 +1,37 @@
+module StrategoLang/gradual-types/strategies-namespaced
+
+imports
+  StrategoLang/gradual-types/signatures-namespaced	
+  StrategoLang/core/identifiers-namespaced	
+  StrategoLang/core/strategies-namespaced	
+  StrategoLang/core/terms-namespaced
+
+template options
+
+  keyword -/- [a-zA-Z0-9\'\-\_]
+  tokenize : ")(|"
+
+sorts StrategoLang-Coercion StrategoLang-SCoercion StrategoLang-Proxy
+
+context-free syntax
+
+  StrategoLang-Strategy.Cast = [cast([StrategoLang-Coercion])] { }
+  StrategoLang-Strategy.TypeTest = [is([StrategoLang-Type])] { }
+  StrategoLang-Coercion.FailC = [fail] { }
+  StrategoLang-Coercion.IdC = [id] { }
+  StrategoLang-Coercion.RuntimeCheck = StrategoLang-Type { }
+  StrategoLang-SCoercion.SFail = [fail] { }
+  StrategoLang-SCoercion.SId = [id] { }
+  StrategoLang-SCoercion.SRuntimeCheck = StrategoLang-SType { }
+  StrategoLang-Strategy = StrategoLang-Proxy { }
+  StrategoLang-Proxy.Proxy = [proxy([StrategoLang-Coercion], [StrategoLang-Coercion])([StrategoLang-SVar])] { }
+  StrategoLang-Proxy.ProxyT = [proxy([{StrategoLang-SCoercion ", "}*] | [{StrategoLang-Coercion ", "}*])([StrategoLang-Coercion], [StrategoLang-Coercion])([StrategoLang-SVar])] { }
+  StrategoLang-SVar = "cast" {reject}
+
+sorts StrategoLang-TypedSVar StrategoLang-TypedTVar
+
+context-free syntax
+
+  StrategoLang-StrategyDef.ExtTypedDef = [external [StrategoLang-MaybeEmptySId] :: [StrategoLang-FunTType]] { }
+  StrategoLang-StrategyDef.ExtTypedDefInl = [external [StrategoLang-MaybeEmptySId]([{StrategoLang-ID ", "}*] | [{StrategoLang-ID ", "}*]) :: [StrategoLang-FunTType] =
+  [StrategoLang-Strategy]] { }

@@ -1,0 +1,12 @@
+module StrategoLang/sugar/signatures-namespaced
+
+imports
+  StrategoLang/core/signatures-namespaced	
+  StrategoLang/sugar/constants-namespaced	
+  StrategoLang/core/identifiers-namespaced
+
+context-free syntax
+
+  StrategoLang-Sort.SortList = <[<{StrategoLang-Sort ", "}*> ]> {deprecated("This syntax never had real meaning and will be dropped")}
+  StrategoLang-Sort.SortListTl = <[<{StrategoLang-Sort ", "}*> | <StrategoLang-Sort> ]> {deprecated("This syntax never had real meaning and will be dropped")}
+  StrategoLang-Sort.SortTuple = <(<{StrategoLang-Sort ", "}*> )> {deprecated("This syntax is being replaced")}

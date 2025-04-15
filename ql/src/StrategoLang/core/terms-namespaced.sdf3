@@ -1,0 +1,42 @@
+module StrategoLang/core/terms-namespaced
+
+imports
+  StrategoLang/core/identifiers-namespaced	
+  StrategoLang/core/constants-namespaced	
+  StrategoLang/core/strategies-namespaced
+
+sorts StrategoLang-ID StrategoLang-Var StrategoLang-Wld
+
+context-free syntax
+
+  StrategoLang-Var.Var = StrategoLang-ID { }
+  StrategoLang-ID = StrategoLang-Id { }
+  StrategoLang-Wld.Wld = "_" { }
+
+sorts StrategoLang-Term
+
+context-free syntax
+
+  StrategoLang-Term = StrategoLang-Var { }
+  StrategoLang-Term = StrategoLang-Wld { }
+  StrategoLang-Term.Anno = <<StrategoLang-PreTerm>{^<StrategoLang-PreTerm>}> { }
+  StrategoLang-Term.As = <<StrategoLang-Var>@<StrategoLang-Term>> { }
+  StrategoLang-Term.Path = StrategoLang-PathTrm { }
+
+sorts StrategoLang-PreTerm
+
+context-free syntax
+
+  StrategoLang-PreTerm = StrategoLang-Var { }
+  StrategoLang-PreTerm = StrategoLang-Wld { }
+  StrategoLang-PreTerm.Int = StrategoLang-Int { }
+  StrategoLang-PreTerm.Real = StrategoLang-Real { }
+  StrategoLang-PreTerm.Str = StrategoLang-String { }
+  StrategoLang-PreTerm.Op = <<StrategoLang-Id>(<{StrategoLang-Term ", "}*>)> { }
+  StrategoLang-PreTerm.OpQ = <<StrategoLang-String>(<{StrategoLang-Term ", "}*>)> { }
+  StrategoLang-PreTerm.Explode = <<StrategoLang-Term>#(<StrategoLang-Term>)> { }
+  StrategoLang-PreTerm.AsPT = <<StrategoLang-Var>@<StrategoLang-PreTerm>> { }
+
+context-free priorities
+
+  StrategoLang-PreTerm.Explode > StrategoLang-Term.As

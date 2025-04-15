@@ -1,0 +1,80 @@
+module StrategoLang/sugar/string-quotations-namespaced
+
+imports
+  StrategoLang/core/terms-namespaced
+
+sorts StrategoLang-StringQuotation StrategoLang-StringQuotedPart1 StrategoLang-StringQuotedPart2 StrategoLang-StringQuotedPart3 StrategoLang-StringQuotedPart4
+
+context-free syntax
+
+  StrategoLang-PreTerm = StrategoLang-StringQuotation { }
+  StrategoLang-StringQuotedPart1.QStr1 = StrategoLang-StringQuotedChars1 { }
+  StrategoLang-StringQuotedPart2.QStr2 = StrategoLang-StringQuotedChars2 { }
+  StrategoLang-StringQuotedPart3.QStr3 = StrategoLang-StringQuotedChars3 { }
+  StrategoLang-StringQuotedPart4.QStr4 = StrategoLang-StringQuotedChars4 { }
+  StrategoLang-StringQuotedPart1.QDollar1 = StrategoLang-Dollar1 { }
+  StrategoLang-StringQuotedPart2.QDollar2 = StrategoLang-Dollar2 { }
+  StrategoLang-StringQuotedPart3.QDollar3 = StrategoLang-Dollar3 { }
+  StrategoLang-StringQuotedPart4.QDollar4 = StrategoLang-Dollar4 { }
+  StrategoLang-StringQuotedPart1.QBr1 = StrategoLang-QuotedBracket1 { }
+  StrategoLang-StringQuotedPart2.QBr2 = StrategoLang-QuotedBracket2 { }
+  StrategoLang-StringQuotedPart3.QBr3 = StrategoLang-QuotedBracket3 { }
+  StrategoLang-StringQuotedPart4.QBr4 = StrategoLang-QuotedBracket4 { }
+
+sorts StringQuotedChars1-LEX Dollar1-LEX QuotedBracket1-LEX StringQuotedChars2-LEX Dollar2-LEX QuotedBracket2-LEX StringQuotedChars3-LEX Dollar3-LEX QuotedBracket3-LEX StringQuotedChars4-LEX Dollar4-LEX QuotedBracket4-LEX
+
+lexical syntax
+
+  StrategoLang-StringQuotedChars1 = ~[\[\]\$]+ { }
+  StrategoLang-StringQuotedChars2 = ~[\{\}\$]+ { }
+  StrategoLang-StringQuotedChars3 = ~[\(\)\$]+ { }
+  StrategoLang-StringQuotedChars4 = ~[\<\>\$]+ { }
+  StrategoLang-Dollar1 = "$" { }
+  StrategoLang-Dollar2 = "$" { }
+  StrategoLang-Dollar3 = "$" { }
+  StrategoLang-Dollar4 = "$" { }
+  StrategoLang-QuotedBracket1 = "$" [\[\]] "$" { }
+  StrategoLang-QuotedBracket2 = "$" [\{\}] "$" { }
+  StrategoLang-QuotedBracket3 = "$" [\(\)] "$" { }
+  StrategoLang-QuotedBracket4 = "$" [\<\>] "$" { }
+
+lexical restrictions
+
+  StrategoLang-StringQuotedChars1 -/- ~[\[\]\$]
+  StrategoLang-StringQuotedChars2 -/- ~[\{\}\$]
+  StrategoLang-StringQuotedChars3 -/- ~[\(\)\$]
+  StrategoLang-StringQuotedChars4 -/- ~[\<\>\$]
+  StrategoLang-Dollar1 -/- [\[\]].[\$]
+  StrategoLang-Dollar2 -/- [\{\}].[\$]
+  StrategoLang-Dollar3 -/- [\(\)].[\$]
+  StrategoLang-Dollar4 -/- [\<\>].[\$]
+
+syntax
+
+  StrategoLang-StringQuotation-CF.StringQuotation1 = "$" "[" StrategoLang-StringQuotedPart1-CF* "]" { }
+  StrategoLang-StringQuotation-CF.StringQuotation2 = "$" "{" StrategoLang-StringQuotedPart2-CF* "}" { }
+  StrategoLang-StringQuotation-CF.StringQuotation3 = "$" "(" StrategoLang-StringQuotedPart3-CF* ")" { }
+  StrategoLang-StringQuotation-CF.StringQuotation4 = "$" "<" StrategoLang-StringQuotedPart4-CF* ">" { }
+  StrategoLang-StringQuotedPart1-CF.StringEscape1 = "[" LAYOUT?-CF StrategoLang-Term-CF LAYOUT?-CF "]" { }
+  StrategoLang-StringQuotedPart2-CF.StringEscape2 = "{" LAYOUT?-CF StrategoLang-Term-CF LAYOUT?-CF "}" { }
+  StrategoLang-StringQuotedPart3-CF.StringEscape3 = "(" LAYOUT?-CF StrategoLang-Term-CF LAYOUT?-CF ")" { }
+  StrategoLang-StringQuotedPart4-CF.StringEscape4 = "<" LAYOUT?-CF StrategoLang-Term-CF LAYOUT?-CF ">" { }
+
+sorts StrategoLang-InternalStringQuotation StrategoLang-InternalStringQuotedPart1 StrategoLang-InternalStringQuotedPart2 StrategoLang-InternalStringQuotedPart3 StrategoLang-InternalStringQuotedPart4
+
+syntax
+
+  StrategoLang-InternalStringQuotation-CF.StringQuotation1 = "$" "[" StrategoLang-Padding-LEX StrategoLang-InternalStringQuotedPart1-CF* "]" { }
+  StrategoLang-InternalStringQuotation-CF.StringQuotation2 = "$" "{" StrategoLang-Padding-LEX StrategoLang-InternalStringQuotedPart2-CF* "}" { }
+  StrategoLang-InternalStringQuotation-CF.StringQuotation3 = "$" "(" StrategoLang-Padding-LEX StrategoLang-InternalStringQuotedPart3-CF* ")" { }
+  StrategoLang-InternalStringQuotation-CF.StringQuotation4 = "$" "<" StrategoLang-Padding-LEX StrategoLang-InternalStringQuotedPart4-CF* ">" { }
+  StrategoLang-InternalStringQuotedPart1-CF.StringEscape1 = StrategoLang-Padding-LEX "[" LAYOUT?-CF StrategoLang-Term-CF LAYOUT?-CF "]" { }
+  StrategoLang-InternalStringQuotedPart2-CF.StringEscape2 = StrategoLang-Padding-LEX "{" LAYOUT?-CF StrategoLang-Term-CF LAYOUT?-CF "}" { }
+  StrategoLang-InternalStringQuotedPart3-CF.StringEscape3 = StrategoLang-Padding-LEX "(" LAYOUT?-CF StrategoLang-Term-CF LAYOUT?-CF ")" { }
+  StrategoLang-InternalStringQuotedPart4-CF.StringEscape4 = StrategoLang-Padding-LEX "<" LAYOUT?-CF StrategoLang-Term-CF LAYOUT?-CF ">" { }
+
+sorts Padding-LEX
+
+lexical syntax
+
+  StrategoLang-Padding = ' '+ { }

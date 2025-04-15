@@ -1,0 +1,119 @@
+module StrategoLang/core/identifiers-namespaced
+
+
+sorts ModName-LEX ModNamePart-LEX
+
+lexical syntax
+
+  StrategoLang-ModName = {StrategoLang-ModNamePart "/"}+ { }
+  StrategoLang-ModNamePart = [a-zA-Z\.\_] [a-zA-Z0-9\'\.\-\_]* { }
+
+lexical restrictions
+
+  StrategoLang-ModName -/- [a-zA-Z0-9\'\.\-\_]
+
+context-free syntax
+
+  StrategoLang-ModName = "imports" {reject}
+  StrategoLang-ModName = "overlays" {reject}
+  StrategoLang-ModName = "rules" {reject}
+  StrategoLang-ModName = "signature" {reject}
+  StrategoLang-ModName = "strategies" {reject}
+
+sorts Id-LEX LId-LEX LCID-LEX UCID-LEX SortVar-LEX BuiltInType-LEX SomeSort-LEX
+
+lexical syntax
+
+  StrategoLang-Id = [a-zA-Z] [a-zA-Z0-9\'\-\_]* { }
+  StrategoLang-LId = [a-zA-Z] [a-zA-Z0-9\'\-\_]* "*" { }
+  StrategoLang-Id = [\'] [a-z]+ { }
+  StrategoLang-LCID = [a-z] [a-zA-Z0-9\'\-\_]* { }
+  StrategoLang-UCID = [A-Z] [a-zA-Z0-9\'\-\_]* { }
+  StrategoLang-SortVar = StrategoLang-LCID { }
+  StrategoLang-SortVar = StrategoLang-BuiltInType {reject}
+  StrategoLang-BuiltInType = "string" { }
+  StrategoLang-BuiltInType = "int" { }
+  StrategoLang-BuiltInType = "real" { }
+  StrategoLang-BuiltInType = "blob" { }
+
+lexical restrictions
+
+  StrategoLang-Id -/- [a-zA-Z0-9\'\_\*]
+  StrategoLang-Id -/- [\-].~[\>]
+  StrategoLang-LId -/- [a-zA-Z0-9\'\-\_]
+  StrategoLang-LCID -/- [a-zA-Z0-9\'\-\_]
+  StrategoLang-UCID -/- [a-zA-Z0-9\'\-\_]
+
+lexical syntax
+
+  StrategoLang-Id = "_" {reject}
+  StrategoLang-Id = "'" {reject}
+  StrategoLang-Id = StrategoLang-Keyword {reject}
+  StrategoLang-Lid = StrategoLang-Keyword {reject}
+  StrategoLang-LCID = StrategoLang-Keyword {reject}
+  StrategoLang-UCID = StrategoLang-Keyword {reject}
+
+sorts Keyword-LEX
+
+lexical syntax
+
+  StrategoLang-Keyword = "all" { }
+  StrategoLang-Keyword = "constructors" { }
+  StrategoLang-Keyword = "fail" { }
+  StrategoLang-Keyword = "id" { }
+  StrategoLang-Keyword = "in" { }
+  StrategoLang-Keyword = "let" { }
+  StrategoLang-Keyword = "module" { }
+  StrategoLang-Keyword = "not" { }
+  StrategoLang-Keyword = "one" { }
+  StrategoLang-Keyword = "overlays" { }
+  StrategoLang-Keyword = "prim" { }
+  StrategoLang-Keyword = "proceed" { }
+  StrategoLang-Keyword = "rules" { }
+  StrategoLang-Keyword = "script" { }
+  StrategoLang-Keyword = "signature" { }
+  StrategoLang-Keyword = "some" { }
+  StrategoLang-Keyword = "sorts" { }
+  StrategoLang-Keyword = "strategies" { }
+  StrategoLang-Keyword = "stratego" { }
+  StrategoLang-Keyword = "test" { }
+  StrategoLang-Keyword = "where" { }
+  StrategoLang-Keyword = "import-term" { }
+  StrategoLang-Keyword = "is" { }
+
+lexical restrictions
+
+  "all"
+  "case"
+  "constructors"
+  "else"
+  "end"
+  "external"
+  "fail"
+  "id"
+  "if"
+  "in"
+  "is"
+  "imports"
+  "let"
+  "module"
+  "not"
+  "one"
+  "overlays"
+  "otherwise"
+  "prim"
+  "proceed"
+  "rec"
+  "rules"
+  "script"
+  "signature"
+  "some"
+  "sorts"
+  "strategies"
+  "stratego"
+  "switch"
+  "test"
+  "then"
+  "where"
+  "with"
+  "import-term" -/- [a-zA-Z0-9\'\-\_]

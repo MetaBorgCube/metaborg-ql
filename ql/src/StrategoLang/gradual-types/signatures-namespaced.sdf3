@@ -1,0 +1,45 @@
+module StrategoLang/gradual-types/signatures-namespaced
+
+imports
+  StrategoLang/core/identifiers-namespaced	
+  StrategoLang/core/signatures-namespaced
+
+sorts StrategoLang-Type StrategoLang-SortT StrategoLang-Dyn
+
+context-free syntax
+
+  StrategoLang-ConstType.ConstDynT = StrategoLang-Dyn { }
+  StrategoLang-Dyn.Dyn = [?] { }
+  StrategoLang-Type.TupleT = [[StrategoLang-Type] * [{StrategoLang-Type " * "}+]] { }
+  StrategoLang-Type.DynT = StrategoLang-Dyn { }
+  StrategoLang-Type.StringT = "string" { }
+  StrategoLang-Type.IntT = "int" { }
+  StrategoLang-Type.RealT = "real" { }
+  StrategoLang-Type.BlobT = "blob" { }
+  StrategoLang-Type = [([StrategoLang-Type])] {bracket}
+  StrategoLang-Type = StrategoLang-SortT { }
+  StrategoLang-SortT.SortT = [[StrategoLang-Id]([{StrategoLang-Type ", "}*])] { }
+  StrategoLang-SortT.SortTNoArgs = StrategoLang-UCID { }
+  StrategoLang-SortT = "TP" {reject}
+  StrategoLang-SortT.SortTVar = StrategoLang-SortVar { }
+  StrategoLang-SortArg.SATupleT = [[StrategoLang-Sort] * [{StrategoLang-Sort " * "}+]] { }
+  StrategoLang-SortArg.SADynT = StrategoLang-Dyn { }
+
+context-free priorities
+
+  StrategoLang-Type.TupleT <0>. > StrategoLang-Type.TupleT,
+  {StrategoLang-Type "*"}+ = StrategoLang-Type { } <0>. > StrategoLang-Type.TupleT,
+  {StrategoLang-Type "*"}+ = {StrategoLang-Type "*"}+ "*" StrategoLang-Type { } <2>. > StrategoLang-Type.TupleT
+
+sorts StrategoLang-SType StrategoLang-SFunType StrategoLang-SSimpleFunType StrategoLang-FunTType
+
+context-free syntax
+
+  StrategoLang-SType.SDyn = [?] { }
+  StrategoLang-SType = StrategoLang-SFunType { }
+  StrategoLang-SSimpleFunType.TP = [TP] { }
+  StrategoLang-SSimpleFunType.FunNoArgsType = [[StrategoLang-Type] -> [StrategoLang-Type]] { }
+  StrategoLang-SFunType = StrategoLang-SSimpleFunType { }
+  StrategoLang-SFunType.SFunType = [([{StrategoLang-SType ", "}*]) [StrategoLang-SSimpleFunType]] { }
+  StrategoLang-SFunType = StrategoLang-FunTType { }
+  StrategoLang-FunTType.FunTType = [([{StrategoLang-SType ", "}*] | [{StrategoLang-Type ", "}*]) [StrategoLang-SSimpleFunType]] { }

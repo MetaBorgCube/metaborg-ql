@@ -1,0 +1,69 @@
+module StrategoLang/core/signatures-namespaced
+
+imports
+  StrategoLang/core/identifiers-namespaced	
+  StrategoLang/core/constants-namespaced
+
+sorts StrategoLang-Kind
+
+context-free syntax
+
+  StrategoLang-Kind.Star = <*> { }
+
+sorts StrategoLang-SortDef
+
+context-free syntax
+
+  StrategoLang-SortDef.SortDefVar = StrategoLang-LCID {deprecated("This syntax never had a clear meaning should not be used")}
+  StrategoLang-SortDef.SortDefNoArgs = StrategoLang-UCID { }
+  StrategoLang-SortDef.SortDef = [[StrategoLang-UCID]([{StrategoLang-Kind ", "}*])] { }
+  StrategoLang-SortDef.SortDefDepr = <<StrategoLang-Id>(<{StrategoLang-Sort ", "}+>)> {deprecated("This syntax never had a clear meaning should be replaced by the version that uses kinds A(*, *)")}
+  StrategoLang-SortDef.ExtSortDef = [external [StrategoLang-UCID]([{StrategoLang-Kind ", "}*])] { }
+
+sorts StrategoLang-Sdecl
+
+context-free syntax
+
+  StrategoLang-Sdecl.Sorts = <sorts <StrategoLang-SortDef*>> { }
+  StrategoLang-Sdecl.Constructors = <constructors
+
+<{StrategoLang-Opdecl "\n"}*>> { }
+
+sorts StrategoLang-Sort StrategoLang-SortArg
+
+context-free syntax
+
+  StrategoLang-Sort.SortVar = StrategoLang-LCID { }
+  StrategoLang-Sort.SortNoArgs = StrategoLang-UCID { }
+  StrategoLang-Sort.Sort = <<StrategoLang-Id>(<{StrategoLang-SortArg ", "}*>)> { }
+  StrategoLang-SortArg = StrategoLang-Sort { }
+
+sorts StrategoLang-Opdecl
+
+context-free syntax
+
+  StrategoLang-Opdecl.OpDecl = <<StrategoLang-Id> : <StrategoLang-OpType>> { }
+  StrategoLang-Opdecl.OpDeclQ = <<StrategoLang-String> : <StrategoLang-OpType>> { }
+  StrategoLang-Opdecl.OpDeclInj = <: <StrategoLang-OpType>> { }
+  StrategoLang-Opdecl.ExtOpDecl = <external <StrategoLang-Id> : <StrategoLang-OpType>> { }
+  StrategoLang-Opdecl.ExtOpDeclQ = <external <StrategoLang-String> : <StrategoLang-OpType>> { }
+  StrategoLang-Opdecl.ExtOpDeclInj = <external : <StrategoLang-OpType>> { }
+
+sorts StrategoLang-OldType StrategoLang-OldArgType StrategoLang-ConstType StrategoLang-FunType StrategoLang-RetType StrategoLang-OpType
+
+context-free syntax
+
+  StrategoLang-ConstType.ConstType = StrategoLang-Sort { }
+  StrategoLang-FunType.FunType = [[{StrategoLang-OldArgType " * "}+] -> [StrategoLang-RetType]] { }
+  StrategoLang-OldArgType = <(<StrategoLang-OldType>)> {bracket}
+  StrategoLang-OldArgType = StrategoLang-ConstType { }
+  StrategoLang-RetType = StrategoLang-OldType { }
+  StrategoLang-RetType = StrategoLang-FunType {reject}
+  StrategoLang-OldType = StrategoLang-FunType { }
+  StrategoLang-OldType = StrategoLang-ConstType { }
+  StrategoLang-OpType = StrategoLang-ConstType { }
+  StrategoLang-OpType.OpFunType = [[{StrategoLang-ConstType " * "}+] -> [StrategoLang-ConstType]] { }
+
+context-free restrictions
+
+  StrategoLang-Sort -/- [\(]

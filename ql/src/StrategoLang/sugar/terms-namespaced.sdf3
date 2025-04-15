@@ -1,0 +1,45 @@
+module StrategoLang/sugar/terms-namespaced
+
+imports
+  StrategoLang/core/terms-namespaced	
+  StrategoLang/core/identifiers-namespaced	
+  StrategoLang/sugar/constants-namespaced	
+  StrategoLang/sugar/strategies-namespaced
+
+context-free syntax
+
+  StrategoLang-ID.ListVar = StrategoLang-LId { }
+
+context-free syntax
+
+  StrategoLang-Term.BuildDefault = <_<StrategoLang-Term>> { }
+  StrategoLang-Term.AnnoList = <<StrategoLang-PreTerm>{<{StrategoLang-Term ", "}*>}> { }
+  StrategoLang-Term.NoAnnoList = StrategoLang-PreTerm { }
+  StrategoLang-Term.App = [<[StrategoLang-Strategy]> [StrategoLang-Term]] { }
+  StrategoLang-Term.RootApp = [<[StrategoLang-Strategy]>] { }
+
+context-free syntax
+
+  StrategoLang-PreTerm.Char = StrategoLang-Char { }
+  StrategoLang-PreTerm.AppPT = [<[StrategoLang-Strategy]> [StrategoLang-Term]] { }
+  StrategoLang-PreTerm.RootAppPT = [<[StrategoLang-Strategy]>] { }
+  StrategoLang-PreTerm.Tuple = <(<{StrategoLang-Term ", "}*>)> { }
+  StrategoLang-PreTerm.List = <[<{StrategoLang-Term ", "}*>]> { }
+  StrategoLang-PreTerm.ListTail = <[<{StrategoLang-Term ", "}+> | <StrategoLang-Term>]> { }
+  StrategoLang-PreTerm.BuildDefaultPT = <_<StrategoLang-PreTerm>> { }
+
+context-free priorities
+
+  StrategoLang-Term.NoAnnoList = StrategoLang-PreTerm { } <0>. > {StrategoLang-PreTerm = StrategoLang-Var { }
+                                                                  StrategoLang-PreTerm = StrategoLang-Wld { }},
+  StrategoLang-Term.NoAnnoList <0>. > {StrategoLang-PreTerm.AsPT
+                                       StrategoLang-PreTerm.AppPT
+                                       StrategoLang-PreTerm.RootAppPT
+                                       StrategoLang-PreTerm.BuildDefaultPT},
+  StrategoLang-Term.AnnoList > {StrategoLang-PreTerm.AsPT
+                                StrategoLang-PreTerm.AppPT},
+  StrategoLang-Term.Anno > StrategoLang-PreTerm.AppPT,
+  StrategoLang-PreTerm.Explode > {StrategoLang-Term.App
+                                  StrategoLang-PreTerm.AppPT
+                                  StrategoLang-Term.BuildDefault
+                                  StrategoLang-PreTerm.BuildDefaultPT}

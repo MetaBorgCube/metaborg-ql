@@ -1,0 +1,6 @@
+module StrategoLang/import-namespaced
+
+imports
+  StrategoLang/sugar/main-namespaced	
+  StrategoLang/core/main-namespaced	
+  StrategoLang/gradual-types/main-namespaced

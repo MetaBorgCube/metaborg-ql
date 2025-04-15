@@ -1,0 +1,16 @@
+module StrategoLang/gradual-types/terms-namespaced
+
+imports
+  StrategoLang/core/terms-namespaced	
+  StrategoLang/sugar/terms-namespaced	
+  StrategoLang/gradual-types/signatures-namespaced
+
+context-free syntax
+
+  StrategoLang-Term.TypeAscription = [[StrategoLang-Term] :: [StrategoLang-Type]] { }
+
+context-free priorities
+
+  {StrategoLang-Term.App
+   StrategoLang-PreTerm.AppPT
+   StrategoLang-Term.BuildDefault} > StrategoLang-Term.TypeAscription

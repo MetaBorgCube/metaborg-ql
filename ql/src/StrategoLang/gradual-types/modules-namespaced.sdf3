@@ -1,0 +1,12 @@
+module StrategoLang/gradual-types/modules-namespaced
+
+imports
+  StrategoLang/core/identifiers-namespaced	
+  StrategoLang/core/strategies-namespaced	
+  StrategoLang/gradual-types/signatures-namespaced
+
+context-free syntax
+
+  StrategoLang-Def.DefHasTypeNoArgs = [[StrategoLang-SId] :: [StrategoLang-SSimpleFunType]] { }
+  StrategoLang-Def.DefHasType = [[StrategoLang-SId]([{StrategoLang-SType ", "}*]) :: [StrategoLang-SSimpleFunType]] { }
+  StrategoLang-Def.DefHasTType = [[StrategoLang-SId]([{StrategoLang-SType ", "}*] | [{StrategoLang-Type ", "}*]) :: [StrategoLang-SSimpleFunType]] { }

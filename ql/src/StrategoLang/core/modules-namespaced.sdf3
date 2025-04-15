@@ -1,0 +1,42 @@
+module StrategoLang/core/modules-namespaced
+
+imports
+  StrategoLang/core/identifiers-namespaced	
+  StrategoLang/core/layout-namespaced	
+  StrategoLang/core/signatures-namespaced	
+  StrategoLang/core/strategies-namespaced
+
+sorts StrategoLang-Module
+
+context-free syntax
+
+  StrategoLang-Module.Module = <module <StrategoLang-ModName>
+
+<{StrategoLang-AnnoDecl "\n\n"}*>> { }
+  StrategoLang-Module.Specification = <specification
+
+<{StrategoLang-AnnoDecl "\n\n"}*>> { }
+
+sorts StrategoLang-Decl StrategoLang-AnnoDecl
+
+context-free syntax
+
+  StrategoLang-Decl.Imports = <imports
+
+<{StrategoLang-ImportModName "\n"}*>> { }
+  StrategoLang-Decl.Strategies = <strategies
+
+<{StrategoLang-Def "\n\n"}*>> { }
+  StrategoLang-Decl.Signature = <signature
+<{StrategoLang-Sdecl "\n\n"}*>> { }
+  StrategoLang-AnnoDecl = StrategoLang-Decl { }
+
+sorts StrategoLang-ImportModName
+
+context-free syntax
+
+  StrategoLang-ImportModName.Import = StrategoLang-ModName { }
+
+syntax
+
+  StrategoLang-ImportModName-CF.ImportWildcard = StrategoLang-ModName-CF "/" "-" { }

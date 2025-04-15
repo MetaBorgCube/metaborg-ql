@@ -1,0 +1,13 @@
+module StrategoLang/sugar/main-namespaced
+
+imports
+  StrategoLang/core/identifiers-namespaced	
+  StrategoLang/core/modules-namespaced	
+  StrategoLang/sugar/constants-namespaced	
+  StrategoLang/sugar/signatures-namespaced	
+  StrategoLang/sugar/modules-namespaced	
+  StrategoLang/sugar/terms-namespaced	
+  StrategoLang/sugar/strategies-namespaced	
+  StrategoLang/sugar/rules-namespaced	
+  StrategoLang/sugar/dynamic-rules-namespaced	
+  StrategoLang/sugar/overlays-namespaced

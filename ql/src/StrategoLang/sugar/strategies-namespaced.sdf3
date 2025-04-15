@@ -1,0 +1,121 @@
+module StrategoLang/sugar/strategies-namespaced
+
+imports
+  StrategoLang/core/identifiers-namespaced	
+  StrategoLang/core/constants-namespaced	
+  StrategoLang/core/strategies-namespaced	
+  StrategoLang/core/terms-namespaced	
+  StrategoLang/sugar/terms-namespaced	
+  StrategoLang/sugar/rules-namespaced	
+  StrategoLang/sugar/constants-namespaced	
+  StrategoLang/sugar/signatures-namespaced
+
+template options
+
+  tokenize : ")(|"
+
+sorts StrategoLang-SDefP
+
+context-free syntax
+
+  StrategoLang-StrategyDef.SDefNoArgs = <<StrategoLang-SId> =
+  <StrategoLang-Strategy>> { }
+  StrategoLang-StrategyDef.SDef = <<StrategoLang-SId>(<{StrategoLang-Typedid ", "}*>) =
+  <StrategoLang-Strategy>> { }
+  StrategoLang-StrategyDef = StrategoLang-SDefP { }
+  StrategoLang-SDefP.SDefP = <<StrategoLang-SId>(<{StrategoLang-Typedid ", "}*>|<{StrategoLang-Term ","}+>) =
+  <StrategoLang-Strategy>> { }
+  StrategoLang-SDefP = StrategoLang-SDefT {reject}
+
+context-free syntax
+
+  StrategoLang-Typedid.DefaultVarDec = StrategoLang-ID { }
+
+sorts StrategoLang-Call StrategoLang-With
+
+context-free syntax
+
+  StrategoLang-Strategy = StrategoLang-Call { }
+  StrategoLang-Call.Call = <<StrategoLang-SVar>(<{StrategoLang-Strategy ","}*>)> { }
+  StrategoLang-Call = StrategoLang-With {reject}
+  StrategoLang-Strategy.ScopeDefault = <{<StrategoLang-Strategy>}> { }
+  StrategoLang-Strategy.BA = [<[StrategoLang-Strategy]> [StrategoLang-Term]] { }
+  StrategoLang-Strategy.LChoice = [[StrategoLang-Strategy] <+ [StrategoLang-Strategy]] {right}
+  StrategoLang-Strategy.Rec = <rec <StrategoLang-SId>( <StrategoLang-Strategy> )> { }
+  StrategoLang-Strategy.Not = <not(<StrategoLang-Strategy>)> { }
+  StrategoLang-Strategy.Where = <where(<StrategoLang-Strategy>)> { }
+  StrategoLang-Strategy = StrategoLang-With { }
+  StrategoLang-With.With = <with(<StrategoLang-Strategy>)> { }
+  StrategoLang-Strategy.Test = <test(<StrategoLang-Strategy>)> {deprecated("Use `where` instead")}
+  StrategoLang-Strategy.PrimNoArgs = <prim(<StrategoLang-String>)> { }
+  StrategoLang-Strategy.Prim = <prim(<StrategoLang-String>, <{StrategoLang-Term ", "}*>)> { }
+
+context-free syntax
+
+  StrategoLang-Strategy.StrCong = <<StrategoLang-String>> { }
+  StrategoLang-Strategy.IntCong = <<StrategoLang-Int>> { }
+  StrategoLang-Strategy.RealCong = <<StrategoLang-Real>> { }
+  StrategoLang-Strategy.CharCong = <<StrategoLang-Char>> { }
+  StrategoLang-Strategy.CongQ = <<StrategoLang-String>(<{StrategoLang-Strategy ", "}*>)> { }
+  StrategoLang-Strategy.EmptyTupleCong = <( )> { }
+  StrategoLang-Strategy = <(<StrategoLang-Strategy>)> {bracket}
+  StrategoLang-Strategy.TupleCong = <(<StrategoLang-Strategy>, <{StrategoLang-Strategy ", "}+> )> { }
+  StrategoLang-Strategy.ListCongNoTail = <[<{StrategoLang-Strategy ", "}*> ]> { }
+  StrategoLang-Strategy.ListCong = <[<{StrategoLang-Strategy ", "}*> | <StrategoLang-Strategy> ]> { }
+  StrategoLang-Strategy.ExplodeCong = <<StrategoLang-Strategy>#(<StrategoLang-Strategy>)> { }
+  StrategoLang-Strategy.AM = [[StrategoLang-Strategy] => [StrategoLang-Term]] { }
+  StrategoLang-Strategy.Assign = <<StrategoLang-Term> := <StrategoLang-Term>> { }
+  StrategoLang-Strategy.AnnoCong = <<StrategoLang-Strategy>{<StrategoLang-Strategy>}> { }
+
+context-free syntax
+
+  StrategoLang-Strategy.CallNoArgs = <<StrategoLang-SVar>> { }
+  StrategoLang-Strategy.LRule = <\\<StrategoLang-Rule>\\> { }
+  StrategoLang-Strategy.SRule = <(<StrategoLang-Rule>)> { }
+  StrategoLang-Strategy.Choice = <<StrategoLang-Strategy> + <StrategoLang-Strategy>> {right}
+  StrategoLang-Strategy.RChoice = [[StrategoLang-Strategy] +> [StrategoLang-Strategy]] {right, deprecated("Flip your arguments and use <+")}
+  StrategoLang-Strategy.Proceed = <proceed(<{StrategoLang-Strategy ", "}+>)> { }
+  StrategoLang-Strategy.CondChoice = <if <StrategoLang-Strategy> then <StrategoLang-Strategy> else <StrategoLang-Strategy> end> { }
+  StrategoLang-Strategy.IfThen = <if <StrategoLang-Strategy> then <StrategoLang-Strategy> end> { }
+  StrategoLang-Strategy.LTrySome = [[StrategoLang-Strategy] <* [StrategoLang-Strategy]] {left}
+
+sorts StrategoLang-SwitchCase
+
+context-free syntax
+
+  StrategoLang-Strategy.SwitchChoiceNoOtherwise = <switch <StrategoLang-Strategy>
+  <{StrategoLang-SwitchCase "\n"}*>
+end> { }
+  StrategoLang-Strategy.SwitchChoice = <switch <StrategoLang-Strategy>
+  <{StrategoLang-SwitchCase "\n"}*>
+  otherwise : <StrategoLang-Strategy>
+end> { }
+  StrategoLang-SwitchCase.SwitchCase = <case <StrategoLang-Strategy>:
+  <StrategoLang-Strategy>> { }
+
+context-free priorities
+
+  {StrategoLang-Strategy.AnnoCong
+   StrategoLang-Strategy.ExplodeCong} > {StrategoLang-Strategy.Match
+                                         StrategoLang-Strategy.Build} > StrategoLang-Strategy.BA > StrategoLang-Strategy.AM > StrategoLang-Strategy.Seq > StrategoLang-Strategy.LTrySome > {right :
+    StrategoLang-Strategy.Choice
+    StrategoLang-Strategy.LChoice
+    StrategoLang-Strategy.RChoice
+    StrategoLang-Strategy.GuardedLChoice}
+
+context-free priorities
+
+  StrategoLang-Strategy.AnnoCong <0>. > {StrategoLang-Strategy.Match
+                                         StrategoLang-Strategy.Build
+                                         StrategoLang-Strategy.Assign
+                                         StrategoLang-Strategy.BA
+                                         StrategoLang-Strategy.AM},
+  StrategoLang-Strategy.ExplodeCong <0>. > {StrategoLang-Strategy.Match
+                                            StrategoLang-Strategy.Build
+                                            StrategoLang-Strategy.Assign
+                                            StrategoLang-Strategy.BA
+                                            StrategoLang-Strategy.AM}
+
+context-free priorities
+
+  StrategoLang-Strategy.GuardedLChoice <2>. > StrategoLang-Strategy.Choice

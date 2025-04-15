@@ -1,0 +1,8 @@
+module StrategoLang/gradual-types/main-namespaced
+
+imports
+  StrategoLang/gradual-types/modules-namespaced	
+  StrategoLang/gradual-types/signatures-namespaced	
+  StrategoLang/gradual-types/strategies-namespaced	
+  StrategoLang/gradual-types/terms-namespaced	
+  StrategoLang/gradual-types/overlays-namespaced

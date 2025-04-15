@@ -1,0 +1,41 @@
+module StrategoLang/sugar/rules-namespaced
+
+imports
+  StrategoLang/core/identifiers-namespaced	
+  StrategoLang/core/signatures-namespaced	
+  StrategoLang/core/terms-namespaced	
+  StrategoLang/core/strategies-namespaced	
+  StrategoLang/sugar/terms-namespaced	
+  StrategoLang/sugar/strategies-namespaced
+
+template options
+
+  tokenize : ")(|"
+
+sorts StrategoLang-RuleDef StrategoLang-RDefT StrategoLang-RDefP
+
+context-free syntax
+
+  StrategoLang-RuleDef.RDefNoArgs = <<StrategoLang-SId>:
+  <StrategoLang-Rule>> { }
+  StrategoLang-Def.AnnoRuleDef = <<StrategoLang-Anno+> <StrategoLang-RuleDef>> { }
+  StrategoLang-RuleDef.RDef = <<StrategoLang-SId>(<{StrategoLang-Typedid ", "}*>):
+  <StrategoLang-Rule>> { }
+  StrategoLang-RuleDef = StrategoLang-RDefT { }
+  StrategoLang-RDefT.RDefT = <<StrategoLang-SId>(<{StrategoLang-Typedid ", "}*> | <{StrategoLang-Typedid ", "}*>):
+  <StrategoLang-Rule>> { }
+  StrategoLang-RuleDef = StrategoLang-RDefP { }
+  StrategoLang-RDefP.RDefP = <<StrategoLang-SId>(<{StrategoLang-Typedid ", "}*> | <{StrategoLang-Term ", "}+>):
+  <StrategoLang-Rule>> { }
+  StrategoLang-RDefP = StrategoLang-RDefT {reject}
+
+sorts StrategoLang-Rule StrategoLang-RuleCond
+
+context-free syntax
+
+  StrategoLang-Rule.Rule = [[StrategoLang-Term] -> [StrategoLang-Term]
+  [{StrategoLang-RuleCond "\n"}*]] { }
+  StrategoLang-RuleCond.WhereClause = <where
+  <StrategoLang-Strategy>> { }
+  StrategoLang-RuleCond.WithClause = <with
+  <StrategoLang-Strategy>> { }

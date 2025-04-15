@@ -1,0 +1,20 @@
+module StrategoLang/permissive-water-namespaced
+
+
+context-free syntax
+
+  LAYOUT.WATER = StrategoLang-WATER { }
+
+sorts WATER-LEX WATERTOKEN-LEX WATERTOKENSTART-LEX WATERTOKENSEPARATOR-LEX
+
+lexical syntax
+
+  StrategoLang-WATER = StrategoLang-WATERTOKEN { }
+  StrategoLang-WATER = StrategoLang-WATERTOKENSEPARATOR { }
+  StrategoLang-WATERTOKEN = StrategoLang-WATERTOKENSTART [A-Za-z0-9\_]* { }
+  StrategoLang-WATERTOKENSTART = [A-Za-z0-9\_] {recover}
+  StrategoLang-WATERTOKENSEPARATOR = ~[A-Za-z0-9\_\ \t\12\r\n\*] {recover}
+
+lexical restrictions
+
+  StrategoLang-WATERTOKEN -/- [A-Za-z0-9\_]

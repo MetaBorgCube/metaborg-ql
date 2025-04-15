@@ -1,0 +1,7 @@
+module StrategoLang/StrategoLang-namespaced
+
+imports
+  StrategoLang/import-namespaced	
+  StrategoLang/core/modules-namespaced
+
+context-free start-symbols StrategoLang-Module

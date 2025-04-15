@@ -1,0 +1,6 @@
+shared.defaultArtifactId=ql
+shared.defaultClassPrefix=QL
+shared.defaultGroupId=org.metaborg
+shared.defaultPackageId=mb.ql
+shared.defaultVersion=0.1.0
+stratego.source.files.languageStrategyAffix=ql

@@ -1,0 +1,12 @@
+module StrategoLang/core/constants-namespaced
+
+
+sorts Int-LEX Real-LEX String-LEX StrChar-LEX
+
+lexical syntax
+
+  StrategoLang-Int = [\-]? [0-9]+ { }
+  StrategoLang-Real = [\-]? [0-9]+ [\.] [0-9]+ { }
+  StrategoLang-String = "\"" StrategoLang-StrChar* "\"" { }
+  StrategoLang-StrChar = ~[\"\\] { }
+  StrategoLang-StrChar = [\\] [tnrbf\"\'\\] { }

@@ -1,0 +1,12 @@
+module StrategoLang/sugar/overlays-namespaced
+
+imports
+  StrategoLang/core/identifiers-namespaced	
+  StrategoLang/core/terms-namespaced
+
+sorts StrategoLang-Overlay
+
+context-free syntax
+
+  StrategoLang-Overlay.OverlayNoArgs = <<StrategoLang-Id> = <StrategoLang-Term>> { }
+  StrategoLang-Overlay.Overlay = <<StrategoLang-Id>(<{StrategoLang-Id ", "}*>) = <StrategoLang-Term>> { }

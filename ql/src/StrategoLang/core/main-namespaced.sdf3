@@ -1,0 +1,10 @@
+module StrategoLang/core/main-namespaced
+
+imports
+  StrategoLang/core/constants-namespaced	
+  StrategoLang/core/identifiers-namespaced	
+  StrategoLang/core/layout-namespaced	
+  StrategoLang/core/signatures-namespaced	
+  StrategoLang/core/terms-namespaced	
+  StrategoLang/core/strategies-namespaced	
+  StrategoLang/core/modules-namespaced

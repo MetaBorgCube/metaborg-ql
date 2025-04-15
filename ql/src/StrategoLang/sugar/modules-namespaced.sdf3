@@ -1,0 +1,15 @@
+module StrategoLang/sugar/modules-namespaced
+
+imports
+  StrategoLang/core/modules-namespaced	
+  StrategoLang/core/strategies-namespaced	
+  StrategoLang/sugar/overlays-namespaced	
+  StrategoLang/sugar/rules-namespaced
+
+context-free syntax
+
+  StrategoLang-Decl.Rules = <rules
+  <{StrategoLang-Def "\n\n"}*>> { }
+  StrategoLang-Decl.Overlays = <overlays
+  <{StrategoLang-Overlay "\n\n"}*>> { }
+  StrategoLang-Def = <<StrategoLang-RuleDef>> { }

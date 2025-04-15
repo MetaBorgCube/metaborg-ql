@@ -1,5 +1,0 @@
-module QL-Colorer
-
-imports 
-  editor/Colorer.generated
-  completion/colorer/QL-cc-esv
