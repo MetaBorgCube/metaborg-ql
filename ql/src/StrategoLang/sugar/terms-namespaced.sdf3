@@ -3,6 +3,7 @@ module StrategoLang/sugar/terms-namespaced
 imports
   StrategoLang/core/terms-namespaced	
   StrategoLang/core/identifiers-namespaced	
+  StrategoLang/core/strategies-namespaced
   StrategoLang/sugar/constants-namespaced	
   StrategoLang/sugar/strategies-namespaced
 
@@ -14,9 +15,19 @@ context-free syntax
 
   StrategoLang-Term.BuildDefault = <_<StrategoLang-Term>> { }
   StrategoLang-Term.AnnoList = <<StrategoLang-PreTerm>{<{StrategoLang-Term ", "}*>}> { }
-  StrategoLang-Term.NoAnnoList = StrategoLang-PreTerm { }
+  StrategoLang-Term.NoAnnoList = StrategoLang-PreTerm2 { }
   StrategoLang-Term.App = [<[StrategoLang-Strategy]> [StrategoLang-Term]] { }
   StrategoLang-Term.RootApp = [<[StrategoLang-Strategy]>] { }
+
+
+// Workaround for issue with static analysis of SDF3 in Spoofax 3, where using
+//  StrategoLang-Term.NoAnnoList rule in priorities is seen as a duplicate definition of the
+//  constructor.
+context-free sorts StrategoLang-PreTerm2
+
+context-free syntax
+
+StrategoLang-PreTerm2 = StrategoLang-PreTerm
 
 context-free syntax
 
@@ -30,8 +41,8 @@ context-free syntax
 
 context-free priorities
 
-  StrategoLang-Term.NoAnnoList = StrategoLang-PreTerm { } <0>. > {StrategoLang-PreTerm = StrategoLang-Var { }
-                                                                  StrategoLang-PreTerm = StrategoLang-Wld { }},
+  StrategoLang-PreTerm2 = StrategoLang-PreTerm { } <0>. > {StrategoLang-PreTerm = StrategoLang-Var { }
+                                                           StrategoLang-PreTerm = StrategoLang-Wld { }},
   StrategoLang-Term.NoAnnoList <0>. > {StrategoLang-PreTerm.AsPT
                                        StrategoLang-PreTerm.AppPT
                                        StrategoLang-PreTerm.RootAppPT

@@ -6,7 +6,7 @@ imports
   StrategoLang/core/signatures-namespaced	
   StrategoLang/core/strategies-namespaced
 
-sorts StrategoLang-Module
+context-free sorts StrategoLang-Module
 
 context-free syntax
 
@@ -17,7 +17,7 @@ context-free syntax
 
 <{StrategoLang-AnnoDecl "\n\n"}*>> { }
 
-sorts StrategoLang-Decl StrategoLang-AnnoDecl
+context-free sorts StrategoLang-Decl StrategoLang-AnnoDecl
 
 context-free syntax
 
@@ -31,7 +31,7 @@ context-free syntax
 <{StrategoLang-Sdecl "\n\n"}*>> { }
   StrategoLang-AnnoDecl = StrategoLang-Decl { }
 
-sorts StrategoLang-ImportModName
+context-free sorts StrategoLang-ImportModName
 
 context-free syntax
 

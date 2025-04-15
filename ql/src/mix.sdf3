@@ -4,7 +4,7 @@ imports
 
   StrategoLang/import-namespaced
   StrategoLang/core/modules-namespaced
-  StrategoLang/sugar/terms-namespaced
+  StrategoLang/core/terms-namespaced
   ql
   types
   expressions
@@ -30,19 +30,25 @@ context-free syntax
 context-free syntax
 
   Expr.meta-var = ExprVar
-  Label.meta-var = ("label"|"text"|"l") [0-9]*
-  Type.meta-var = ("type"|"t") [0-9]*
-  TyExpr.meta-var = ("texpr"|"texp"|"te") [0-9]*
-  ID.meta-var = IDVar
+  Label.meta-var = LabelVar
+  Type.meta-var = TypeVar
+  TyExpr.meta-var = TyExprVar
+
+syntax
+
+  ID-CF.meta-var = IDVar
 
 lexical sorts
 
-  IDVar ExprVar
+  IDVar ExprVar LabelVar TypeVar TyExprVar
 
 lexical syntax
 
   IDVar = [fgq] "id" [0-9]*
   ExprVar = ("cond"|"expr"|"exp"|"e"|"c") [0-9]*
+  LabelVar = ("label"|"text"|"l") [0-9]*
+  TypeVar = ("type"|"t") [0-9]*
+  TyExprVar = ("texpr"|"texp"|"te") [0-9]*
 
   ID = IDVar {reject}
   ID = ExprVar {reject}

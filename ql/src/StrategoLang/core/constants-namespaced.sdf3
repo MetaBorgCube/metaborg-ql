@@ -1,7 +1,7 @@
 module StrategoLang/core/constants-namespaced
 
 
-sorts Int-LEX Real-LEX String-LEX StrChar-LEX
+lexical sorts StrategoLang-Int StrategoLang-Real StrategoLang-String StrategoLang-StrChar
 
 lexical syntax
 

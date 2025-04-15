@@ -5,7 +5,7 @@ imports
   StrategoLang/core/constants-namespaced	
   StrategoLang/core/strategies-namespaced
 
-sorts StrategoLang-ID StrategoLang-Var StrategoLang-Wld
+context-free sorts StrategoLang-ID StrategoLang-Var StrategoLang-Wld
 
 context-free syntax
 
@@ -13,7 +13,7 @@ context-free syntax
   StrategoLang-ID = StrategoLang-Id { }
   StrategoLang-Wld.Wld = "_" { }
 
-sorts StrategoLang-Term
+context-free sorts StrategoLang-Term
 
 context-free syntax
 
@@ -23,7 +23,7 @@ context-free syntax
   StrategoLang-Term.As = <<StrategoLang-Var>@<StrategoLang-Term>> { }
   StrategoLang-Term.Path = StrategoLang-PathTrm { }
 
-sorts StrategoLang-PreTerm
+context-free sorts StrategoLang-PreTerm
 
 context-free syntax
 

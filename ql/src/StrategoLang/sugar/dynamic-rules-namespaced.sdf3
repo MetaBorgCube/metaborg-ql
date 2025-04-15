@@ -12,7 +12,7 @@ template options
 
   tokenize : ")("
 
-sorts StrategoLang-ScopeLabels
+context-free sorts StrategoLang-ScopeLabels
 
 context-free syntax
 
@@ -22,7 +22,7 @@ context-free syntax
   StrategoLang-ScopeLabels = {StrategoLang-DynRuleScopeId ", "}* { }
   StrategoLang-ScopeLabels.ScopeLabels = <~<StrategoLang-Term>> { }
 
-sorts StrategoLang-DynRuleDef StrategoLang-DynRuleId StrategoLang-DynRuleScopeId
+context-free sorts StrategoLang-DynRuleDef StrategoLang-DynRuleId StrategoLang-DynRuleScopeId
 
 context-free syntax
 
@@ -41,7 +41,7 @@ context-free syntax
   StrategoLang-DynRuleScopeId.LabeledDynRuleScopeId = <<StrategoLang-Id> . <StrategoLang-Term>> { }
   StrategoLang-DynRuleScopeId.DynRuleScopeId = StrategoLang-Id { }
 
-sorts StrategoLang-RuleDec
+context-free sorts StrategoLang-RuleDec
 
 context-free syntax
 
@@ -49,7 +49,7 @@ context-free syntax
   StrategoLang-RuleDec.RDec = <<StrategoLang-SId>(<{StrategoLang-Typedid ", "}*> )> { }
   StrategoLang-RuleDec.RDecT = <<StrategoLang-SId>(<{StrategoLang-Typedid ", "}*> | <{StrategoLang-Typedid ", "}*>)> { }
 
-sorts StrategoLang-RuleNames
+context-free sorts StrategoLang-RuleNames
 
 context-free syntax
 

@@ -1,7 +1,7 @@
 module StrategoLang/core/identifiers-namespaced
 
 
-sorts ModName-LEX ModNamePart-LEX
+lexical sorts StrategoLang-ModName StrategoLang-ModNamePart
 
 lexical syntax
 
@@ -12,7 +12,7 @@ lexical restrictions
 
   StrategoLang-ModName -/- [a-zA-Z0-9\'\.\-\_]
 
-context-free syntax
+lexical syntax
 
   StrategoLang-ModName = "imports" {reject}
   StrategoLang-ModName = "overlays" {reject}
@@ -20,7 +20,7 @@ context-free syntax
   StrategoLang-ModName = "signature" {reject}
   StrategoLang-ModName = "strategies" {reject}
 
-sorts Id-LEX LId-LEX LCID-LEX UCID-LEX SortVar-LEX BuiltInType-LEX SomeSort-LEX
+lexical sorts StrategoLang-Id StrategoLang-LId StrategoLang-LCID StrategoLang-UCID StrategoLang-SortVar StrategoLang-BuiltInType StrategoLang-SomeSort
 
 lexical syntax
 
@@ -49,11 +49,11 @@ lexical syntax
   StrategoLang-Id = "_" {reject}
   StrategoLang-Id = "'" {reject}
   StrategoLang-Id = StrategoLang-Keyword {reject}
-  StrategoLang-Lid = StrategoLang-Keyword {reject}
+  StrategoLang-LId = StrategoLang-Keyword {reject}
   StrategoLang-LCID = StrategoLang-Keyword {reject}
   StrategoLang-UCID = StrategoLang-Keyword {reject}
 
-sorts Keyword-LEX
+lexical sorts StrategoLang-Keyword
 
 lexical syntax
 

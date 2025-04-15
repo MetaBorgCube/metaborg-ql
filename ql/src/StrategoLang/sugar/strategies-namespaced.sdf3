@@ -14,7 +14,7 @@ template options
 
   tokenize : ")(|"
 
-sorts StrategoLang-SDefP
+context-free sorts StrategoLang-SDefP
 
 context-free syntax
 
@@ -31,7 +31,7 @@ context-free syntax
 
   StrategoLang-Typedid.DefaultVarDec = StrategoLang-ID { }
 
-sorts StrategoLang-Call StrategoLang-With
+context-free sorts StrategoLang-Call StrategoLang-With
 
 context-free syntax
 
@@ -79,7 +79,7 @@ context-free syntax
   StrategoLang-Strategy.IfThen = <if <StrategoLang-Strategy> then <StrategoLang-Strategy> end> { }
   StrategoLang-Strategy.LTrySome = [[StrategoLang-Strategy] <* [StrategoLang-Strategy]] {left}
 
-sorts StrategoLang-SwitchCase
+context-free sorts StrategoLang-SwitchCase
 
 context-free syntax
 

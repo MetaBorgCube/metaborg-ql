@@ -12,7 +12,7 @@ template options
 
   tokenize : ")(|"
 
-sorts StrategoLang-RuleDef StrategoLang-RDefT StrategoLang-RDefP
+context-free sorts StrategoLang-RuleDef StrategoLang-RDefT StrategoLang-RDefP
 
 context-free syntax
 
@@ -29,7 +29,7 @@ context-free syntax
   <StrategoLang-Rule>> { }
   StrategoLang-RDefP = StrategoLang-RDefT {reject}
 
-sorts StrategoLang-Rule StrategoLang-RuleCond
+context-free sorts StrategoLang-Rule StrategoLang-RuleCond
 
 context-free syntax
 

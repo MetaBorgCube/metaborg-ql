@@ -5,7 +5,7 @@ imports
   StrategoLang/core/constants-namespaced	
   StrategoLang/sugar/string-quotations-namespaced
 
-sorts Char-LEX CharChar-LEX
+lexical sorts StrategoLang-Char StrategoLang-CharChar
 
 lexical syntax
 

@@ -4,13 +4,13 @@ imports
   StrategoLang/core/identifiers-namespaced	
   StrategoLang/core/constants-namespaced
 
-sorts StrategoLang-Kind
+context-free sorts StrategoLang-Kind
 
 context-free syntax
 
   StrategoLang-Kind.Star = <*> { }
 
-sorts StrategoLang-SortDef
+context-free sorts StrategoLang-SortDef
 
 context-free syntax
 
@@ -20,7 +20,7 @@ context-free syntax
   StrategoLang-SortDef.SortDefDepr = <<StrategoLang-Id>(<{StrategoLang-Sort ", "}+>)> {deprecated("This syntax never had a clear meaning should be replaced by the version that uses kinds A(*, *)")}
   StrategoLang-SortDef.ExtSortDef = [external [StrategoLang-UCID]([{StrategoLang-Kind ", "}*])] { }
 
-sorts StrategoLang-Sdecl
+context-free sorts StrategoLang-Sdecl
 
 context-free syntax
 
@@ -29,7 +29,7 @@ context-free syntax
 
 <{StrategoLang-Opdecl "\n"}*>> { }
 
-sorts StrategoLang-Sort StrategoLang-SortArg
+context-free sorts StrategoLang-Sort StrategoLang-SortArg
 
 context-free syntax
 
@@ -38,7 +38,7 @@ context-free syntax
   StrategoLang-Sort.Sort = <<StrategoLang-Id>(<{StrategoLang-SortArg ", "}*>)> { }
   StrategoLang-SortArg = StrategoLang-Sort { }
 
-sorts StrategoLang-Opdecl
+context-free sorts StrategoLang-Opdecl
 
 context-free syntax
 
@@ -49,7 +49,7 @@ context-free syntax
   StrategoLang-Opdecl.ExtOpDeclQ = <external <StrategoLang-String> : <StrategoLang-OpType>> { }
   StrategoLang-Opdecl.ExtOpDeclInj = <external : <StrategoLang-OpType>> { }
 
-sorts StrategoLang-OldType StrategoLang-OldArgType StrategoLang-ConstType StrategoLang-FunType StrategoLang-RetType StrategoLang-OpType
+context-free sorts StrategoLang-OldType StrategoLang-OldArgType StrategoLang-ConstType StrategoLang-FunType StrategoLang-RetType StrategoLang-OpType
 
 context-free syntax
 

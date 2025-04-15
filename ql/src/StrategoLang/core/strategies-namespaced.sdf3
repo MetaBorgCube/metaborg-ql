@@ -11,13 +11,13 @@ template options
   keyword -/- [a-zA-Z0-9\'\-\_]
   tokenize : ")(|"
 
-sorts StrategoLang-Def
+context-free sorts StrategoLang-Def
 
 context-free syntax
 
   StrategoLang-Def = StrategoLang-StrategyDef { }
 
-sorts StrategoLang-StrategyDef StrategoLang-SDefT
+context-free sorts StrategoLang-StrategyDef StrategoLang-SDefT
 
 context-free syntax
 
@@ -29,7 +29,7 @@ context-free syntax
   <StrategoLang-Strategy>> { }
   StrategoLang-StrategyDef.ExtSDef = <external <StrategoLang-MaybeEmptySId>(<{StrategoLang-Typedid ", "}*> | <{StrategoLang-Typedid ", "}*>)> { }
 
-sorts SId-LEX MaybeEmptySId-LEX
+lexical sorts StrategoLang-SId StrategoLang-MaybeEmptySId
 
 lexical syntax
 
@@ -37,7 +37,7 @@ lexical syntax
   StrategoLang-MaybeEmptySId = { }
   StrategoLang-MaybeEmptySId = StrategoLang-SId { }
 
-sorts StrategoLang-Anno
+context-free sorts StrategoLang-Anno
 
 context-free syntax
 
@@ -45,13 +45,13 @@ context-free syntax
   StrategoLang-Anno.Override = <override> { }
   StrategoLang-Anno.Internal = <internal> { }
 
-sorts StrategoLang-Typedid
+context-free sorts StrategoLang-Typedid
 
 context-free syntax
 
   StrategoLang-Typedid.VarDec = <<StrategoLang-ID> : <StrategoLang-OldType>> { }
 
-sorts StrategoLang-Strategy StrategoLang-SVar
+context-free sorts StrategoLang-Strategy StrategoLang-SVar
 
 context-free syntax
 
@@ -83,7 +83,7 @@ context-free priorities
   {StrategoLang-Strategy.Build
    StrategoLang-Strategy.Match} > StrategoLang-Strategy.Seq > StrategoLang-Strategy.GuardedLChoice
 
-sorts StrategoLang-MatchOrder StrategoLang-MatchCase
+context-free sorts StrategoLang-MatchOrder StrategoLang-MatchCase
 
 context-free syntax
 
@@ -93,7 +93,7 @@ end> { }
   StrategoLang-MatchOrder.Sequential = <sequential> { }
   StrategoLang-MatchCase.ScopedGuardedMatchCase = <case <{StrategoLang-ID ", "}*> | <StrategoLang-Term> when <StrategoLang-Strategy>: <StrategoLang-Strategy>> { }
 
-sorts StrategoLang-DTree
+context-free sorts StrategoLang-DTree
 
 context-free syntax
 
@@ -107,7 +107,7 @@ context-free syntax
 }> { }
   StrategoLang-DTree.GuardedLeafs = <<{StrategoLang-Guard "\n"}+>> { }
 
-sorts StrategoLang-SwitchV
+context-free sorts StrategoLang-SwitchV
 
 context-free syntax
 
@@ -119,7 +119,7 @@ context-free syntax
   <{StrategoLang-AltV "\n"}*>
 }> { }
 
-sorts StrategoLang-AltT StrategoLang-AltV StrategoLang-Default
+context-free sorts StrategoLang-AltT StrategoLang-AltV StrategoLang-Default
 
 context-free syntax
 
@@ -134,14 +134,14 @@ context-free syntax
   StrategoLang-Default.GuardedDefault = <default
   <{StrategoLang-Guard "\n"}+>> { }
 
-sorts StrategoLang-Guard
+context-free sorts StrategoLang-Guard
 
 context-free syntax
 
   StrategoLang-Guard.Guard = <where <StrategoLang-Strategy>:
   <StrategoLang-Strategy>> { }
 
-sorts StrategoLang-Path StrategoLang-PathTrm StrategoLang-PathTp StrategoLang-PathFld StrategoLang-PathVF
+context-free sorts StrategoLang-Path StrategoLang-PathTrm StrategoLang-PathTp StrategoLang-PathFld StrategoLang-PathVF
 
 context-free syntax
 
@@ -162,7 +162,7 @@ context-free syntax
   StrategoLang-PathFld.RealP = <<StrategoLang-PathTrm>.real> { }
   StrategoLang-PathFld.StrP = <<StrategoLang-PathTrm>.str> { }
 
-sorts StrategoLang-PatV
+context-free sorts StrategoLang-PatV
 
 context-free syntax
 
@@ -173,7 +173,7 @@ context-free syntax
   StrategoLang-PatV.AnnoC = <{_}> { }
   StrategoLang-PatV.TupleC = <(<StrategoLang-Int>)> { }
 
-sorts StrategoLang-PatT
+context-free sorts StrategoLang-PatT
 
 context-free syntax
 

@@ -1,7 +1,7 @@
 module StrategoLang/core/layout-namespaced
 
 
-sorts Ws-LEX ShortCom-LEX LongCom-LEX CommChar-LEX Asterisk-LEX Eof-LEX
+lexical sorts StrategoLang-Ws StrategoLang-ShortCom StrategoLang-LongCom StrategoLang-CommChar StrategoLang-Asterisk StrategoLang-Eof
 
 lexical syntax
 
