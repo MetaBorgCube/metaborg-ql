@@ -22,21 +22,21 @@ context-free syntax
 
   Module = StrategoLang-Module
 
-  StrategoLang-PreTerm.ToMetaExpr = [[ql |[ Form ]|]]
-  StrategoLang-PreTerm.ToMetaExpr = [[ql |[ TyExpr ]|]]
-  StrategoLang-PreTerm.ToMetaExpr = [[ql |[ Type ]|]]
-  StrategoLang-PreTerm.ToMetaExpr = [[ql |[ Expr ]|]]
+  StrategoLang-PreTerm.StrategoToMetaExpr1 = <ql |[ <Start> ]|>
+  StrategoLang-PreTerm.StrategoToMetaExpr2 = <ql |[ <TyExpr> ]|>
+  StrategoLang-PreTerm.StrategoToMetaExpr3 = <ql |[ <Type> ]|>
+  StrategoLang-PreTerm.StrategoToMetaExpr4 = <ql |[ <Expr> ]|>
 
 context-free syntax
 
-  Expr.meta-var = ExprVar
-  Label.meta-var = LabelVar
-  Type.meta-var = TypeVar
-  TyExpr.meta-var = TyExprVar
+  Expr.StrategoMetaVar1 = ExprVar
+  Label.StrategoMetaVar2 = LabelVar
+  Type.StrategoMetaVar3 = TypeVar
+  TyExpr.StrategoMetaVar4 = TyExprVar
 
 syntax
 
-  ID-CF.meta-var = IDVar
+  ID-CF.StrategoMetaVar5 = IDVar
 
 lexical sorts
 
