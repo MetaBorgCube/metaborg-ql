@@ -38,54 +38,54 @@ rules questionOk : scope * Question
     typeOfType(s, t) == T,
     !question[x, T] in s.
   
-  questionOk(s, Computed(x, Label(l), TExpr(t, e))) :- {T}
+  questionOk(s, Computed(x, Label(l), TExpr(t, e))) :- {T TE}
   	typeOfType(s, t) == T,
-  	!question[x, T] in s.
+  	!question[x, T] in s,
+  	typeOfExpr(s, e) == TE,
+  	TE == T | error $[Expected [T], found [TE]] @e.
   
   questionOk(s, Conditional(e, qs)) :- {s'}
-  	new s',
-  	s' -LEX-> s,
-  	questionsOk(s', qs),
-  	typeOfExpr(s', e) == BOOL() | error $[Expected boolean] @e.
+  	questionsOk(s, qs),
+  	typeOfExpr(s, e) == BOOL() | error $[Expected boolean] @e.
 
 rules typeOfExpr : scope * Expr -> TYPE
 
   // Logical expressions
 
-  typeOfExpr(s, Not(e)) = BOOL :-
-  	typeOfExpr(s, e) == BOOL | error $[Expected boolean] @e.
+  typeOfExpr(s, Not(e)) = BOOL() :-
+  	typeOfExpr(s, e) == BOOL() | error $[Expected boolean] @e.
   
-  typeOfExpr(s, And(e1, e2)) = BOOL :-
-  	typeOfExpr(s, e1) == BOOL | error $[Expected boolean] @e1,
-  	typeOfExpr(s, e2) == BOOL | error $[Expected boolean] @e2.
+  typeOfExpr(s, And(e1, e2)) = BOOL() :-
+  	typeOfExpr(s, e1) == BOOL() | error $[Expected boolean] @e1,
+  	typeOfExpr(s, e2) == BOOL() | error $[Expected boolean] @e2.
   	
-  typeOfExpr(s, Or(e1, e2)) = BOOL :-
-  	typeOfExpr(s, e1) == BOOL | error $[Expected boolean] @e1,
-  	typeOfExpr(s, e2) == BOOL | error $[Expected boolean] @e2.
+  typeOfExpr(s, Or(e1, e2)) = BOOL() :-
+  	typeOfExpr(s, e1) == BOOL() | error $[Expected boolean] @e1,
+  	typeOfExpr(s, e2) == BOOL() | error $[Expected boolean] @e2.
   	
   // Comparison expressions
   	
-  typeOfExpr(s, e@Lt(e1, e2)) = BOOL :- {T1 T2}
+  typeOfExpr(s, e@Lt(e1, e2)) = BOOL() :- {T1 T2}
   	typeOfExpr(s, e1) == T1,
   	typeOfExpr(s, e2) == T2,
   	typesAreComparable(T1, T2) | error $[Cannot compare [e1] and [e2]] @e.
   	
-  typeOfExpr(s, e@Leq(e1, e2)) = BOOL :- {T1 T2}
+  typeOfExpr(s, e@Leq(e1, e2)) = BOOL() :- {T1 T2}
   	typeOfExpr(s, e1) == T1,
   	typeOfExpr(s, e2) == T2,
   	typesAreComparable(T1, T2) | error $[Cannot compare [e1] and [e2]] @e.
   	
-  typeOfExpr(s, e@Gt(e1, e2)) = BOOL :- {T1 T2}
+  typeOfExpr(s, e@Gt(e1, e2)) = BOOL() :- {T1 T2}
   	typeOfExpr(s, e1) == T1,
   	typeOfExpr(s, e2) == T2,
   	typesAreComparable(T1, T2) | error $[Cannot compare [e1] and [e2]] @e.
   	
-  typeOfExpr(s, e@Geq(e1, e2)) = BOOL :- {T1 T2}
+  typeOfExpr(s, e@Geq(e1, e2)) = BOOL() :- {T1 T2}
   	typeOfExpr(s, e1) == T1,
   	typeOfExpr(s, e2) == T2,
   	typesAreComparable(T1, T2) | error $[Cannot compare [e1] and [e2]] @e.
   	
-  typeOfExpr(s, e@Eq(e1, e2)) = BOOL :- {T1 T2}
+  typeOfExpr(s, e@Eq(e1, e2)) = BOOL() :- {T1 T2}
   	typeOfExpr(s, e1) == T1,
   	typeOfExpr(s, e2) == T2,
   	T1 == T2 | error $[Cannot compare [e1] and [e2]] @e.
@@ -118,15 +118,15 @@ rules typeOfExpr : scope * Expr -> TYPE
   	
   // Literals
   	
-  typeOfExpr(_, True()) = BOOL.
+  typeOfExpr(_, True()) = BOOL().
   
-  typeOfExpr(_, False()) = BOOL.
+  typeOfExpr(_, False()) = BOOL().
   
-  typeOfExpr(_, NumLit2Expr(IntLit(_))) = INT.
+  typeOfExpr(_, NumLit2Expr(IntLit(_))) = INT().
   
-  typeOfExpr(_, NumLit2Expr(FloatLit(_))) = FLOAT.
+  typeOfExpr(_, NumLit2Expr(FloatLit(_))) = FLOAT().
   
-  typeOfExpr(_, MoneyLit(_)) = MONEY.
+  typeOfExpr(_, MoneyLit(_)) = MONEY().
   
   // References
   
