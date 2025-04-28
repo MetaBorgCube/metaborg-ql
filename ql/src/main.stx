@@ -3,8 +3,217 @@ module main
 imports
 
   signatures/start-sig
+  
+signature
+  sorts TYPE
+  constructors
+    BOOL : TYPE
+    STRING : TYPE
+    INT : TYPE
+    DATE : TYPE
+    FLOAT : TYPE
+    MONEY : TYPE
+  relations
+    question : ID -> TYPE
+  name-resolution
+    labels
+      LEX			// lexical parent
 
-rules
+rules programOk : Start
 
-  programOk : Start
-  programOk(_).
+  programOk(start) :- {s}
+    new s,
+    startOk(s, start).
+  
+rules startOk : scope * Start
+
+  startOk(s, Form(x, qs)) :-
+  	questionsOk(s, qs).
+  	
+rules questionOk : scope * Question
+
+  questionsOk maps questionOk(*, list(*))
+  
+  questionOk(s, Question(x, Label(l), t)) :- {T}
+    typeOfType(s, t) == T,
+    !question[x, T] in s.
+  
+  questionOk(s, Computed(x, Label(l), TExpr(t, e))) :- {T}
+  	typeOfType(s, t) == T,
+  	!question[x, T] in s.
+  
+  questionOk(s, Conditional(e, qs)) :- {s'}
+  	new s',
+  	s' -LEX-> s,
+  	questionsOk(s', qs),
+  	typeOfExpr(s', e) == BOOL() | error $[Expected boolean] @e.
+
+rules typeOfExpr : scope * Expr -> TYPE
+
+  // Logical expressions
+
+  typeOfExpr(s, Not(e)) = BOOL :-
+  	typeOfExpr(s, e) == BOOL | error $[Expected boolean] @e.
+  
+  typeOfExpr(s, And(e1, e2)) = BOOL :-
+  	typeOfExpr(s, e1) == BOOL | error $[Expected boolean] @e1,
+  	typeOfExpr(s, e2) == BOOL | error $[Expected boolean] @e2.
+  	
+  typeOfExpr(s, Or(e1, e2)) = BOOL :-
+  	typeOfExpr(s, e1) == BOOL | error $[Expected boolean] @e1,
+  	typeOfExpr(s, e2) == BOOL | error $[Expected boolean] @e2.
+  	
+  // Comparison expressions
+  	
+  typeOfExpr(s, e@Lt(e1, e2)) = BOOL :- {T1 T2}
+  	typeOfExpr(s, e1) == T1,
+  	typeOfExpr(s, e2) == T2,
+  	typesAreComparable(T1, T2) | error $[Cannot compare [e1] and [e2]] @e.
+  	
+  typeOfExpr(s, e@Leq(e1, e2)) = BOOL :- {T1 T2}
+  	typeOfExpr(s, e1) == T1,
+  	typeOfExpr(s, e2) == T2,
+  	typesAreComparable(T1, T2) | error $[Cannot compare [e1] and [e2]] @e.
+  	
+  typeOfExpr(s, e@Gt(e1, e2)) = BOOL :- {T1 T2}
+  	typeOfExpr(s, e1) == T1,
+  	typeOfExpr(s, e2) == T2,
+  	typesAreComparable(T1, T2) | error $[Cannot compare [e1] and [e2]] @e.
+  	
+  typeOfExpr(s, e@Geq(e1, e2)) = BOOL :- {T1 T2}
+  	typeOfExpr(s, e1) == T1,
+  	typeOfExpr(s, e2) == T2,
+  	typesAreComparable(T1, T2) | error $[Cannot compare [e1] and [e2]] @e.
+  	
+  typeOfExpr(s, e@Eq(e1, e2)) = BOOL :- {T1 T2}
+  	typeOfExpr(s, e1) == T1,
+  	typeOfExpr(s, e2) == T2,
+  	T1 == T2 | error $[Cannot compare [e1] and [e2]] @e.
+  	
+  // Arithmetic expressions
+  	
+  typeOfExpr(s, Add(e1, e2)) = T :- {T1 T2}
+  	typeOfExpr(s, e1) == T1,
+  	typeOfExpr(s, e2) == T2,
+  	typesAreAddable(T1, T2),
+  	largestTypeOf(T1, T2) == T.
+
+  typeOfExpr(s, Sub(e1, e2)) = T :- {T1 T2}
+  	typeOfExpr(s, e1) == T1,
+  	typeOfExpr(s, e2) == T2,
+  	typesAreAddable(T1, T2),
+  	largestTypeOf(T1, T2) == T.
+  	
+  typeOfExpr(s, Mul(e1, e2)) = T :- {T1 T2}
+  	typeOfExpr(s, e1) == T1,
+  	typeOfExpr(s, e2) == T2,
+  	typesAreMultipliable(T1, T2),
+  	largestTypeOf(T1, T2) == T.
+
+  typeOfExpr(s, Div(e1, e2)) = T :- {T1 T2}
+  	typeOfExpr(s, e1) == T1,
+  	typeOfExpr(s, e2) == T2,
+  	typesAreDivisible(T1, T2),
+  	largestTypeOf(T1, T2) == T.
+  	
+  // Literals
+  	
+  typeOfExpr(_, True()) = BOOL.
+  
+  typeOfExpr(_, False()) = BOOL.
+  
+  typeOfExpr(_, NumLit2Expr(IntLit(_))) = INT.
+  
+  typeOfExpr(_, NumLit2Expr(FloatLit(_))) = FLOAT.
+  
+  typeOfExpr(_, MoneyLit(_)) = MONEY.
+  
+  // References
+  
+  typeOfExpr(s, Ref(x)) = T :- {decl}
+  	query question
+  	  filter LEX* and { x' :- x' == x }
+  	  min $ < LEX and true
+  	  in s |-> [(_, (decl, T))],
+  	@x.ref := decl.
+
+  	
+
+rules typeOfType : scope * Type -> TYPE
+
+  typeOfType(_, BoolTy()) = BOOL().
+  
+  typeOfType(_, StringTy()) = STRING().
+  
+  typeOfType(_, IntTy()) = INT().
+  
+  typeOfType(_, DateTy()) = DATE().
+  
+  typeOfType(_, FloatTy()) = FLOAT().
+  
+  typeOfType(_, MoneyTy()) = MONEY().
+  
+rules typeOfTyExpr : scope * TyExpr -> TYPE
+
+  typeOfTyExpr(s, te@TExpr(t, e)) = TT :- {TE}
+    typeOfType(s, t) == TT,
+    typeOfExpr(s, e) == TE | error $[Type mismatch between [TT] and [TE]] @t.
+  
+rules typesAreComparable : TYPE * TYPE
+
+  typesAreComparable(DATE(), DATE()).
+  
+  typesAreComparable(MONEY(), MONEY()).
+  
+  typesAreComparable(T1, T2) :-
+  	typeIsNumeric(T1),
+  	typeIsNumeric(T2).
+  	
+rules typesAreAddable : TYPE * TYPE
+
+  typesAreAddable(MONEY(), MONEY()).
+  
+  typesAreAddable(T1, T2) :-
+  	typeIsNumeric(T1),
+  	typeIsNumeric(T2).
+  	
+rules typesAreMultipliable : TYPE * TYPE
+
+  typesAreMultipliable(T1, MONEY()) :-
+  	typeIsNumeric(T1).
+  	
+  typesAreMultipliable(MONEY(), T2) :-
+  	typeIsNumeric(T2).
+  
+  typesAreMultipliable(T1, T2) :-
+  	typeIsNumeric(T1),
+  	typeIsNumeric(T2).
+  	
+rules typesAreDivisible : TYPE * TYPE
+
+  typesAreDivisible(MONEY(), T2) :-
+  	typeIsNumeric(T2).
+  
+  typesAreDivisible(T1, T2) :-
+  	typeIsNumeric(T1),
+  	typeIsNumeric(T2).
+  
+rules typeIsNumeric : TYPE
+
+  typeIsNumeric(INT()).
+
+  typeIsNumeric(FLOAT()).
+  
+rules largestTypeOf : TYPE * TYPE -> TYPE
+
+  largestTypeOf(MONEY(), _) = MONEY().
+  
+  largestTypeOf(_, MONEY()) = MONEY().
+  
+  largestTypeOf(FLOAT(), _) = FLOAT().
+  
+  largestTypeOf(_, FLOAT()) = FLOAT().
+  
+  largestTypeOf(_, T2) = T2.
+  
+    
