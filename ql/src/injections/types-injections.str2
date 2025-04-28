@@ -1,0 +1,469 @@
+module injections/types-injections
+
+imports
+  strategolib
+  signatures/types-sig
+  pp/types-pp
+  libspoofax/term/origin
+  libspoofax/term/amb
+
+
+imports
+  injections/expressions-injections
+
+
+signature
+  constructors
+    Type-Plhdr   : Type
+    TyExpr-Plhdr : TyExpr
+
+
+rules
+
+  is-ql-Type-or-inj =
+    ?Type-Plhdr()
+
+  is-ql-Type-or-inj =
+    ?"nabl2.Var"#([_, _])
+
+  is-ql-TyExpr-or-inj =
+    ?TyExpr-Plhdr()
+
+  is-ql-TyExpr-or-inj =
+    ?"nabl2.Var"#([_, _])
+
+  is-ql-Type-or-inj =
+    ?BoolTy()
+
+  is-ql-Type-or-inj =
+    ?StringTy()
+
+  is-ql-Type-or-inj =
+    ?IntTy()
+
+  is-ql-Type-or-inj =
+    ?DateTy()
+
+  is-ql-Type-or-inj =
+    ?FloatTy()
+
+  is-ql-Type-or-inj =
+    ?MoneyTy()
+
+  is-ql-TyExpr-or-inj =
+    ?TExpr(_, _)
+
+
+rules
+
+  is-ql-inj-cons =
+    is-ql-Type-inj-cons
+
+  is-ql-Type-inj-cons =
+    fail
+
+  is-ql-inj-cons =
+    is-ql-TyExpr-inj-cons
+
+  is-ql-TyExpr-inj-cons =
+    fail
+
+
+rules
+
+  explicate-injections-ql =
+    explicate-injections-ql-Type
+
+  explicate-injections-ql =
+    explicate-injections-ql-TyExpr
+
+  explicate-injections-ql-Type =
+    origin-track-forced(
+      \ BoolTy(){anno*} -> BoolTy(){anno*} \
+    )
+
+  explicate-injections-ql-Type =
+    origin-track-forced(
+      \ StringTy(){anno*} -> StringTy(){anno*} \
+    )
+
+  explicate-injections-ql-Type =
+    origin-track-forced(
+      \ IntTy(){anno*} -> IntTy(){anno*} \
+    )
+
+  explicate-injections-ql-Type =
+    origin-track-forced(
+      \ DateTy(){anno*} -> DateTy(){anno*} \
+    )
+
+  explicate-injections-ql-Type =
+    origin-track-forced(
+      \ FloatTy(){anno*} -> FloatTy(){anno*} \
+    )
+
+  explicate-injections-ql-Type =
+    origin-track-forced(
+      \ MoneyTy(){anno*} -> MoneyTy(){anno*} \
+    )
+
+  explicate-injections-ql-TyExpr =
+    origin-track-forced(
+      \ TExpr(type, expr){anno*} -> TExpr(type', expr'){anno*}
+        with type' := <explicate-injections-ql-Type> type
+             ; expr' := <explicate-injections-ql-Expr> expr \
+    )
+
+  explicate-injections-ql-Type =
+    origin-track-forced(
+      \ Type-Plhdr(){anno*} -> Type-Plhdr(){anno*} \
+    )
+
+  explicate-injections-ql-TyExpr =
+    origin-track-forced(
+      \ TyExpr-Plhdr(){anno*} -> TyExpr-Plhdr(){anno*} \
+    )
+
+  explicate-injections-ql-Type =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  explicate-injections-ql-TyExpr =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  explicate-injections-ql-Type =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <map(explicate-injections-ql-Type)> alts \
+    )
+
+  explicate-injections-ql-TyExpr =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <map(explicate-injections-ql-TyExpr)> alts \
+    )
+
+
+rules
+
+  implicate-injections-ql =
+    implicate-injections-ql-Type
+
+  implicate-injections-ql =
+    implicate-injections-ql-TyExpr
+
+  implicate-injections-ql-Type =
+    origin-track-forced(
+      \ BoolTy(){anno*} -> BoolTy(){anno*} \
+    )
+
+  implicate-injections-ql-Type =
+    origin-track-forced(
+      \ StringTy(){anno*} -> StringTy(){anno*} \
+    )
+
+  implicate-injections-ql-Type =
+    origin-track-forced(
+      \ IntTy(){anno*} -> IntTy(){anno*} \
+    )
+
+  implicate-injections-ql-Type =
+    origin-track-forced(
+      \ DateTy(){anno*} -> DateTy(){anno*} \
+    )
+
+  implicate-injections-ql-Type =
+    origin-track-forced(
+      \ FloatTy(){anno*} -> FloatTy(){anno*} \
+    )
+
+  implicate-injections-ql-Type =
+    origin-track-forced(
+      \ MoneyTy(){anno*} -> MoneyTy(){anno*} \
+    )
+
+  implicate-injections-ql-TyExpr =
+    origin-track-forced(
+      \ TExpr(type, expr){anno*} -> TExpr(type', expr'){anno*}
+        with type' := <implicate-injections-ql-Type> type
+             ; expr' := <implicate-injections-ql-Expr> expr \
+    )
+
+  implicate-injections-ql-Type =
+    origin-track-forced(
+      \ Type-Plhdr(){anno*} -> Type-Plhdr(){anno*} \
+    )
+
+  implicate-injections-ql-TyExpr =
+    origin-track-forced(
+      \ TyExpr-Plhdr(){anno*} -> TyExpr-Plhdr(){anno*} \
+    )
+
+  implicate-injections-ql-Type =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  implicate-injections-ql-TyExpr =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  implicate-injections-ql-Type =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <map(implicate-injections-ql-Type)> alts \
+    )
+
+  implicate-injections-ql-TyExpr =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <map(implicate-injections-ql-TyExpr)> alts \
+    )
+
+
+rules
+
+  upgrade-placeholders-ql =
+    upgrade-placeholders-ql-Type
+
+  upgrade-placeholders-ql =
+    upgrade-placeholders-ql-TyExpr
+
+  upgrade-placeholders-ql-Type =
+    origin-track-forced(
+      \ BoolTy(){anno*} -> BoolTy(){anno*} \
+    )
+
+  upgrade-placeholders-ql-Type =
+    origin-track-forced(
+      \ StringTy(){anno*} -> StringTy(){anno*} \
+    )
+
+  upgrade-placeholders-ql-Type =
+    origin-track-forced(
+      \ IntTy(){anno*} -> IntTy(){anno*} \
+    )
+
+  upgrade-placeholders-ql-Type =
+    origin-track-forced(
+      \ DateTy(){anno*} -> DateTy(){anno*} \
+    )
+
+  upgrade-placeholders-ql-Type =
+    origin-track-forced(
+      \ FloatTy(){anno*} -> FloatTy(){anno*} \
+    )
+
+  upgrade-placeholders-ql-Type =
+    origin-track-forced(
+      \ MoneyTy(){anno*} -> MoneyTy(){anno*} \
+    )
+
+  upgrade-placeholders-ql-TyExpr =
+    origin-track-forced(
+      \ TExpr(type, expr){anno*} -> TExpr(type', expr'){anno*}
+        with type' := <upgrade-placeholders-ql-Type> type
+             ; expr' := <upgrade-placeholders-ql-Expr> expr \
+    )
+
+  upgrade-placeholders-ql-Type =
+    origin-track-forced(
+      \ Type-Plhdr(){anno*} -> p{anno*}
+        with p := <make-placeholder> "Type" \
+    )
+
+  upgrade-placeholders-ql-TyExpr =
+    origin-track-forced(
+      \ TyExpr-Plhdr(){anno*} -> p{anno*}
+        with p := <make-placeholder> "TyExpr" \
+    )
+
+  upgrade-placeholders-ql-Type =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  upgrade-placeholders-ql-TyExpr =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  upgrade-placeholders-ql-Type =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <upgrade-list(upgrade-placeholders-ql-Type)> alts \
+    )
+
+  upgrade-placeholders-ql-TyExpr =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <upgrade-list(upgrade-placeholders-ql-TyExpr)> alts \
+    )
+
+
+rules
+
+  downgrade-placeholders-ql =
+    downgrade-placeholders-ql-Type
+
+  downgrade-placeholders-ql =
+    downgrade-placeholders-ql-TyExpr
+
+  downgrade-placeholders-ql-Type =
+    origin-track-forced(
+      \ BoolTy(){anno*} -> BoolTy(){anno*} \
+    )
+
+  downgrade-placeholders-ql-Type =
+    origin-track-forced(
+      \ StringTy(){anno*} -> StringTy(){anno*} \
+    )
+
+  downgrade-placeholders-ql-Type =
+    origin-track-forced(
+      \ IntTy(){anno*} -> IntTy(){anno*} \
+    )
+
+  downgrade-placeholders-ql-Type =
+    origin-track-forced(
+      \ DateTy(){anno*} -> DateTy(){anno*} \
+    )
+
+  downgrade-placeholders-ql-Type =
+    origin-track-forced(
+      \ FloatTy(){anno*} -> FloatTy(){anno*} \
+    )
+
+  downgrade-placeholders-ql-Type =
+    origin-track-forced(
+      \ MoneyTy(){anno*} -> MoneyTy(){anno*} \
+    )
+
+  downgrade-placeholders-ql-TyExpr =
+    origin-track-forced(
+      \ TExpr(type, expr){anno*} -> TExpr(type', expr'){anno*}
+        with type' := <downgrade-placeholders-ql-Type> type
+             ; expr' := <downgrade-placeholders-ql-Expr> expr \
+    )
+
+  downgrade-placeholders-ql-Type =
+    origin-track-forced(
+      \ p{anno*} -> Type-Plhdr(){anno*}
+        where <(is-placeholder + ?Type-Plhdr())> p \
+    )
+
+  downgrade-placeholders-ql-TyExpr =
+    origin-track-forced(
+      \ p{anno*} -> TyExpr-Plhdr(){anno*}
+        where <(is-placeholder + ?TyExpr-Plhdr())> p \
+    )
+
+  downgrade-placeholders-ql-Type =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  downgrade-placeholders-ql-TyExpr =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  downgrade-placeholders-ql-Type =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <downgrade-list(downgrade-placeholders-ql-Type)> alts \
+    )
+
+  downgrade-placeholders-ql-TyExpr =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <downgrade-list(downgrade-placeholders-ql-TyExpr)> alts \
+    )
+
+
+rules
+
+  explicate-option(s) =
+    origin-track-forced(
+      \ None(){anno*} -> []{anno*} \
+    )
+
+  explicate-option(s) =
+    origin-track-forced(
+      \ Some(t){anno*} -> [<s> t]{anno*} \
+    )
+
+  implicate-option(s) =
+    origin-track-forced(
+      \ []{anno*} -> None(){anno*} \
+    )
+
+  implicate-option(s) =
+    origin-track-forced(
+      \ [t]{anno*} -> Some(<s> t){anno*} \
+    )
+
+  implicate-option(s) =
+    origin-track-forced(
+      \ [_, _|_] -> <fatal-err(|"Cannot implicate multi-element list to option.")> \
+    )
+
+
+rules
+
+  upgrade-option(s) =
+    origin-track-forced(
+      \ None(){anno*} -> []{anno*} \
+    )
+
+  upgrade-option(s) =
+    origin-track-forced(
+      \ Some(t){anno*} -> [<s> t]{anno*} \
+    )
+
+  upgrade-list(s) =
+    origin-track-forced(
+      \ l -> l'
+        where <is-list> l
+        with l' := <map(s)> l \
+    )
+
+  upgrade-list(s) =
+    origin-track-forced(
+      \ l -> l'
+        where <fail> l
+        with l' := <make-placeholder> "list" \
+    )
+
+  downgrade-option(s) =
+    origin-track-forced(
+      \ None(){anno*} -> None(){anno*} \
+    )
+
+  downgrade-option(s) =
+    origin-track-forced(
+      \ Some(t){anno*} -> Some(<s> t){anno*} \
+    )
+
+  downgrade-list(s) =
+    origin-track-forced(
+      \ p -> p'
+        where <is-placeholder> p
+        with p' := [] \
+    )
+
+  downgrade-list(s) =
+    origin-track-forced(
+      \ []{anno*} -> []{anno*} \
+    )
+
+  downgrade-list(s) =
+    origin-track-forced(
+      \ [e|es]{anno*} -> [e'|es']{anno*}
+        with e' := <s> e
+             ; es' := <downgrade-list(s)> es \
+    )

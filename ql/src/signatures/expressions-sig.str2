@@ -1,0 +1,51 @@
+module signatures/expressions-sig
+
+imports
+  strategolib
+
+
+imports
+  signatures/lex-sig
+
+
+signature
+  sorts
+    Expr NumLit
+
+  sorts
+    COMPLETION-INSERTION
+
+  constructors
+    Ref          : ID -> Expr
+    Mul          : Expr * Expr -> Expr
+    Div          : Expr * Expr -> Expr
+    Add          : Expr * Expr -> Expr
+    Sub          : Expr * Expr -> Expr
+    Not          : Expr -> Expr
+    And          : Expr * Expr -> Expr
+    Or           : Expr * Expr -> Expr
+    Lt           : Expr * Expr -> Expr
+    Leq          : Expr * Expr -> Expr
+    Gt           : Expr * Expr -> Expr
+    Geq          : Expr * Expr -> Expr
+    Eq           : Expr * Expr -> Expr
+    ID-Plhdr     : ID
+    Expr-Plhdr   : Expr
+    ID-Plhdr     : COMPLETION-INSERTION -> ID
+    Expr-Plhdr   : COMPLETION-INSERTION -> Expr
+    True         : Expr
+    False        : Expr
+    Expr-Plhdr   : Expr
+    Expr-Plhdr   : COMPLETION-INSERTION -> Expr
+    IntLit       : INT -> NumLit
+    FloatLit     : FLOAT -> NumLit
+                 : NumLit -> Expr
+    MoneyLit     : NumLit -> Expr
+    INT-Plhdr    : INT
+    FLOAT-Plhdr  : FLOAT
+    Expr-Plhdr   : Expr
+    NumLit-Plhdr : NumLit
+    INT-Plhdr    : COMPLETION-INSERTION -> INT
+    FLOAT-Plhdr  : COMPLETION-INSERTION -> FLOAT
+    Expr-Plhdr   : COMPLETION-INSERTION -> Expr
+    NumLit-Plhdr : COMPLETION-INSERTION -> NumLit

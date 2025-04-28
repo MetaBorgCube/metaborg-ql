@@ -1,0 +1,16 @@
+module signatures/start-sig
+
+imports
+  strategolib
+
+
+imports
+  signatures/ql-sig
+
+
+signature
+  sorts
+    COMPLETION-INSERTION
+
+  constructors
+    

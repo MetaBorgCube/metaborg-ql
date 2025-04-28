@@ -1,0 +1,575 @@
+module injections/lex-injections
+
+imports
+  strategolib
+  signatures/lex-sig
+  pp/lex-pp
+  libspoofax/term/origin
+  libspoofax/term/amb
+
+
+signature
+  constructors
+    ID-Plhdr            : ID
+    INT-Plhdr           : INT
+    FLOAT-Plhdr         : FLOAT
+    STRING-Plhdr        : STRING
+    StringChar-Plhdr    : StringChar
+    BackSlashChar-Plhdr : BackSlashChar
+    CommentChar-Plhdr   : CommentChar
+    EOF-Plhdr           : EOF
+
+
+rules
+
+  is-ql-ID-or-inj =
+    is-string
+
+  is-ql-ID-or-inj =
+    ?ID-Plhdr()
+
+  is-ql-ID-or-inj =
+    ?"nabl2.Var"#([_, _])
+
+  is-ql-INT-or-inj =
+    is-string
+
+  is-ql-INT-or-inj =
+    ?INT-Plhdr()
+
+  is-ql-INT-or-inj =
+    ?"nabl2.Var"#([_, _])
+
+  is-ql-FLOAT-or-inj =
+    is-string
+
+  is-ql-FLOAT-or-inj =
+    ?FLOAT-Plhdr()
+
+  is-ql-FLOAT-or-inj =
+    ?"nabl2.Var"#([_, _])
+
+  is-ql-STRING-or-inj =
+    is-string
+
+  is-ql-STRING-or-inj =
+    ?STRING-Plhdr()
+
+  is-ql-STRING-or-inj =
+    ?"nabl2.Var"#([_, _])
+
+  is-ql-StringChar-or-inj =
+    is-string
+
+  is-ql-StringChar-or-inj =
+    ?StringChar-Plhdr()
+
+  is-ql-StringChar-or-inj =
+    ?"nabl2.Var"#([_, _])
+
+  is-ql-BackSlashChar-or-inj =
+    is-string
+
+  is-ql-BackSlashChar-or-inj =
+    ?BackSlashChar-Plhdr()
+
+  is-ql-BackSlashChar-or-inj =
+    ?"nabl2.Var"#([_, _])
+
+  is-ql-CommentChar-or-inj =
+    is-string
+
+  is-ql-CommentChar-or-inj =
+    ?CommentChar-Plhdr()
+
+  is-ql-CommentChar-or-inj =
+    ?"nabl2.Var"#([_, _])
+
+  is-ql-EOF-or-inj =
+    is-string
+
+  is-ql-EOF-or-inj =
+    ?EOF-Plhdr()
+
+  is-ql-EOF-or-inj =
+    ?"nabl2.Var"#([_, _])
+
+
+rules
+
+  explicate-injections-ql =
+    explicate-injections-ql-ID
+
+  explicate-injections-ql-ID =
+    origin-track-forced(
+      \ t -> t
+        where <is-ql-ID-or-inj> t \
+    )
+
+  explicate-injections-ql =
+    explicate-injections-ql-INT
+
+  explicate-injections-ql-INT =
+    origin-track-forced(
+      \ t -> t
+        where <is-ql-INT-or-inj> t \
+    )
+
+  explicate-injections-ql =
+    explicate-injections-ql-FLOAT
+
+  explicate-injections-ql-FLOAT =
+    origin-track-forced(
+      \ t -> t
+        where <is-ql-FLOAT-or-inj> t \
+    )
+
+  explicate-injections-ql =
+    explicate-injections-ql-STRING
+
+  explicate-injections-ql-STRING =
+    origin-track-forced(
+      \ t -> t
+        where <is-ql-STRING-or-inj> t \
+    )
+
+  explicate-injections-ql =
+    explicate-injections-ql-StringChar
+
+  explicate-injections-ql-StringChar =
+    origin-track-forced(
+      \ t -> t
+        where <is-ql-StringChar-or-inj> t \
+    )
+
+  explicate-injections-ql =
+    explicate-injections-ql-BackSlashChar
+
+  explicate-injections-ql-BackSlashChar =
+    origin-track-forced(
+      \ t -> t
+        where <is-ql-BackSlashChar-or-inj> t \
+    )
+
+  explicate-injections-ql =
+    explicate-injections-ql-CommentChar
+
+  explicate-injections-ql-CommentChar =
+    origin-track-forced(
+      \ t -> t
+        where <is-ql-CommentChar-or-inj> t \
+    )
+
+  explicate-injections-ql =
+    explicate-injections-ql-EOF
+
+  explicate-injections-ql-EOF =
+    origin-track-forced(
+      \ t -> t
+        where <is-ql-EOF-or-inj> t \
+    )
+
+
+rules
+
+  implicate-injections-ql =
+    implicate-injections-ql-ID
+
+  implicate-injections-ql-ID =
+    origin-track-forced(
+      \ t -> t
+        where <is-ql-ID-or-inj> t \
+    )
+
+  implicate-injections-ql =
+    implicate-injections-ql-INT
+
+  implicate-injections-ql-INT =
+    origin-track-forced(
+      \ t -> t
+        where <is-ql-INT-or-inj> t \
+    )
+
+  implicate-injections-ql =
+    implicate-injections-ql-FLOAT
+
+  implicate-injections-ql-FLOAT =
+    origin-track-forced(
+      \ t -> t
+        where <is-ql-FLOAT-or-inj> t \
+    )
+
+  implicate-injections-ql =
+    implicate-injections-ql-STRING
+
+  implicate-injections-ql-STRING =
+    origin-track-forced(
+      \ t -> t
+        where <is-ql-STRING-or-inj> t \
+    )
+
+  implicate-injections-ql =
+    implicate-injections-ql-StringChar
+
+  implicate-injections-ql-StringChar =
+    origin-track-forced(
+      \ t -> t
+        where <is-ql-StringChar-or-inj> t \
+    )
+
+  implicate-injections-ql =
+    implicate-injections-ql-BackSlashChar
+
+  implicate-injections-ql-BackSlashChar =
+    origin-track-forced(
+      \ t -> t
+        where <is-ql-BackSlashChar-or-inj> t \
+    )
+
+  implicate-injections-ql =
+    implicate-injections-ql-CommentChar
+
+  implicate-injections-ql-CommentChar =
+    origin-track-forced(
+      \ t -> t
+        where <is-ql-CommentChar-or-inj> t \
+    )
+
+  implicate-injections-ql =
+    implicate-injections-ql-EOF
+
+  implicate-injections-ql-EOF =
+    origin-track-forced(
+      \ t -> t
+        where <is-ql-EOF-or-inj> t \
+    )
+
+
+rules
+
+  upgrade-placeholders-ql =
+    upgrade-placeholders-ql-ID
+
+  upgrade-placeholders-ql-ID =
+    origin-track-forced(
+      \ t -> t
+        where <is-string> t \
+    )
+
+  upgrade-placeholders-ql-ID =
+    origin-track-forced(
+      \ ID-Plhdr(){anno*} -> p{anno*}
+        with p := <make-placeholder> "ID" \
+    )
+
+  upgrade-placeholders-ql =
+    upgrade-placeholders-ql-INT
+
+  upgrade-placeholders-ql-INT =
+    origin-track-forced(
+      \ t -> t
+        where <is-string> t \
+    )
+
+  upgrade-placeholders-ql-INT =
+    origin-track-forced(
+      \ INT-Plhdr(){anno*} -> p{anno*}
+        with p := <make-placeholder> "INT" \
+    )
+
+  upgrade-placeholders-ql =
+    upgrade-placeholders-ql-FLOAT
+
+  upgrade-placeholders-ql-FLOAT =
+    origin-track-forced(
+      \ t -> t
+        where <is-string> t \
+    )
+
+  upgrade-placeholders-ql-FLOAT =
+    origin-track-forced(
+      \ FLOAT-Plhdr(){anno*} -> p{anno*}
+        with p := <make-placeholder> "FLOAT" \
+    )
+
+  upgrade-placeholders-ql =
+    upgrade-placeholders-ql-STRING
+
+  upgrade-placeholders-ql-STRING =
+    origin-track-forced(
+      \ t -> t
+        where <is-string> t \
+    )
+
+  upgrade-placeholders-ql-STRING =
+    origin-track-forced(
+      \ STRING-Plhdr(){anno*} -> p{anno*}
+        with p := <make-placeholder> "STRING" \
+    )
+
+  upgrade-placeholders-ql =
+    upgrade-placeholders-ql-StringChar
+
+  upgrade-placeholders-ql-StringChar =
+    origin-track-forced(
+      \ t -> t
+        where <is-string> t \
+    )
+
+  upgrade-placeholders-ql-StringChar =
+    origin-track-forced(
+      \ StringChar-Plhdr(){anno*} -> p{anno*}
+        with p := <make-placeholder> "StringChar" \
+    )
+
+  upgrade-placeholders-ql =
+    upgrade-placeholders-ql-BackSlashChar
+
+  upgrade-placeholders-ql-BackSlashChar =
+    origin-track-forced(
+      \ t -> t
+        where <is-string> t \
+    )
+
+  upgrade-placeholders-ql-BackSlashChar =
+    origin-track-forced(
+      \ BackSlashChar-Plhdr(){anno*} -> p{anno*}
+        with p := <make-placeholder> "BackSlashChar" \
+    )
+
+  upgrade-placeholders-ql =
+    upgrade-placeholders-ql-CommentChar
+
+  upgrade-placeholders-ql-CommentChar =
+    origin-track-forced(
+      \ t -> t
+        where <is-string> t \
+    )
+
+  upgrade-placeholders-ql-CommentChar =
+    origin-track-forced(
+      \ CommentChar-Plhdr(){anno*} -> p{anno*}
+        with p := <make-placeholder> "CommentChar" \
+    )
+
+  upgrade-placeholders-ql =
+    upgrade-placeholders-ql-EOF
+
+  upgrade-placeholders-ql-EOF =
+    origin-track-forced(
+      \ t -> t
+        where <is-string> t \
+    )
+
+  upgrade-placeholders-ql-EOF =
+    origin-track-forced(
+      \ EOF-Plhdr(){anno*} -> p{anno*}
+        with p := <make-placeholder> "EOF" \
+    )
+
+
+rules
+
+  downgrade-placeholders-ql =
+    downgrade-placeholders-ql-ID
+
+  downgrade-placeholders-ql-ID =
+    origin-track-forced(
+      \ t -> t
+        where <is-string> t \
+    )
+
+  downgrade-placeholders-ql-ID =
+    origin-track-forced(
+      \ p{anno*} -> ID-Plhdr(){anno*}
+        where <(is-placeholder + ?ID-Plhdr())> p \
+    )
+
+  downgrade-placeholders-ql =
+    downgrade-placeholders-ql-INT
+
+  downgrade-placeholders-ql-INT =
+    origin-track-forced(
+      \ t -> t
+        where <is-string> t \
+    )
+
+  downgrade-placeholders-ql-INT =
+    origin-track-forced(
+      \ p{anno*} -> INT-Plhdr(){anno*}
+        where <(is-placeholder + ?INT-Plhdr())> p \
+    )
+
+  downgrade-placeholders-ql =
+    downgrade-placeholders-ql-FLOAT
+
+  downgrade-placeholders-ql-FLOAT =
+    origin-track-forced(
+      \ t -> t
+        where <is-string> t \
+    )
+
+  downgrade-placeholders-ql-FLOAT =
+    origin-track-forced(
+      \ p{anno*} -> FLOAT-Plhdr(){anno*}
+        where <(is-placeholder + ?FLOAT-Plhdr())> p \
+    )
+
+  downgrade-placeholders-ql =
+    downgrade-placeholders-ql-STRING
+
+  downgrade-placeholders-ql-STRING =
+    origin-track-forced(
+      \ t -> t
+        where <is-string> t \
+    )
+
+  downgrade-placeholders-ql-STRING =
+    origin-track-forced(
+      \ p{anno*} -> STRING-Plhdr(){anno*}
+        where <(is-placeholder + ?STRING-Plhdr())> p \
+    )
+
+  downgrade-placeholders-ql =
+    downgrade-placeholders-ql-StringChar
+
+  downgrade-placeholders-ql-StringChar =
+    origin-track-forced(
+      \ t -> t
+        where <is-string> t \
+    )
+
+  downgrade-placeholders-ql-StringChar =
+    origin-track-forced(
+      \ p{anno*} -> StringChar-Plhdr(){anno*}
+        where <(is-placeholder + ?StringChar-Plhdr())> p \
+    )
+
+  downgrade-placeholders-ql =
+    downgrade-placeholders-ql-BackSlashChar
+
+  downgrade-placeholders-ql-BackSlashChar =
+    origin-track-forced(
+      \ t -> t
+        where <is-string> t \
+    )
+
+  downgrade-placeholders-ql-BackSlashChar =
+    origin-track-forced(
+      \ p{anno*} -> BackSlashChar-Plhdr(){anno*}
+        where <(is-placeholder + ?BackSlashChar-Plhdr())> p \
+    )
+
+  downgrade-placeholders-ql =
+    downgrade-placeholders-ql-CommentChar
+
+  downgrade-placeholders-ql-CommentChar =
+    origin-track-forced(
+      \ t -> t
+        where <is-string> t \
+    )
+
+  downgrade-placeholders-ql-CommentChar =
+    origin-track-forced(
+      \ p{anno*} -> CommentChar-Plhdr(){anno*}
+        where <(is-placeholder + ?CommentChar-Plhdr())> p \
+    )
+
+  downgrade-placeholders-ql =
+    downgrade-placeholders-ql-EOF
+
+  downgrade-placeholders-ql-EOF =
+    origin-track-forced(
+      \ t -> t
+        where <is-string> t \
+    )
+
+  downgrade-placeholders-ql-EOF =
+    origin-track-forced(
+      \ p{anno*} -> EOF-Plhdr(){anno*}
+        where <(is-placeholder + ?EOF-Plhdr())> p \
+    )
+
+
+rules
+
+  explicate-option(s) =
+    origin-track-forced(
+      \ None(){anno*} -> []{anno*} \
+    )
+
+  explicate-option(s) =
+    origin-track-forced(
+      \ Some(t){anno*} -> [<s> t]{anno*} \
+    )
+
+  implicate-option(s) =
+    origin-track-forced(
+      \ []{anno*} -> None(){anno*} \
+    )
+
+  implicate-option(s) =
+    origin-track-forced(
+      \ [t]{anno*} -> Some(<s> t){anno*} \
+    )
+
+  implicate-option(s) =
+    origin-track-forced(
+      \ [_, _|_] -> <fatal-err(|"Cannot implicate multi-element list to option.")> \
+    )
+
+
+rules
+
+  upgrade-option(s) =
+    origin-track-forced(
+      \ None(){anno*} -> []{anno*} \
+    )
+
+  upgrade-option(s) =
+    origin-track-forced(
+      \ Some(t){anno*} -> [<s> t]{anno*} \
+    )
+
+  upgrade-list(s) =
+    origin-track-forced(
+      \ l -> l'
+        where <is-list> l
+        with l' := <map(s)> l \
+    )
+
+  upgrade-list(s) =
+    origin-track-forced(
+      \ l -> l'
+        where <fail> l
+        with l' := <make-placeholder> "list" \
+    )
+
+  downgrade-option(s) =
+    origin-track-forced(
+      \ None(){anno*} -> None(){anno*} \
+    )
+
+  downgrade-option(s) =
+    origin-track-forced(
+      \ Some(t){anno*} -> Some(<s> t){anno*} \
+    )
+
+  downgrade-list(s) =
+    origin-track-forced(
+      \ p -> p'
+        where <is-placeholder> p
+        with p' := [] \
+    )
+
+  downgrade-list(s) =
+    origin-track-forced(
+      \ []{anno*} -> []{anno*} \
+    )
+
+  downgrade-list(s) =
+    origin-track-forced(
+      \ [e|es]{anno*} -> [e'|es']{anno*}
+        with e' := <s> e
+             ; es' := <downgrade-list(s)> es \
+    )

@@ -1,0 +1,24 @@
+module signatures/lex-sig
+
+imports
+  strategolib
+
+
+signature
+  sorts
+    ID INT FLOAT STRING StringChar BackSlashChar CommentChar EOF
+
+  sorts
+    COMPLETION-INSERTION
+
+  constructors
+     : string -> ID
+     : string -> INT
+     : string -> FLOAT
+     : string -> STRING
+     : string -> StringChar
+     : string -> StringChar
+     : string -> StringChar
+     : string -> BackSlashChar
+     : string -> CommentChar
+     : string -> EOF

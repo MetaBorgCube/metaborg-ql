@@ -1,0 +1,866 @@
+module injections/expressions-injections
+
+imports
+  strategolib
+  signatures/expressions-sig
+  pp/expressions-pp
+  libspoofax/term/origin
+  libspoofax/term/amb
+
+
+imports
+  injections/lex-injections
+
+
+signature
+  constructors
+    NumLit2Expr : NumLit -> Expr
+
+
+signature
+  constructors
+    Expr-Plhdr   : Expr
+    NumLit-Plhdr : NumLit
+
+
+rules
+
+  is-ql-Expr-or-inj =
+    ?Expr-Plhdr()
+
+  is-ql-Expr-or-inj =
+    ?"nabl2.Var"#([_, _])
+
+  is-ql-NumLit-or-inj =
+    ?NumLit-Plhdr()
+
+  is-ql-NumLit-or-inj =
+    ?"nabl2.Var"#([_, _])
+
+  is-ql-Expr-or-inj =
+    ?Ref(_)
+
+  is-ql-Expr-or-inj =
+    ?Mul(_, _)
+
+  is-ql-Expr-or-inj =
+    ?Div(_, _)
+
+  is-ql-Expr-or-inj =
+    ?Add(_, _)
+
+  is-ql-Expr-or-inj =
+    ?Sub(_, _)
+
+  is-ql-Expr-or-inj =
+    ?Not(_)
+
+  is-ql-Expr-or-inj =
+    ?And(_, _)
+
+  is-ql-Expr-or-inj =
+    ?Or(_, _)
+
+  is-ql-Expr-or-inj =
+    ?Lt(_, _)
+
+  is-ql-Expr-or-inj =
+    ?Leq(_, _)
+
+  is-ql-Expr-or-inj =
+    ?Gt(_, _)
+
+  is-ql-Expr-or-inj =
+    ?Geq(_, _)
+
+  is-ql-Expr-or-inj =
+    ?Eq(_, _)
+
+  is-ql-Expr-or-inj =
+    ?True()
+
+  is-ql-Expr-or-inj =
+    ?False()
+
+  is-ql-NumLit-or-inj =
+    ?IntLit(_)
+
+  is-ql-NumLit-or-inj =
+    ?FloatLit(_)
+
+  is-ql-Expr-or-inj =
+    is-ql-NumLit-or-inj
+
+  is-ql-Expr-or-inj =
+    ?MoneyLit(_)
+
+
+rules
+
+  is-ql-inj-cons =
+    is-ql-Expr-inj-cons
+
+  is-ql-Expr-inj-cons =
+    fail
+
+  is-ql-inj-cons =
+    is-ql-NumLit-inj-cons
+
+  is-ql-NumLit-inj-cons =
+    fail
+
+  is-ql-NumLit-inj-cons =
+    ?NumLit2Expr(_)
+
+
+rules
+
+  explicate-injections-ql =
+    explicate-injections-ql-Expr
+
+  explicate-injections-ql =
+    explicate-injections-ql-NumLit
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Ref(id_){anno*} -> Ref(id_'){anno*}
+        with id_' := <explicate-injections-ql-ID> id_ \
+    )
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Mul(expr1, expr2){anno*} -> Mul(expr1', expr2'){anno*}
+        with expr1' := <explicate-injections-ql-Expr> expr1
+             ; expr2' := <explicate-injections-ql-Expr> expr2 \
+    )
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Div(expr1, expr2){anno*} -> Div(expr1', expr2'){anno*}
+        with expr1' := <explicate-injections-ql-Expr> expr1
+             ; expr2' := <explicate-injections-ql-Expr> expr2 \
+    )
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Add(expr1, expr2){anno*} -> Add(expr1', expr2'){anno*}
+        with expr1' := <explicate-injections-ql-Expr> expr1
+             ; expr2' := <explicate-injections-ql-Expr> expr2 \
+    )
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Sub(expr1, expr2){anno*} -> Sub(expr1', expr2'){anno*}
+        with expr1' := <explicate-injections-ql-Expr> expr1
+             ; expr2' := <explicate-injections-ql-Expr> expr2 \
+    )
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Not(expr){anno*} -> Not(expr'){anno*}
+        with expr' := <explicate-injections-ql-Expr> expr \
+    )
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ And(expr1, expr2){anno*} -> And(expr1', expr2'){anno*}
+        with expr1' := <explicate-injections-ql-Expr> expr1
+             ; expr2' := <explicate-injections-ql-Expr> expr2 \
+    )
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Or(expr1, expr2){anno*} -> Or(expr1', expr2'){anno*}
+        with expr1' := <explicate-injections-ql-Expr> expr1
+             ; expr2' := <explicate-injections-ql-Expr> expr2 \
+    )
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Lt(expr1, expr2){anno*} -> Lt(expr1', expr2'){anno*}
+        with expr1' := <explicate-injections-ql-Expr> expr1
+             ; expr2' := <explicate-injections-ql-Expr> expr2 \
+    )
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Leq(expr1, expr2){anno*} -> Leq(expr1', expr2'){anno*}
+        with expr1' := <explicate-injections-ql-Expr> expr1
+             ; expr2' := <explicate-injections-ql-Expr> expr2 \
+    )
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Gt(expr1, expr2){anno*} -> Gt(expr1', expr2'){anno*}
+        with expr1' := <explicate-injections-ql-Expr> expr1
+             ; expr2' := <explicate-injections-ql-Expr> expr2 \
+    )
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Geq(expr1, expr2){anno*} -> Geq(expr1', expr2'){anno*}
+        with expr1' := <explicate-injections-ql-Expr> expr1
+             ; expr2' := <explicate-injections-ql-Expr> expr2 \
+    )
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Eq(expr1, expr2){anno*} -> Eq(expr1', expr2'){anno*}
+        with expr1' := <explicate-injections-ql-Expr> expr1
+             ; expr2' := <explicate-injections-ql-Expr> expr2 \
+    )
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ True(){anno*} -> True(){anno*} \
+    )
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ False(){anno*} -> False(){anno*} \
+    )
+
+  explicate-injections-ql-NumLit =
+    origin-track-forced(
+      \ IntLit(int){anno*} -> IntLit(int'){anno*}
+        with int' := <explicate-injections-ql-INT> int \
+    )
+
+  explicate-injections-ql-NumLit =
+    origin-track-forced(
+      \ FloatLit(float){anno*} -> FloatLit(float'){anno*}
+        with float' := <explicate-injections-ql-FLOAT> float \
+    )
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ numLit -> NumLit2Expr(<explicate-injections-ql-NumLit> numLit)
+        where <(is-ql-NumLit-or-inj ; not(?"nabl2.Var"#(_)))> numLit \
+    )
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ MoneyLit(numLit){anno*} -> MoneyLit(numLit'){anno*}
+        with numLit' := <explicate-injections-ql-NumLit> numLit \
+    )
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Expr-Plhdr(){anno*} -> Expr-Plhdr(){anno*} \
+    )
+
+  explicate-injections-ql-NumLit =
+    origin-track-forced(
+      \ NumLit-Plhdr(){anno*} -> NumLit-Plhdr(){anno*} \
+    )
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  explicate-injections-ql-NumLit =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  explicate-injections-ql-Expr =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <map(explicate-injections-ql-Expr)> alts \
+    )
+
+  explicate-injections-ql-NumLit =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <map(explicate-injections-ql-NumLit)> alts \
+    )
+
+
+rules
+
+  implicate-injections-ql =
+    implicate-injections-ql-Expr
+
+  implicate-injections-ql =
+    implicate-injections-ql-NumLit
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Ref(id_){anno*} -> Ref(id_'){anno*}
+        with id_' := <implicate-injections-ql-ID> id_ \
+    )
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Mul(expr1, expr2){anno*} -> Mul(expr1', expr2'){anno*}
+        with expr1' := <implicate-injections-ql-Expr> expr1
+             ; expr2' := <implicate-injections-ql-Expr> expr2 \
+    )
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Div(expr1, expr2){anno*} -> Div(expr1', expr2'){anno*}
+        with expr1' := <implicate-injections-ql-Expr> expr1
+             ; expr2' := <implicate-injections-ql-Expr> expr2 \
+    )
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Add(expr1, expr2){anno*} -> Add(expr1', expr2'){anno*}
+        with expr1' := <implicate-injections-ql-Expr> expr1
+             ; expr2' := <implicate-injections-ql-Expr> expr2 \
+    )
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Sub(expr1, expr2){anno*} -> Sub(expr1', expr2'){anno*}
+        with expr1' := <implicate-injections-ql-Expr> expr1
+             ; expr2' := <implicate-injections-ql-Expr> expr2 \
+    )
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Not(expr){anno*} -> Not(expr'){anno*}
+        with expr' := <implicate-injections-ql-Expr> expr \
+    )
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ And(expr1, expr2){anno*} -> And(expr1', expr2'){anno*}
+        with expr1' := <implicate-injections-ql-Expr> expr1
+             ; expr2' := <implicate-injections-ql-Expr> expr2 \
+    )
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Or(expr1, expr2){anno*} -> Or(expr1', expr2'){anno*}
+        with expr1' := <implicate-injections-ql-Expr> expr1
+             ; expr2' := <implicate-injections-ql-Expr> expr2 \
+    )
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Lt(expr1, expr2){anno*} -> Lt(expr1', expr2'){anno*}
+        with expr1' := <implicate-injections-ql-Expr> expr1
+             ; expr2' := <implicate-injections-ql-Expr> expr2 \
+    )
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Leq(expr1, expr2){anno*} -> Leq(expr1', expr2'){anno*}
+        with expr1' := <implicate-injections-ql-Expr> expr1
+             ; expr2' := <implicate-injections-ql-Expr> expr2 \
+    )
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Gt(expr1, expr2){anno*} -> Gt(expr1', expr2'){anno*}
+        with expr1' := <implicate-injections-ql-Expr> expr1
+             ; expr2' := <implicate-injections-ql-Expr> expr2 \
+    )
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Geq(expr1, expr2){anno*} -> Geq(expr1', expr2'){anno*}
+        with expr1' := <implicate-injections-ql-Expr> expr1
+             ; expr2' := <implicate-injections-ql-Expr> expr2 \
+    )
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Eq(expr1, expr2){anno*} -> Eq(expr1', expr2'){anno*}
+        with expr1' := <implicate-injections-ql-Expr> expr1
+             ; expr2' := <implicate-injections-ql-Expr> expr2 \
+    )
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ True(){anno*} -> True(){anno*} \
+    )
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ False(){anno*} -> False(){anno*} \
+    )
+
+  implicate-injections-ql-NumLit =
+    origin-track-forced(
+      \ IntLit(int){anno*} -> IntLit(int'){anno*}
+        with int' := <implicate-injections-ql-INT> int \
+    )
+
+  implicate-injections-ql-NumLit =
+    origin-track-forced(
+      \ FloatLit(float){anno*} -> FloatLit(float'){anno*}
+        with float' := <implicate-injections-ql-FLOAT> float \
+    )
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ NumLit2Expr(numLit) -> <implicate-injections-ql-NumLit> numLit \
+    )
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ MoneyLit(numLit){anno*} -> MoneyLit(numLit'){anno*}
+        with numLit' := <implicate-injections-ql-NumLit> numLit \
+    )
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ Expr-Plhdr(){anno*} -> Expr-Plhdr(){anno*} \
+    )
+
+  implicate-injections-ql-NumLit =
+    origin-track-forced(
+      \ NumLit-Plhdr(){anno*} -> NumLit-Plhdr(){anno*} \
+    )
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  implicate-injections-ql-NumLit =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  implicate-injections-ql-Expr =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <map(implicate-injections-ql-Expr)> alts \
+    )
+
+  implicate-injections-ql-NumLit =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <map(implicate-injections-ql-NumLit)> alts \
+    )
+
+
+rules
+
+  upgrade-placeholders-ql =
+    upgrade-placeholders-ql-Expr
+
+  upgrade-placeholders-ql =
+    upgrade-placeholders-ql-NumLit
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Ref(id_){anno*} -> Ref(id_'){anno*}
+        with id_' := <upgrade-placeholders-ql-ID> id_ \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Mul(expr1, expr2){anno*} -> Mul(expr1', expr2'){anno*}
+        with expr1' := <upgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <upgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Div(expr1, expr2){anno*} -> Div(expr1', expr2'){anno*}
+        with expr1' := <upgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <upgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Add(expr1, expr2){anno*} -> Add(expr1', expr2'){anno*}
+        with expr1' := <upgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <upgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Sub(expr1, expr2){anno*} -> Sub(expr1', expr2'){anno*}
+        with expr1' := <upgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <upgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Not(expr){anno*} -> Not(expr'){anno*}
+        with expr' := <upgrade-placeholders-ql-Expr> expr \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ And(expr1, expr2){anno*} -> And(expr1', expr2'){anno*}
+        with expr1' := <upgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <upgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Or(expr1, expr2){anno*} -> Or(expr1', expr2'){anno*}
+        with expr1' := <upgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <upgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Lt(expr1, expr2){anno*} -> Lt(expr1', expr2'){anno*}
+        with expr1' := <upgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <upgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Leq(expr1, expr2){anno*} -> Leq(expr1', expr2'){anno*}
+        with expr1' := <upgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <upgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Gt(expr1, expr2){anno*} -> Gt(expr1', expr2'){anno*}
+        with expr1' := <upgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <upgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Geq(expr1, expr2){anno*} -> Geq(expr1', expr2'){anno*}
+        with expr1' := <upgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <upgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Eq(expr1, expr2){anno*} -> Eq(expr1', expr2'){anno*}
+        with expr1' := <upgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <upgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ True(){anno*} -> True(){anno*} \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ False(){anno*} -> False(){anno*} \
+    )
+
+  upgrade-placeholders-ql-NumLit =
+    origin-track-forced(
+      \ IntLit(int){anno*} -> IntLit(int'){anno*}
+        with int' := <upgrade-placeholders-ql-INT> int \
+    )
+
+  upgrade-placeholders-ql-NumLit =
+    origin-track-forced(
+      \ FloatLit(float){anno*} -> FloatLit(float'){anno*}
+        with float' := <upgrade-placeholders-ql-FLOAT> float \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ numLit -> <upgrade-placeholders-ql-NumLit> numLit
+        where <is-ql-NumLit-or-inj> numLit \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ NumLit2Expr(numLit){anno*} -> NumLit2Expr(<upgrade-placeholders-ql-NumLit> numLit){anno*} \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ MoneyLit(numLit){anno*} -> MoneyLit(numLit'){anno*}
+        with numLit' := <upgrade-placeholders-ql-NumLit> numLit \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Expr-Plhdr(){anno*} -> p{anno*}
+        with p := <make-placeholder> "Expr" \
+    )
+
+  upgrade-placeholders-ql-NumLit =
+    origin-track-forced(
+      \ NumLit-Plhdr(){anno*} -> p{anno*}
+        with p := <make-placeholder> "NumLit" \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  upgrade-placeholders-ql-NumLit =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  upgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <upgrade-list(upgrade-placeholders-ql-Expr)> alts \
+    )
+
+  upgrade-placeholders-ql-NumLit =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <upgrade-list(upgrade-placeholders-ql-NumLit)> alts \
+    )
+
+
+rules
+
+  downgrade-placeholders-ql =
+    downgrade-placeholders-ql-Expr
+
+  downgrade-placeholders-ql =
+    downgrade-placeholders-ql-NumLit
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Ref(id_){anno*} -> Ref(id_'){anno*}
+        with id_' := <downgrade-placeholders-ql-ID> id_ \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Mul(expr1, expr2){anno*} -> Mul(expr1', expr2'){anno*}
+        with expr1' := <downgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <downgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Div(expr1, expr2){anno*} -> Div(expr1', expr2'){anno*}
+        with expr1' := <downgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <downgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Add(expr1, expr2){anno*} -> Add(expr1', expr2'){anno*}
+        with expr1' := <downgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <downgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Sub(expr1, expr2){anno*} -> Sub(expr1', expr2'){anno*}
+        with expr1' := <downgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <downgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Not(expr){anno*} -> Not(expr'){anno*}
+        with expr' := <downgrade-placeholders-ql-Expr> expr \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ And(expr1, expr2){anno*} -> And(expr1', expr2'){anno*}
+        with expr1' := <downgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <downgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Or(expr1, expr2){anno*} -> Or(expr1', expr2'){anno*}
+        with expr1' := <downgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <downgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Lt(expr1, expr2){anno*} -> Lt(expr1', expr2'){anno*}
+        with expr1' := <downgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <downgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Leq(expr1, expr2){anno*} -> Leq(expr1', expr2'){anno*}
+        with expr1' := <downgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <downgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Gt(expr1, expr2){anno*} -> Gt(expr1', expr2'){anno*}
+        with expr1' := <downgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <downgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Geq(expr1, expr2){anno*} -> Geq(expr1', expr2'){anno*}
+        with expr1' := <downgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <downgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ Eq(expr1, expr2){anno*} -> Eq(expr1', expr2'){anno*}
+        with expr1' := <downgrade-placeholders-ql-Expr> expr1
+             ; expr2' := <downgrade-placeholders-ql-Expr> expr2 \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ True(){anno*} -> True(){anno*} \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ False(){anno*} -> False(){anno*} \
+    )
+
+  downgrade-placeholders-ql-NumLit =
+    origin-track-forced(
+      \ IntLit(int){anno*} -> IntLit(int'){anno*}
+        with int' := <downgrade-placeholders-ql-INT> int \
+    )
+
+  downgrade-placeholders-ql-NumLit =
+    origin-track-forced(
+      \ FloatLit(float){anno*} -> FloatLit(float'){anno*}
+        with float' := <downgrade-placeholders-ql-FLOAT> float \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ numLit -> <downgrade-placeholders-ql-NumLit> numLit
+        where <is-ql-NumLit-or-inj> numLit \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ NumLit2Expr(numLit){anno*} -> NumLit2Expr(<downgrade-placeholders-ql-NumLit> numLit){anno*} \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ MoneyLit(numLit){anno*} -> MoneyLit(numLit'){anno*}
+        with numLit' := <downgrade-placeholders-ql-NumLit> numLit \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ p{anno*} -> Expr-Plhdr(){anno*}
+        where <(is-placeholder + ?Expr-Plhdr())> p \
+    )
+
+  downgrade-placeholders-ql-NumLit =
+    origin-track-forced(
+      \ p{anno*} -> NumLit-Plhdr(){anno*}
+        where <(is-placeholder + ?NumLit-Plhdr())> p \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  downgrade-placeholders-ql-NumLit =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  downgrade-placeholders-ql-Expr =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <downgrade-list(downgrade-placeholders-ql-Expr)> alts \
+    )
+
+  downgrade-placeholders-ql-NumLit =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <downgrade-list(downgrade-placeholders-ql-NumLit)> alts \
+    )
+
+
+rules
+
+  explicate-option(s) =
+    origin-track-forced(
+      \ None(){anno*} -> []{anno*} \
+    )
+
+  explicate-option(s) =
+    origin-track-forced(
+      \ Some(t){anno*} -> [<s> t]{anno*} \
+    )
+
+  implicate-option(s) =
+    origin-track-forced(
+      \ []{anno*} -> None(){anno*} \
+    )
+
+  implicate-option(s) =
+    origin-track-forced(
+      \ [t]{anno*} -> Some(<s> t){anno*} \
+    )
+
+  implicate-option(s) =
+    origin-track-forced(
+      \ [_, _|_] -> <fatal-err(|"Cannot implicate multi-element list to option.")> \
+    )
+
+
+rules
+
+  upgrade-option(s) =
+    origin-track-forced(
+      \ None(){anno*} -> []{anno*} \
+    )
+
+  upgrade-option(s) =
+    origin-track-forced(
+      \ Some(t){anno*} -> [<s> t]{anno*} \
+    )
+
+  upgrade-list(s) =
+    origin-track-forced(
+      \ l -> l'
+        where <is-list> l
+        with l' := <map(s)> l \
+    )
+
+  upgrade-list(s) =
+    origin-track-forced(
+      \ l -> l'
+        where <fail> l
+        with l' := <make-placeholder> "list" \
+    )
+
+  downgrade-option(s) =
+    origin-track-forced(
+      \ None(){anno*} -> None(){anno*} \
+    )
+
+  downgrade-option(s) =
+    origin-track-forced(
+      \ Some(t){anno*} -> Some(<s> t){anno*} \
+    )
+
+  downgrade-list(s) =
+    origin-track-forced(
+      \ p -> p'
+        where <is-placeholder> p
+        with p' := [] \
+    )
+
+  downgrade-list(s) =
+    origin-track-forced(
+      \ []{anno*} -> []{anno*} \
+    )
+
+  downgrade-list(s) =
+    origin-track-forced(
+      \ [e|es]{anno*} -> [e'|es']{anno*}
+        with e' := <s> e
+             ; es' := <downgrade-list(s)> es \
+    )

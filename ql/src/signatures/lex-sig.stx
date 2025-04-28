@@ -1,0 +1,21 @@
+module signatures/lex-sig
+
+imports
+
+signature
+
+  sorts
+    ID = string
+    INT = string
+    FLOAT = string
+    STRING = string
+    StringChar = string
+    BackSlashChar = string
+    CommentChar = string
+    EOF = string
+
+  constructors
+
+signature
+
+  constructors

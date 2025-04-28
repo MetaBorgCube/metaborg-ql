@@ -1,0 +1,55 @@
+module signatures/ql-sig
+
+imports
+  strategolib
+
+
+imports
+  signatures/expressions-sig
+
+
+imports
+  signatures/types-sig
+
+
+imports
+  signatures/lex-sig
+
+
+signature
+  sorts
+    Start Question Label
+
+  sorts
+    COMPLETION-INSERTION
+
+  constructors
+    Form               : ID * List(Question) -> Start
+    Start-Plhdr        : Start
+    ID-Plhdr           : ID
+    Question-Plhdr     : Question
+    Start-Plhdr        : COMPLETION-INSERTION -> Start
+    ID-Plhdr           : COMPLETION-INSERTION -> ID
+    Question-Plhdr     : COMPLETION-INSERTION -> Question
+    Question-Opt-Plhdr : Question
+    Question           : ID * Label * Type -> Question
+    Label              : STRING -> Label
+    Computed           : ID * Label * TyExpr -> Question
+    Type-Plhdr         : Type
+    STRING-Plhdr       : STRING
+    Question-Plhdr     : Question
+    ID-Plhdr           : ID
+    Label-Plhdr        : Label
+    TyExpr-Plhdr       : TyExpr
+    Type-Plhdr         : COMPLETION-INSERTION -> Type
+    STRING-Plhdr       : COMPLETION-INSERTION -> STRING
+    Question-Plhdr     : COMPLETION-INSERTION -> Question
+    ID-Plhdr           : COMPLETION-INSERTION -> ID
+    Label-Plhdr        : COMPLETION-INSERTION -> Label
+    TyExpr-Plhdr       : COMPLETION-INSERTION -> TyExpr
+    Conditional        : Expr * List(Question) -> Question
+    Expr-Plhdr         : Expr
+    Question-Plhdr     : Question
+    Expr-Plhdr         : COMPLETION-INSERTION -> Expr
+    Question-Plhdr     : COMPLETION-INSERTION -> Question
+    Question-Opt-Plhdr : Question

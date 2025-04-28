@@ -1,0 +1,25 @@
+module signatures/types-sig
+
+imports
+  signatures/expressions-sig
+
+signature
+
+  sorts
+    Type
+    TyExpr
+
+  constructors
+    Type-Plhdr : Type
+    TyExpr-Plhdr : TyExpr
+
+signature
+
+  constructors
+    BoolTy : Type
+    StringTy : Type
+    IntTy : Type
+    DateTy : Type
+    FloatTy : Type
+    MoneyTy : Type
+    TExpr : Type * Expr -> TyExpr

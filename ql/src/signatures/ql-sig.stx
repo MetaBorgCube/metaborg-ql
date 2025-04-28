@@ -1,0 +1,27 @@
+module signatures/ql-sig
+
+imports
+  signatures/expressions-sig
+  signatures/types-sig
+  signatures/lex-sig
+
+signature
+
+  sorts
+    Start
+    Question
+    Label
+
+  constructors
+    Start-Plhdr : Start
+    Question-Plhdr : Question
+    Label-Plhdr : Label
+
+signature
+
+  constructors
+    Form : ID * list(Question) -> Start
+    Question : ID * Label * Type -> Question
+    Label : STRING -> Label
+    Computed : ID * Label * TyExpr -> Question
+    Conditional : Expr * list(Question) -> Question

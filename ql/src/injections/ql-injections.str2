@@ -1,0 +1,558 @@
+module injections/ql-injections
+
+imports
+  strategolib
+  signatures/ql-sig
+  pp/ql-pp
+  libspoofax/term/origin
+  libspoofax/term/amb
+
+
+imports
+  injections/expressions-injections
+
+
+imports
+  injections/types-injections
+
+
+imports
+  injections/lex-injections
+
+
+signature
+  constructors
+    Start-Plhdr    : Start
+    Question-Plhdr : Question
+    Label-Plhdr    : Label
+
+
+rules
+
+  is-ql-Start-or-inj =
+    ?Start-Plhdr()
+
+  is-ql-Start-or-inj =
+    ?"nabl2.Var"#([_, _])
+
+  is-ql-Question-or-inj =
+    ?Question-Plhdr()
+
+  is-ql-Question-or-inj =
+    ?"nabl2.Var"#([_, _])
+
+  is-ql-Label-or-inj =
+    ?Label-Plhdr()
+
+  is-ql-Label-or-inj =
+    ?"nabl2.Var"#([_, _])
+
+  is-ql-Start-or-inj =
+    ?Form(_, _)
+
+  is-ql-Question-or-inj =
+    ?Question(_, _, _)
+
+  is-ql-Label-or-inj =
+    ?Label(_)
+
+  is-ql-Question-or-inj =
+    ?Computed(_, _, _)
+
+  is-ql-Question-or-inj =
+    ?Conditional(_, _)
+
+
+rules
+
+  is-ql-inj-cons =
+    is-ql-Start-inj-cons
+
+  is-ql-Start-inj-cons =
+    fail
+
+  is-ql-inj-cons =
+    is-ql-Question-inj-cons
+
+  is-ql-Question-inj-cons =
+    fail
+
+  is-ql-inj-cons =
+    is-ql-Label-inj-cons
+
+  is-ql-Label-inj-cons =
+    fail
+
+
+rules
+
+  explicate-injections-ql =
+    explicate-injections-ql-Start
+
+  explicate-injections-ql =
+    explicate-injections-ql-Question
+
+  explicate-injections-ql =
+    explicate-injections-ql-Label
+
+  explicate-injections-ql-Start =
+    origin-track-forced(
+      \ Form(id_, questions){anno*} -> Form(id_', questions'){anno*}
+        with id_' := <explicate-injections-ql-ID> id_
+             ; questions' := <map(explicate-injections-ql-Question)> questions \
+    )
+
+  explicate-injections-ql-Question =
+    origin-track-forced(
+      \ Question(id_, label, type){anno*} -> Question(id_', label', type'){anno*}
+        with id_' := <explicate-injections-ql-ID> id_
+             ; label' := <explicate-injections-ql-Label> label
+             ; type' := <explicate-injections-ql-Type> type \
+    )
+
+  explicate-injections-ql-Label =
+    origin-track-forced(
+      \ Label(string){anno*} -> Label(string'){anno*}
+        with string' := <explicate-injections-ql-STRING> string \
+    )
+
+  explicate-injections-ql-Question =
+    origin-track-forced(
+      \ Computed(id_, label, tyExpr){anno*} -> Computed(id_', label', tyExpr'){anno*}
+        with id_' := <explicate-injections-ql-ID> id_
+             ; label' := <explicate-injections-ql-Label> label
+             ; tyExpr' := <explicate-injections-ql-TyExpr> tyExpr \
+    )
+
+  explicate-injections-ql-Question =
+    origin-track-forced(
+      \ Conditional(expr, questions){anno*} -> Conditional(expr', questions'){anno*}
+        with expr' := <explicate-injections-ql-Expr> expr
+             ; questions' := <map(explicate-injections-ql-Question)> questions \
+    )
+
+  explicate-injections-ql-Start =
+    origin-track-forced(
+      \ Start-Plhdr(){anno*} -> Start-Plhdr(){anno*} \
+    )
+
+  explicate-injections-ql-Question =
+    origin-track-forced(
+      \ Question-Plhdr(){anno*} -> Question-Plhdr(){anno*} \
+    )
+
+  explicate-injections-ql-Label =
+    origin-track-forced(
+      \ Label-Plhdr(){anno*} -> Label-Plhdr(){anno*} \
+    )
+
+  explicate-injections-ql-Start =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  explicate-injections-ql-Question =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  explicate-injections-ql-Label =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  explicate-injections-ql-Start =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <map(explicate-injections-ql-Start)> alts \
+    )
+
+  explicate-injections-ql-Question =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <map(explicate-injections-ql-Question)> alts \
+    )
+
+  explicate-injections-ql-Label =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <map(explicate-injections-ql-Label)> alts \
+    )
+
+
+rules
+
+  implicate-injections-ql =
+    implicate-injections-ql-Start
+
+  implicate-injections-ql =
+    implicate-injections-ql-Question
+
+  implicate-injections-ql =
+    implicate-injections-ql-Label
+
+  implicate-injections-ql-Start =
+    origin-track-forced(
+      \ Form(id_, questions){anno*} -> Form(id_', questions'){anno*}
+        with id_' := <implicate-injections-ql-ID> id_
+             ; questions' := <map(implicate-injections-ql-Question)> questions \
+    )
+
+  implicate-injections-ql-Question =
+    origin-track-forced(
+      \ Question(id_, label, type){anno*} -> Question(id_', label', type'){anno*}
+        with id_' := <implicate-injections-ql-ID> id_
+             ; label' := <implicate-injections-ql-Label> label
+             ; type' := <implicate-injections-ql-Type> type \
+    )
+
+  implicate-injections-ql-Label =
+    origin-track-forced(
+      \ Label(string){anno*} -> Label(string'){anno*}
+        with string' := <implicate-injections-ql-STRING> string \
+    )
+
+  implicate-injections-ql-Question =
+    origin-track-forced(
+      \ Computed(id_, label, tyExpr){anno*} -> Computed(id_', label', tyExpr'){anno*}
+        with id_' := <implicate-injections-ql-ID> id_
+             ; label' := <implicate-injections-ql-Label> label
+             ; tyExpr' := <implicate-injections-ql-TyExpr> tyExpr \
+    )
+
+  implicate-injections-ql-Question =
+    origin-track-forced(
+      \ Conditional(expr, questions){anno*} -> Conditional(expr', questions'){anno*}
+        with expr' := <implicate-injections-ql-Expr> expr
+             ; questions' := <map(implicate-injections-ql-Question)> questions \
+    )
+
+  implicate-injections-ql-Start =
+    origin-track-forced(
+      \ Start-Plhdr(){anno*} -> Start-Plhdr(){anno*} \
+    )
+
+  implicate-injections-ql-Question =
+    origin-track-forced(
+      \ Question-Plhdr(){anno*} -> Question-Plhdr(){anno*} \
+    )
+
+  implicate-injections-ql-Label =
+    origin-track-forced(
+      \ Label-Plhdr(){anno*} -> Label-Plhdr(){anno*} \
+    )
+
+  implicate-injections-ql-Start =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  implicate-injections-ql-Question =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  implicate-injections-ql-Label =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  implicate-injections-ql-Start =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <map(implicate-injections-ql-Start)> alts \
+    )
+
+  implicate-injections-ql-Question =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <map(implicate-injections-ql-Question)> alts \
+    )
+
+  implicate-injections-ql-Label =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <map(implicate-injections-ql-Label)> alts \
+    )
+
+
+rules
+
+  upgrade-placeholders-ql =
+    upgrade-placeholders-ql-Start
+
+  upgrade-placeholders-ql =
+    upgrade-placeholders-ql-Question
+
+  upgrade-placeholders-ql =
+    upgrade-placeholders-ql-Label
+
+  upgrade-placeholders-ql-Start =
+    origin-track-forced(
+      \ Form(id_, questions){anno*} -> Form(id_', questions'){anno*}
+        with id_' := <upgrade-placeholders-ql-ID> id_
+             ; questions' := <upgrade-list(upgrade-placeholders-ql-Question)> questions \
+    )
+
+  upgrade-placeholders-ql-Question =
+    origin-track-forced(
+      \ Question(id_, label, type){anno*} -> Question(id_', label', type'){anno*}
+        with id_' := <upgrade-placeholders-ql-ID> id_
+             ; label' := <upgrade-placeholders-ql-Label> label
+             ; type' := <upgrade-placeholders-ql-Type> type \
+    )
+
+  upgrade-placeholders-ql-Label =
+    origin-track-forced(
+      \ Label(string){anno*} -> Label(string'){anno*}
+        with string' := <upgrade-placeholders-ql-STRING> string \
+    )
+
+  upgrade-placeholders-ql-Question =
+    origin-track-forced(
+      \ Computed(id_, label, tyExpr){anno*} -> Computed(id_', label', tyExpr'){anno*}
+        with id_' := <upgrade-placeholders-ql-ID> id_
+             ; label' := <upgrade-placeholders-ql-Label> label
+             ; tyExpr' := <upgrade-placeholders-ql-TyExpr> tyExpr \
+    )
+
+  upgrade-placeholders-ql-Question =
+    origin-track-forced(
+      \ Conditional(expr, questions){anno*} -> Conditional(expr', questions'){anno*}
+        with expr' := <upgrade-placeholders-ql-Expr> expr
+             ; questions' := <upgrade-list(upgrade-placeholders-ql-Question)> questions \
+    )
+
+  upgrade-placeholders-ql-Start =
+    origin-track-forced(
+      \ Start-Plhdr(){anno*} -> p{anno*}
+        with p := <make-placeholder> "Start" \
+    )
+
+  upgrade-placeholders-ql-Question =
+    origin-track-forced(
+      \ Question-Plhdr(){anno*} -> p{anno*}
+        with p := <make-placeholder> "Question" \
+    )
+
+  upgrade-placeholders-ql-Label =
+    origin-track-forced(
+      \ Label-Plhdr(){anno*} -> p{anno*}
+        with p := <make-placeholder> "Label" \
+    )
+
+  upgrade-placeholders-ql-Start =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  upgrade-placeholders-ql-Question =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  upgrade-placeholders-ql-Label =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  upgrade-placeholders-ql-Start =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <upgrade-list(upgrade-placeholders-ql-Start)> alts \
+    )
+
+  upgrade-placeholders-ql-Question =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <upgrade-list(upgrade-placeholders-ql-Question)> alts \
+    )
+
+  upgrade-placeholders-ql-Label =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <upgrade-list(upgrade-placeholders-ql-Label)> alts \
+    )
+
+
+rules
+
+  downgrade-placeholders-ql =
+    downgrade-placeholders-ql-Start
+
+  downgrade-placeholders-ql =
+    downgrade-placeholders-ql-Question
+
+  downgrade-placeholders-ql =
+    downgrade-placeholders-ql-Label
+
+  downgrade-placeholders-ql-Start =
+    origin-track-forced(
+      \ Form(id_, questions){anno*} -> Form(id_', questions'){anno*}
+        with id_' := <downgrade-placeholders-ql-ID> id_
+             ; questions' := <downgrade-list(downgrade-placeholders-ql-Question)> questions \
+    )
+
+  downgrade-placeholders-ql-Question =
+    origin-track-forced(
+      \ Question(id_, label, type){anno*} -> Question(id_', label', type'){anno*}
+        with id_' := <downgrade-placeholders-ql-ID> id_
+             ; label' := <downgrade-placeholders-ql-Label> label
+             ; type' := <downgrade-placeholders-ql-Type> type \
+    )
+
+  downgrade-placeholders-ql-Label =
+    origin-track-forced(
+      \ Label(string){anno*} -> Label(string'){anno*}
+        with string' := <downgrade-placeholders-ql-STRING> string \
+    )
+
+  downgrade-placeholders-ql-Question =
+    origin-track-forced(
+      \ Computed(id_, label, tyExpr){anno*} -> Computed(id_', label', tyExpr'){anno*}
+        with id_' := <downgrade-placeholders-ql-ID> id_
+             ; label' := <downgrade-placeholders-ql-Label> label
+             ; tyExpr' := <downgrade-placeholders-ql-TyExpr> tyExpr \
+    )
+
+  downgrade-placeholders-ql-Question =
+    origin-track-forced(
+      \ Conditional(expr, questions){anno*} -> Conditional(expr', questions'){anno*}
+        with expr' := <downgrade-placeholders-ql-Expr> expr
+             ; questions' := <downgrade-list(downgrade-placeholders-ql-Question)> questions \
+    )
+
+  downgrade-placeholders-ql-Start =
+    origin-track-forced(
+      \ p{anno*} -> Start-Plhdr(){anno*}
+        where <(is-placeholder + ?Start-Plhdr())> p \
+    )
+
+  downgrade-placeholders-ql-Question =
+    origin-track-forced(
+      \ p{anno*} -> Question-Plhdr(){anno*}
+        where <(is-placeholder + ?Question-Plhdr())> p \
+    )
+
+  downgrade-placeholders-ql-Label =
+    origin-track-forced(
+      \ p{anno*} -> Label-Plhdr(){anno*}
+        where <(is-placeholder + ?Label-Plhdr())> p \
+    )
+
+  downgrade-placeholders-ql-Start =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  downgrade-placeholders-ql-Question =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  downgrade-placeholders-ql-Label =
+    origin-track-forced(
+      \ "nabl2.Var"#([resource, name]){anno*} -> "nabl2.Var"#([resource, name]){anno*} \
+    )
+
+  downgrade-placeholders-ql-Start =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <downgrade-list(downgrade-placeholders-ql-Start)> alts \
+    )
+
+  downgrade-placeholders-ql-Question =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <downgrade-list(downgrade-placeholders-ql-Question)> alts \
+    )
+
+  downgrade-placeholders-ql-Label =
+    origin-track-forced(
+      \ amb(alts){anno*} -> amb(alts'){anno*}
+        with alts' := <downgrade-list(downgrade-placeholders-ql-Label)> alts \
+    )
+
+
+rules
+
+  explicate-option(s) =
+    origin-track-forced(
+      \ None(){anno*} -> []{anno*} \
+    )
+
+  explicate-option(s) =
+    origin-track-forced(
+      \ Some(t){anno*} -> [<s> t]{anno*} \
+    )
+
+  implicate-option(s) =
+    origin-track-forced(
+      \ []{anno*} -> None(){anno*} \
+    )
+
+  implicate-option(s) =
+    origin-track-forced(
+      \ [t]{anno*} -> Some(<s> t){anno*} \
+    )
+
+  implicate-option(s) =
+    origin-track-forced(
+      \ [_, _|_] -> <fatal-err(|"Cannot implicate multi-element list to option.")> \
+    )
+
+
+rules
+
+  upgrade-option(s) =
+    origin-track-forced(
+      \ None(){anno*} -> []{anno*} \
+    )
+
+  upgrade-option(s) =
+    origin-track-forced(
+      \ Some(t){anno*} -> [<s> t]{anno*} \
+    )
+
+  upgrade-list(s) =
+    origin-track-forced(
+      \ l -> l'
+        where <is-list> l
+        with l' := <map(s)> l \
+    )
+
+  upgrade-list(s) =
+    origin-track-forced(
+      \ l -> l'
+        where <fail> l
+        with l' := <make-placeholder> "list" \
+    )
+
+  downgrade-option(s) =
+    origin-track-forced(
+      \ None(){anno*} -> None(){anno*} \
+    )
+
+  downgrade-option(s) =
+    origin-track-forced(
+      \ Some(t){anno*} -> Some(<s> t){anno*} \
+    )
+
+  downgrade-list(s) =
+    origin-track-forced(
+      \ p -> p'
+        where <is-placeholder> p
+        with p' := [] \
+    )
+
+  downgrade-list(s) =
+    origin-track-forced(
+      \ []{anno*} -> []{anno*} \
+    )
+
+  downgrade-list(s) =
+    origin-track-forced(
+      \ [e|es]{anno*} -> [e'|es']{anno*}
+        with e' := <s> e
+             ; es' := <downgrade-list(s)> es \
+    )

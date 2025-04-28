@@ -1,0 +1,31 @@
+module signatures/types-sig
+
+imports
+  strategolib
+
+
+imports
+  signatures/expressions-sig
+
+
+signature
+  sorts
+    Type TyExpr
+
+  sorts
+    COMPLETION-INSERTION
+
+  constructors
+    BoolTy       : Type
+    StringTy     : Type
+    IntTy        : Type
+    DateTy       : Type
+    FloatTy      : Type
+    MoneyTy      : Type
+    TExpr        : Type * Expr -> TyExpr
+    TyExpr-Plhdr : TyExpr
+    Type-Plhdr   : Type
+    Expr-Plhdr   : Expr
+    TyExpr-Plhdr : COMPLETION-INSERTION -> TyExpr
+    Type-Plhdr   : COMPLETION-INSERTION -> Type
+    Expr-Plhdr   : COMPLETION-INSERTION -> Expr
