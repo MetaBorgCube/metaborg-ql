@@ -34,9 +34,9 @@ context-free syntax
   Type.StrategoMetaVar3 = TypeVar
   TyExpr.StrategoMetaVar4 = TyExprVar
 
-syntax
+//syntax
 
-  ID-CF.StrategoMetaVar5 = IDVar
+//  ID-CF.StrategoMetaVar5 = IDVar
 
 lexical sorts
 
