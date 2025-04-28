@@ -14,7 +14,7 @@ signature
     FLOAT : TYPE
     MONEY : TYPE
   relations
-    question : ID -> TYPE
+    question : ID -> (TYPE * string)
   name-resolution
     labels
       LEX			// lexical parent
@@ -36,11 +36,13 @@ rules questionOk : scope * Question
   
   questionOk(s, Question(x, Label(l), t)) :- {T}
     typeOfType(s, t) == T,
-    !question[x, T] in s.
+    !question[x, (T, l)] in s,
+    checkQuestionsSame(s, x, T, l).
   
   questionOk(s, Computed(x, Label(l), TExpr(t, e))) :- {T TE}
   	typeOfType(s, t) == T,
-  	!question[x, T] in s,
+  	!question[x, (T, l)] in s,
+    checkQuestionsSame(s, x, T, l),
   	typeOfExpr(s, e) == TE,
   	TE == T | error $[Expected [T], found [TE]] @e.
   
@@ -130,15 +132,37 @@ rules typeOfExpr : scope * Expr -> TYPE
   
   // References
   
-  typeOfExpr(s, Ref(x)) = T :- {decl}
+  typeOfExpr(s, Ref(x)) = T :- {decl ss}
   	query question
   	  filter LEX* and { x' :- x' == x }
   	  min $ < LEX and true
-  	  in s |-> [(_, (decl, T))],
-  	@x.ref := decl.
+  	  in s |-> ss,
+  	  ss == [(_, (decl, (T, _))) | _],
+  	resultsToRefs(x, ss).
 
+rules resultToRef : ID * (path * (ID * (TYPE * string)))
+  resultsToRefs maps resultToRef(*, list(*))
+
+  resultToRef(x, (_, (decl, _))) :-
+    @x.ref += decl.
+    
+rules checkQuestionsSame : scope * ID * TYPE * string
+  checkQuestionsSame(s, x, T, l) :- {ss}
+  	query question
+  	  filter LEX* and { x' :- x' == x }
+  	  min $ < LEX and true
+  	  in s |-> ss,
+  	checkAllSameType(x, T, l, ss).
   	
+rules checkSameType : ID * TYPE * string * (path * (ID * (TYPE * string)))
+  checkAllSameType maps checkSameType(*, *, *, list(*))
+  
+  checkSameType(x, T, l, (_, (x', (T', l')))) :-
+    T == T' | error $[Question has different types] @x,
+    l == l' | error $[Question has different labels] @x.
+    
 
+    
 rules typeOfType : scope * Type -> TYPE
 
   typeOfType(_, BoolTy()) = BOOL().
