@@ -4,7 +4,7 @@ Submission for Spoofax 3. Current status: QL implementation incomplete due to bu
 
 Repository contains:
 
-- [] QL implementation
-- [] QL feature table
+- [ ] QL implementation
+- [ ] QL feature table
 - [X] Language Workbench feature table
 - [X] Modelling Workbench feature table (copy of subset of above)
