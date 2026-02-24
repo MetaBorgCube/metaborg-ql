@@ -42,7 +42,7 @@ context-free syntax
   StrategoLang-Strategy.BA = [<[StrategoLang-Strategy]> [StrategoLang-Term]] { }
   StrategoLang-Strategy.LChoice = [[StrategoLang-Strategy] <+ [StrategoLang-Strategy]] {right}
   StrategoLang-Strategy.Rec = <rec <StrategoLang-SId>( <StrategoLang-Strategy> )> { }
-  StrategoLang-Strategy.Not = <not(<StrategoLang-Strategy>)> { }
+  StrategoLang-Strategy.NNot = <not(<StrategoLang-Strategy>)> { }
   StrategoLang-Strategy.Where = <where(<StrategoLang-Strategy>)> { }
   StrategoLang-Strategy = StrategoLang-With { }
   StrategoLang-With.With = <with(<StrategoLang-Strategy>)> { }

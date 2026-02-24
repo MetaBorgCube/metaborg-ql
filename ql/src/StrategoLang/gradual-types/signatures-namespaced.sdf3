@@ -12,10 +12,10 @@ context-free syntax
   StrategoLang-Dyn.Dyn = [?] { }
   StrategoLang-Type.TupleT = [[StrategoLang-Type] * [{StrategoLang-Type " * "}+]] { }
   StrategoLang-Type.DynT = StrategoLang-Dyn { }
-  StrategoLang-Type.StringT = "string" { }
-  StrategoLang-Type.IntT = "int" { }
-  StrategoLang-Type.RealT = "real" { }
-  StrategoLang-Type.BlobT = "blob" { }
+  StrategoLang-Type.StringGT = "string" { }
+  StrategoLang-Type.IntGT = "int" { }
+  StrategoLang-Type.RealGT = "real" { }
+  StrategoLang-Type.BlobGT = "blob" { }
   StrategoLang-Type = [([StrategoLang-Type])] {bracket}
   StrategoLang-Type = StrategoLang-SortT { }
   StrategoLang-SortT.SortT = [[StrategoLang-Id]([{StrategoLang-Type ", "}*])] { }
